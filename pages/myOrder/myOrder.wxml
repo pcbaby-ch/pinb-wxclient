@@ -104,6 +104,3 @@
     </view>
   </view>
 </view>
-<button type="default" bindtap="sweepQrcode">
-  临时扫码消费页入口
-</button>

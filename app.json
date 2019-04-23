@@ -1,6 +1,7 @@
 {
   "pages": [
     "pages/index/index",
+    "pages/myShop/myShop",
     "pages/sweepQrcode/sweepQrcode",
     "pages/myOrder/myOrder"
   ],

@@ -5,13 +5,14 @@
   box-shadow: 0 2px 10px rgba(50, 50, 50, 0.5);
   background: rgba(50, 50, 50, 0.92);
   position: fixed;
-  top: 20px;
-  right: 12px;
+  top: 20rpx;
+  left: 200rpx;
   color: #eee;
   font-size: 13px;
   line-height: 19px;
   border-radius: 2px;
   max-width: 200px;
+  
 }
 
 .show {

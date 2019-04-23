@@ -12,8 +12,8 @@
 	},
 	"compileType": "miniprogram",
 	"libVersion": "2.6.5",
-	"appid": "wx1d2c9b292b1c0ed3",
-	"projectname": "pinb",
+	"appid": "wxe5f55e727958bcbb",
+	"projectname": "pinb-wxclient",
 	"debugOptions": {
 		"hidedInDevtools": []
 	},

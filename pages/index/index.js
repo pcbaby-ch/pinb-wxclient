@@ -13,9 +13,6 @@ const defalutProduct = {
   isPullNew: true,
 }
 Page({
-  getPhoneNumber(e) {
-    console.log(e)
-  },
   data: {
     motto: 'Hello World',
     userInfo: {},
@@ -28,7 +25,7 @@ Page({
     editIndex: 0, //当前编辑项
     editItem: '', //当前编辑项 index-type
     location: {},
-    img:''
+    img: ''
   },
   //事件处理函数
   catchtap(e) {
@@ -45,8 +42,8 @@ Page({
     console.log(Index, V)
     this.change(Index, e.target.dataset.type, V)
   },
-  ch_edit () {
-    this.setData({ isEdit: !this.data.isEdit, editItem:''})
+  ch_edit() {
+    this.setData({ isEdit: !this.data.isEdit, editItem: '' })
   },
   save() {
     this.setData({
@@ -91,12 +88,40 @@ Page({
     productList[Index].isPullNew = V;
     this.setData({
       productList,
-      editItem:''
+      editItem: ''
     })
   },
-  getLocation(){
+  getPhoneNumber(e) {
+    console.log(e)
+  },
+  getLocation() {
+    //** 集中用户授权，方便后续接口调用体验 */
+    wx.getSetting({
+      success(res) {
+        if (!res.authSetting['scope.userInfo', 'scope.userLocation', 'scope.address']) {
+          wx.authorize({
+            scope: 'scope.userInfo',
+            success() {
+              console.log("用户基本信息授权成功");
+            }
+          })
+          wx.authorize({
+            scope: 'scope.userLocation',
+            success() {
+              console.log("用户地理位置授权成功");
+            }
+          })
+          wx.authorize({
+            scope: 'scope.address',
+            success() {
+              console.log("用户地址授权成功");
+            }
+          })
+        }
+      }
+    })
     let This = this;
-    if (!this.data.location.latitude||this.data.isEdit) {
+    if (!this.data.location.latitude || this.data.isEdit) {
       wx.chooseLocation({
         success(res) {
           console.log(res)
@@ -111,16 +136,45 @@ Page({
           })
         }
       })
-    }else{
+    } else {
       wx.openLocation({
-        latitude:this.data.location.latitude,
-        longitude:this.data.location.longitude
+        latitude: this.data.location.latitude,
+        longitude: this.data.location.longitude
       })
     }
   },
-  upImg(){
-    if(!this.data.isEdit){return}
-    let This=this;
+
+  initAuth: function () {
+    //** 集中用户授权，方便后续接口调用体验 */
+    wx.getSetting({
+      success(res) {
+        if (!res.authSetting['scope.userInfo', 'scope.userLocation', 'scope.address']) {
+          wx.authorize({
+            scope: 'scope.userInfo',
+            success() {
+              console.log("用户基本信息授权成功");
+            }
+          })
+          wx.authorize({
+            scope: 'scope.userLocation',
+            success() {
+              console.log("用户地理位置授权成功");
+            }
+          })
+          wx.authorize({
+            scope: 'scope.address',
+            success() {
+              console.log("用户地址授权成功");
+            }
+          })
+        }
+      }
+    })
+  },
+
+  upImg() {
+    if (!this.data.isEdit) { return }
+    let This = this;
     wx.chooseImage({
       count: 1,
       sizeType: ['original', 'compressed'],
@@ -128,14 +182,14 @@ Page({
       success(res) {
         // tempFilePath可以作为img标签的src属性显示图片
         console.log(res)
-        This.setData({ img: res.tempFilePaths[0]})
+        This.setData({ img: res.tempFilePaths[0] })
       }
     })
   },
-  upImg2(e){
-    const Index=e.target.dataset.index;
+  upImg2(e) {
+    const Index = e.target.dataset.index;
     let This = this;
-    This.setData({ editIndex:Index,editItem:'' })
+    This.setData({ editIndex: Index, editItem: '' })
     wx.chooseImage({
       count: 1,
       sizeType: ['original', 'compressed'],
@@ -151,7 +205,7 @@ Page({
       }
     })
   },
-  onLoad: function() {
+  onLoad: function () {
     if (app.globalData.userInfo) {
       this.setData({
         userInfo: app.globalData.userInfo,
@@ -179,12 +233,69 @@ Page({
       })
     }
   },
-  getUserInfo: function(e) {
+  getUserInfo: function (e) {
     console.log(e)
     app.globalData.userInfo = e.detail.userInfo
     this.setData({
       userInfo: e.detail.userInfo,
       hasUserInfo: true
     })
+  },
+
+
+  /**
+   * Lifecycle function--Called when page load
+   */
+  onLoad: function (options) {
+
+  },
+
+  /**
+   * Lifecycle function--Called when page is initially rendered
+   */
+  onReady: function () {
+
+  },
+
+  /**
+   * Lifecycle function--Called when page show
+   */
+  onShow: function () {
+
+  },
+
+  /**
+   * Lifecycle function--Called when page hide
+   */
+  onHide: function () {
+
+  },
+
+  /**
+   * Lifecycle function--Called when page unload
+   */
+  onUnload: function () {
+
+  },
+
+  /**
+   * Page event handler function--Called when user drop down
+   */
+  onPullDownRefresh: function () {
+
+  },
+
+  /**
+   * Called when page reach bottom
+   */
+  onReachBottom: function () {
+
+  },
+
+  /**
+   * Called when user click on the top right corner to share
+   */
+  onShareAppMessage: function () {
+
   }
 })
