@@ -1,0 +1,47 @@
+<view class='top'>
+  <image src='../img/shop_logo01.jpg' class='bgImg'></image>
+  <view class='top-tag'>
+    <view class='top-tag-i'>老用户开团</view>
+    <view class='top-tag-i'>分享用户拼团</view>
+    <view class='top-tag-i'>人满成团</view>
+  </view>
+</view>
+<view class='main'>
+  <view class='main-list'>
+    <view class='main-list-new'>新</view>
+    <view class='main-list-done'>成团</view>
+    <view class='main-list-left'>
+      <view class='main-list-price'>
+        <text class='yuanjia'>￥998</text><text class='zhekou'>￥288</text>
+      </view>
+      <image class='goodImg' src='../img/goods_food01.jpg'></image>
+      <view class='main-list-name'>沙拉果盘</view>
+    </view>
+    <view class='main-list-right'>
+      <view class='main-list-right-top'>
+        <image src='../img/team.png'></image>
+        <view class='main-list-num'>99人团</view>
+        <view class='main-list-share'>分享</view>
+      </view>
+      <view class='main-list-endTime'>
+        <image src='../img/time-circle2.png'></image><view>距结束55:34:12</view>
+      </view>
+      <view class='main-list-cmlist'>
+        <image src='../img/wx_head1.jpg'></image>
+        <image src='../img/wx_head2.jpg'></image>
+        <image src='../img/wx_head3.jpg'></image>
+        <image src='../img/wx_head4.jpeg'></image>
+        <image src='../img/wx_head5.jpg'></image>
+        <image src='../img/wx_head7.jpg'></image>
+        <image src='../img/wx_head8.jpg'></image>
+        <image src='../img/wx_head9.jpg'></image>
+        <image src='../img/wx_head10.jpg'></image>
+      </view>
+    </view>
+  </view>
+</view>
+<view class='pay'>
+  <canvas class='canvas' canvas-id='canvas'></canvas>
+  <view class='pay-type'>-- 付款方式 --</view>
+  <image class='pay-close' src='../img/close-circle.png'></image>
+</view>

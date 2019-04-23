@@ -1,0 +1,22 @@
+.fixed{
+  position: fixed;
+  bottom: 20rpx;
+  right:20rpx;
+  z-index: 3;
+}
+.fixed-list{
+  text-align: center;
+  margin: 8rpx 0;
+  padding: 2rpx 16rpx;
+  border: 1rpx solid #e6e6e6;
+  background: rgba(241, 241, 241, 0.6);
+  border-radius: 12rpx;
+  font-size: 22rpx;
+  color: #999;
+  line-height: 32rpx;
+}
+.fixed-list image{
+  width: 48rpx;
+  height: 48rpx;
+  display: block;
+}

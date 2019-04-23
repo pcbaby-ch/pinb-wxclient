@@ -1,0 +1,127 @@
+<view class='top' bindtap='upImg'>
+  <image wx:if='{{img}}' src='{{img}}' class='bgImg'></image>
+  <view wx:if='{{img}}' class='top-tag'>
+    <view class='top-tag-i'>老用户开团</view>
+    <view class='top-tag-i'>分享用户拼团</view>
+    <view class='top-tag-i'>人满成团</view>
+  </view>
+  <view wx:if='{{!img}}' class='top-main'>
+    <view wx:if='{{isEdit}}' class='antScale'>
+      <image class='upImg' wx:if='{{!storeImg}}' src='../img/upImg.png'></image>
+      <image class='upImg' wx:if='{{storeImg}}' src='{{storeImg}}'></image>
+      上传店铺图片
+    </view>
+    <view wx:if='{{isEdit}}' class='antScale' style='font-size:12px;'>尽可能的让买家容易辨识出你的店铺</view>
+  </view>
+</view>
+<view class='main'>
+  <view wx:for='{{productList}}' wx:key='{{index}}'>
+    <view wx:if='{{isEdit}}' class='main-list {{isEdit?"opacityshow":""}} {{editIndex==index?"main-list-or":""}}'>
+      <view class='main-list-left'>
+        <view class='main-list-price'>
+          <input  maxlength='4' type='number' class='antEdit' style='width:90rpx;' bindinput='bindinput' data-type='oldPrice' data-index='{{index}}' value='{{item.oldPrice}}' wx:if='{{editItem==index+"-oldPrice"}}' focus='{{editItem==index+"-oldPrice"}}' placeholder="请输入" />
+          <view catchtap='catchtap' data-type='oldPrice' data-index='{{index}}' wx:if='{{editItem!=index+"-oldPrice"}}' class='{{item.oldPrice?"":"antScale"}}'>{{item.oldPrice?"原:"+item.oldPrice:"配置原价"}}</view>
+          <view> & </view>
+          <input maxlength='4' type='number' class='antEdit' style='width:90rpx;' bindinput='bindinput' data-type='price' data-index='{{index}}' value='{{item.price}}' wx:if='{{editItem==index+"-price"}}' focus='{{editItem==index+"-price"}}' placeholder="请输入" />
+          <view catchtap='catchtap' data-type='price' data-index='{{index}}' wx:if='{{editItem!=index+"-price"}}' class='{{item.price?"":"antScale"}}'>{{item.price?"现:"+item.price:"折扣金额"}}</view>
+        </view>
+        <image wx:if='{{item.img}}' class='goodImg' src='{{item.img}}' catchtap='upImg2' data-index='{{index}}'></image>
+        <view wx:if='{{!item.img}}' class='main-list-left-up antScale' catchtap='upImg2' data-index='{{index}}'>
+          <image src='../img/upImg2.png' data-index='{{index}}'></image>
+          <view data-index='{{index}}'>上传商品照片</view>
+        </view>
+        <view class='main-list-name'>
+          <view catchtap='catchtap' data-type='name' data-index='{{index}}' class='{{item.name?"":"antScale"}}' wx:if='{{editItem!=index+"-name"}}'>{{item.name||'点击填写商品名称'}}</view>
+          <input maxlength='12' style='width:98%;box-sizing: border-box;' class='antEdit' bindinput='bindinput' data-type='name' data-index='{{index}}' value='{{item.name}}' wx:if='{{editItem==index+"-name"}}' focus='{{editItem==index+"-name"}}' />
+        </view>
+      </view>
+      <view class='main-list-right'>
+        <view class='main-list-right-top' style='padding:6px 0;'>
+          <image src='../img/team.png'></image>
+          <view class='main-list-num'>
+            <picker bindchange="set_num" data-index='{{index}}' value="{{item.numIndex}}" range="{{[6,8,9]}}">
+              {{[6,8,9][item.numIndex]?[6,8,9][item.numIndex]+'人团':'设置开团人数'}}
+            </picker>
+          </view>
+          <!-- <view class='main-list-share'>分享</vi
+        ew> -->
+        </view>
+        <view class='main-list-endTime {{item.endTimeH || item.endTimeM || editItem==index+"-endTime"?"":"antScale"}}' style='padding:6px 0;'>
+          <image src='../img/time-circle2.png' catchtap='catchtap' data-type='endTime' data-index='{{index}}'></image>
+          <view wx:if='{{editItem!=index+"-endTime"}}' catchtap='catchtap' data-type='endTime' data-index='{{index}}'>
+            {{item.endTimeH||item.endTimeM?(item.endTimeH?item.endTimeH+'时':'')+(item.endTimeM?item.endTimeM+'分':'')+'后结束':'设置结束时间'}}
+          </view>
+          <view wx:if='{{editItem==index+"-endTime"}}'>
+            <input maxlength='2' type='number' class='antEdit' style='width:28px;' bindinput='bindinput' data-type='endTimeH' data-index='{{index}}' value='{{item.endTimeH}}' />时
+            <input maxlength='2' type='number' class='antEdit' style='width:28px;' bindinput='bindinput' data-type='endTimeM' data-index='{{index}}' value='{{item.endTimeM}}' />分 后结束
+          </view>
+        </view>
+        <view class='main-list-laxin'>
+          <view maxlength='4' class='{{item.maxNum?"":"antScale"}}' catchtap='catchtap' data-type='maxNum' data-index='{{index}}' wx:if='{{editItem!=index+"-maxNum"}}'>{{item.maxNum?'至多成团人数'+item.maxNum:'设置至多成团人数'}}</view>
+          <view wx:if='{{editItem==index+"-maxNum"}}'>
+            至多成团人数
+            <input type='number' class='antEdit' style='width:35px;' bindinput='bindinput' data-type='maxNum' data-index='{{index}}' value='{{item.maxNum}}' focus='{{editItem==index+"-maxNum"}}' />
+          </view>
+        </view>
+        <view class='main-list-laxin'>
+          拉新团
+          <switch checked='{{item.isPullNew}}' bindchange='switchChange' data-index='{{index}}' />
+        </view>
+      </view>
+    </view>
+    <view class='main-list {{!isEdit?"opacityshow":""}}' wx:if='{{!isEdit}}'>
+      <view class='main-list-new' wx:if='{{item.isPullNew}}'>新</view>
+      <!-- <view class='main-list-done'>成团</view> -->
+      <view class='main-list-left' style='border:none;'>
+        <view class='main-list-price'>
+          <text class='yuanjia'>{{item.oldPrice?'￥'+item.oldPrice:''}}</text>
+          <text class='zhekou'>{{item.price?'￥'+item.price:''}}</text>
+        </view>
+        <image class='goodImg' src='{{item.img}}'></image>
+        <!-- <view class='main-list-name'>沙拉果盘</view> -->
+      </view>
+      <view class='main-list-right'>
+        <view class='main-list-right-top'>
+          <image src='../img/team.png'></image>
+          <view class='main-list-num'>{{[6,8,9][item.numIndex]?[6,8,9][item.numIndex]+'人团':'开团人数'}}</view>
+          <view class='main-list-share'>分享</view>
+        </view>
+        <view class='main-list-endTime'>
+          <image src='../img/time-circle2.png'></image>
+          <view>距结束{{item.endTimeH||'00'}}:{{item.endTimeM||'00'}}</view>
+        </view>
+        <!-- <view class='main-list-cmlist'>
+          <image src='../img/wx_head1.jpg'></image>
+        </view> -->
+      </view>
+    </view>
+  </view>
+  <view class='main-btm'>
+    <button class='buttonBlock' open-type='getPhoneNumber'>
+      <image src='../img/phone.png'></image>
+      <view style='padding-right:14rpx;'>13137748888</view>
+    </button>
+    <image src='../img/location2.png' bindtap='getLocation'></image>
+    <view bindtap='getLocation'>{{location.name||'选取位置'}}</view>
+  </view>
+  <view class='main-btm' style='text-align:center;'>
+    所有服务由杭州市阿里巴巴提供
+  </view>
+</view>
+
+<view class='fixed'>
+  <view class='fixed-list' catchtap='ch_edit'>
+    <image src='{{isEdit?"../img/eye.png":"../img/edit-square.png"}}'></image>
+    <view>{{isEdit?'预览':'编辑'}}</view>
+  </view>
+  <view class='fixed-list' catchtap='add'>
+    <image src='../img/plus-square.png'></image>
+    <view>增加</view>
+  </view>
+  <view class='fixed-list' catchtap='save'>
+    <image src='../img/save.png'></image>
+    <view>保存</view>
+  </view>
+</view>
+
+<toast usToast='{{usToast}}'></toast>

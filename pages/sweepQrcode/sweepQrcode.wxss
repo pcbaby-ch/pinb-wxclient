@@ -1,0 +1,27 @@
+.pay{
+  margin: 0 92rpx 12rpx;
+  padding-top: 32rpx;
+  padding-bottom: 6rpx;
+  background-color: rgba(227, 224, 224, 1);
+  text-align: center;
+  border: 2rpx solid rgba(187, 187, 187, 1);
+  border-radius: 20rpx;
+}
+.pay canvas{
+  display: inline-block;
+  width: 400rpx;
+  height:400rpx;
+}
+.pay-type{
+  height: 40rpx;
+  margin:16rpx 0;
+  line-height: 40rpx;
+  color: rgba(16, 16, 16, 1);
+  font-size: 28rpx;
+  text-align: center;
+  font-family: PingFangSC-regular;
+}
+.pay-close{
+  width: 80rpx;
+  height:80rpx;
+}
