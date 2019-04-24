@@ -26,6 +26,7 @@ Page({
       groubImg: "",
       groubPhone: "",
       groubAddress: "",
+      isOpen:" ",
     },
     //店铺-商品信息
     productList: [defalutProduct, defalutProduct, defalutProduct],

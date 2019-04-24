@@ -14,7 +14,6 @@ const defalutProduct = {
 }
 Page({
   data: {
-    motto: 'Hello World',
     userInfo: {},
     hasUserInfo: false,
     canIUse: wx.canIUse('button.open-type.getUserInfo'),
@@ -28,6 +27,7 @@ Page({
       groubImg: "",
       groubPhone: "",
       groubAddress: "",
+      isOpen:"",
     },
     //店铺-商品信息
     productList: [defalutProduct, defalutProduct, defalutProduct],

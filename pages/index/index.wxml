@@ -39,7 +39,7 @@
           <image src='../img/upImg2.png' data-index='{{index}}'></image>
           <view data-index='{{index}}'>上传商品照片</view>
         </view>
-        <view class='main-list-name'>
+        <view class='goodsName'>
           <view catchtap='catchtap' data-type='name' data-index='{{index}}' class='{{item.name?"":"antScale"}}' wx:if='{{editItem!=index+"-name"}}'>{{item.name||'点击填写商品名称'}}</view>
           <input maxlength='12' style='width:98%;box-sizing: border-box;' class='antEdit' bindinput='bindinput' data-type='name' data-index='{{index}}' value='{{item.name}}' wx:if='{{editItem==index+"-name"}}' focus='{{editItem==index+"-name"}}' />
         </view>
@@ -66,9 +66,9 @@
           </view>
         </view>
         <view class='main-list-laxin'>
-          <view maxlength='4' class='{{item.maxNum?"":"antScale"}}' catchtap='catchtap' data-type='maxNum' data-index='{{index}}' wx:if='{{editItem!=index+"-maxNum"}}'>{{item.maxNum?'至多成团人数'+item.maxNum:'设置至多成团人数'}}</view>
+          <view maxlength='4' class='{{item.maxNum?"":"antScale"}}' catchtap='catchtap' data-type='maxNum' data-index='{{index}}' wx:if='{{editItem!=index+"-maxNum"}}'>{{item.maxNum?'至多成团数'+item.maxNum:'设置至多成团数'}}</view>
           <view wx:if='{{editItem==index+"-maxNum"}}'>
-            至多成团人数
+            至多成团数
             <input type='number' class='antEdit' style='width:35px;' bindinput='bindinput' data-type='maxNum' data-index='{{index}}' value='{{item.maxNum}}' focus='{{editItem==index+"-maxNum"}}' />
           </view>
         </view>
@@ -87,7 +87,7 @@
           <text class='zhekou'>{{item.price?'￥'+item.price:''}}</text>
         </view>
         <image class='goodImg' src='{{item.img}}'></image>
-        <!-- <view class='main-list-name'>沙拉果盘</view> -->
+        
       </view>
       <view class='main-list-right'>
         <view class='main-list-right-top'>
