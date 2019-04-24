@@ -1,19 +1,32 @@
 <view class='top' bindtap='upImg'>
+<view catchtap='catchtap' data-type='groub.groubName' data-index='' class='{{groub.groubName?"top-groubName":"antScale top-groubName"}}' style='margin-top:-20rpx' wx:if='{{editItem!="-groub.groubName"}}'>{{groub.groubName||'点击填写商铺名称'}}</view>
+          <input maxlength='12' class="antEdit" style='width:98%;box-sizing: border-box;margin-top:5rpx' bindinput='bindinput' data-type='groubName' value='{{groub.groubName}}' wx:if='{{editItem=="-groub.groubName"}}' focus='{{editItem=="-groub.groubName"}}' />
   <image wx:if='{{img}}' src='{{img}}' class='bgImg' mode='aspectFill'></image>
   <view wx:if='{{img}}' class='top-tag'>
     <view class='top-tag-i'>老用户开团</view>
     <view class='top-tag-i'>分享用户拼团</view>
     <view class='top-tag-i'>人满成团</view>
   </view>
+  
   <view wx:if='{{!img}}' class='top-main'>
-    
+  
+		  
+    <view wx:if='{{isEdit}}' class='antScale'>
+      <image class='upImg'  src='../img/upImg.png'></image>
+      
+      上传店铺图片
+   
+    <view class='antScale' style='font-size:10px;'>“尽可能的让买家容易辨识出你的店铺</view>
+    <view class='antScale' style='font-size:10px;'>如采用相机拍照，建议横向拍摄”</view>
+	 </view>
   </view>
+
 </view>
 <view class='main'>
   <view wx:for='{{productList}}' wx:key='{{index}}'>
-    <view wx:if='{{isEdit}}' class='main-list {{isEdit?"opacityshow":""}} {{editIndex==index?"main-list-or":""}}'>
-      <view class='main-list-left'>
-        <view class='main-list-price'>
+    <view wx:if='{{isEdit}}' class='goods-list {{isEdit?"opacityshow":""}} {{editIndex==index?"goods-list-error":""}}'>
+      <view class='goods-list-left'>
+        <view class='goods-list-price'>
           <input maxlength='4' type='number' class='antEdit' style='width:90rpx;' bindinput='bindinput' data-type='oldPrice' data-index='{{index}}' value='{{item.oldPrice}}' wx:if='{{editItem==index+"-oldPrice"}}' focus='{{editItem==index+"-oldPrice"}}' placeholder="请输入"
           />
           <view catchtap='catchtap' data-type='oldPrice' data-index='{{index}}' wx:if='{{editItem!=index+"-oldPrice"}}' class='{{item.oldPrice?"":"antScale"}}'>{{item.oldPrice?"原:"+item.oldPrice:"配置原价"}}</view>
@@ -31,7 +44,7 @@
           <input maxlength='12' style='width:98%;box-sizing: border-box;' class='antEdit' bindinput='bindinput' data-type='name' data-index='{{index}}' value='{{item.name}}' wx:if='{{editItem==index+"-name"}}' focus='{{editItem==index+"-name"}}' />
         </view>
       </view>
-      <view class='main-list-right'>
+      <view class='goods-list-right'>
         <view class='main-list-right-top' style='padding:6px 0;'>
           <image src='../img/team.png'></image>
           <view class='main-list-num'>
@@ -65,8 +78,8 @@
         </view>
       </view>
     </view>
-    <view class='main-list {{!isEdit?"opacityshow":""}}' wx:if='{{!isEdit}}'>
-      <view class='main-list-new' wx:if='{{item.isPullNew}}'>新</view>
+    <view class='goods-list {{!isEdit?"opacityshow":""}}' wx:if='{{!isEdit}}'>
+      <view class='goods-list-left-new' wx:if='{{item.isPullNew}}'>新</view>
       <!-- <view class='main-list-done'>成团</view> -->
       <view class='main-list-left' style='border:none;'>
         <view class='main-list-price'>
@@ -95,12 +108,12 @@
   <view class='main-btm'>
     <button open-type="getPhoneNumber" bindgetphonenumber="getPhoneNumber" class='buttonBlock'>
       <image src='../img/phone.png'></image>
-      <view style='padding-right:14rpx;'>13137748888</view>
+      <view style='padding-right:14rpx;'>18516369668</view>
     </button>
 
     <view bindtap='getLocation'>
       <image src='../img/location2.png'></image>
-      <view bindtap='getLocation'>{{location.address||'选取位置'}}</view>
+      <view bindtap='getLocation'>{{location.address||'选取店铺位置'}}</view>
     </view>
   </view>
 
@@ -109,7 +122,7 @@
 <view class='fixed'>
   <view class='fixed-list' catchtap='ch_edit'>
     <image src='{{isEdit?"../img/eye.png":"../img/edit-square.png"}}'></image>
-    <view>{{isEdit?'预览':'编辑'}}</view>
+    <view>预览</view>
   </view>
   <!-- <view class='fixed-list' catchtap='add'>
       <image src='../img/plus-square.png'></image>

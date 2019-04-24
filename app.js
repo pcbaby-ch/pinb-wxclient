@@ -33,36 +33,20 @@ App({
     })
   },
   globalData: {
-    userInfo: null
+    //#api服务host地址
+    apiHost:"https://apitest.pinb.vip",
+    //#用户-基础信息
+    userInfo: null,
+    //#用户-更多信息
+    userInfoDetail:null,
+    //#店铺-基本信息
+    shopInfo:null,
+    //#店铺-商品信息
+    shopGoods:null,
   },
+  
 
-  initAuth: function () {
-    //** 集中用户授权，方便后续接口调用体验 */
-    wx.getSetting({
-      success(res) {
-        if (!res.authSetting['scope.userInfo', 'scope.userLocation', 'scope.address']) {
-          wx.authorize({
-            scope: 'scope.userInfo',
-            success() {
-              console.log("用户基本信息授权成功");
-            }
-          })
-          wx.authorize({
-            scope: 'scope.userLocation',
-            success() {
-              console.log("用户地理位置授权成功");
-            }
-          })
-          wx.authorize({
-            scope: 'scope.address',
-            success() {
-              console.log("用户地址授权成功");
-            }
-          })
-        }
-      }
-    })
-  },
+  
 
 }
 

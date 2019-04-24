@@ -1,7 +1,7 @@
 {
   "pages": [
-    "pages/index/index",
     "pages/myShop/myShop",
+    "pages/index/index",
     "pages/sweepQrcode/sweepQrcode",
     "pages/myOrder/myOrder"
   ],
@@ -17,7 +17,7 @@
     "selectedColor":"#09bb07",
     "backgroundColor":"#fff",
     "list":[{
-      "pagePath":"pages/index/index",
+      "pagePath":"pages/myShop/myShop",
       "text": "我的店铺",
       "iconPath":"pages/img/index.png",
       "selectedIconPath":"pages/img/indexB.png"

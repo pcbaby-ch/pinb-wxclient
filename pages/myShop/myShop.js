@@ -1,11 +1,38 @@
-// pages/myShop/myShop.js
+const app = getApp()
+const defalutProduct = {
+  name: '',
+  img: '',
+  oldPrice: '',
+  price: '',
+  numIndex: 0,
+  endTimeH: '1',
+  endTimeM: '',
+  maxNum: '6',
+  isPullNew: true,
+}
 Page({
-
-  /**
-   * Page initial data
-   */
   data: {
+    motto: 'Hello World',
+    userInfo: {},
+    hasUserInfo: false,
+    canIUse: wx.canIUse('button.open-type.getUserInfo'),
 
+    isEdit: true,
+    //店铺-基础信息
+    groub: {
+      groubTrace: "",
+      refUserWxUnionid: "",
+      groubName: "",
+      groubImg: "",
+      groubPhone: "",
+      groubAddress: "",
+    },
+    //店铺-商品信息
+    productList: [defalutProduct, defalutProduct, defalutProduct],
+    editIndex: 0, //当前编辑项
+    editItem: '', //当前编辑项 index-type
+    location: {},
+    img: ''
   },
 
   /**

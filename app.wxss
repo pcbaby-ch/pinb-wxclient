@@ -61,7 +61,7 @@
   width: 100%;
   height: 100%;
   position: relative;
-  line-height: 44rpx;
+  line-height: 34rpx;
   color: rgba(16, 16, 16, 1);
   font-size: 28rpx;
   text-align: center;
@@ -71,20 +71,6 @@
 .top .bgImg {
   width: 100%;
   height: 300rpx;
-  
-}
-
-.top .upImg {
-  width: 80rpx;
-  height: 80rpx;
-  margin-bottom: 20rpx;
-  margin-right: 20rpx;
-  vertical-align: middle;
-}
-
-.top-main {
-  width: 100%;
-  height: 280rpx;
   border: 2rpx solid #eee;
   display: flex;
   align-items: center;
@@ -93,12 +79,42 @@
   box-sizing: border-box;
 }
 
+/** 店铺轮播展示区 ******************/
+.top .upImg {
+  width: 80rpx;
+  height: 80rpx;
+  margin-top: 30rpx;
+  margin-bottom: 20rpx;
+  margin-right: 20rpx;
+  vertical-align: middle;
+}
+.top-main {
+  width: 100%;
+  height: 300rpx;
+  border: 2rpx solid #eee;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  box-sizing: border-box;
+  
+
+}
+
 .top-tag {
   position: absolute;
   width: 100%;
   left: 0rpx;
   bottom: 20rpx;
   text-align: center;
+}
+
+.top-groubName {
+  position: absolute;
+  width: 100%;
+  left: 0rpx;
+  top: 30rpx;
+  margin: 0rpx 400rpx 0 0;
 }
 
 .top-tag-i {
@@ -135,8 +151,8 @@
   vertical-align: middle;
   padding-left: 5rpx;
 }
-
-.main-list {
+/** 商品list *********************/
+.goods-list {
   display: flex;
   position: relative;
   margin-bottom: 10rpx;
@@ -144,12 +160,12 @@
   border-radius: 2px;
   overflow: hidden;
 }
-
-.main-list-or {
+.goods-list-error {
   box-shadow: 0 0 5px #ff9800;
 }
+/** 商品list-左侧 *********************/
 
-.main-list-new {
+.goods-list-left-new {
   position: absolute;
   top: 0px;
   left: 0px;
@@ -184,13 +200,14 @@
   z-index: 2;
 }
 
-.main-list-left {
+.goods-list-left {
+  width:50%;
   flex: 1;
   position: relative;
   border-right: 2rpx solid #eee;
 }
 
-.main-list-price {
+.goods-list-price {
   position: absolute;
   right: 8rpx;
   top: 4rpx;
@@ -200,7 +217,7 @@
   z-index: 2;
 }
 
-.main-list-price view {
+.goods-list-price view {
   padding: 0 4rpx;
   display: inline-block;
   vertical-align: middle;
@@ -255,8 +272,8 @@
   font-family: Arial;
   border-top: 2rpx solid #eee;
 }
-
-.main-list-right {
+/** 商品list-右侧 *********************/
+.goods-list-right {
   flex: 1;
   padding-top: 4rpxx;
   padding-left: 22rpx;
@@ -363,4 +380,31 @@
   line-height: 40rpx;
   color: rgba(16, 16, 16, 1);
   font-size: 28rpx;
+}
+
+/** 右下角菜单样式 ***********************************/
+
+.fixed {
+  position: fixed;
+  bottom: 20rpx;
+  right: 20rpx;
+  z-index: 3;
+}
+
+.fixed-list {
+  text-align: center;
+  margin: 8rpx 0;
+  padding: 2rpx 16rpx;
+  border: 1rpx solid #e6e6e6;
+  background: rgba(241, 241, 241, 0.6);
+  border-radius: 12rpx;
+  font-size: 22rpx;
+  color: #999;
+  line-height: 32rpx;
+}
+
+.fixed-list image {
+  width: 48rpx;
+  height: 48rpx;
+  display: block;
 }

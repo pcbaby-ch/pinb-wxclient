@@ -20,7 +20,16 @@ Page({
     canIUse: wx.canIUse('button.open-type.getUserInfo'),
 
     isEdit: true,
-    storeImg: '',
+    //店铺-基础信息
+    groub: {
+      groubTrace: "",
+      refUserWxUnionid: "",
+      groubName: "",
+      groubImg: "",
+      groubPhone: "",
+      groubAddress: "",
+    },
+    //店铺-商品信息
     productList: [defalutProduct, defalutProduct, defalutProduct],
     editIndex: 0, //当前编辑项
     editItem: '', //当前编辑项 index-type
@@ -57,11 +66,23 @@ Page({
   },
   change(index, type, value) {
     let productList = this.data.productList;
-    productList[index][type] = value
-    this.setData({
-      productList
-    })
-    console.log(productList)
+    let groub = this.data.groub;
+    if (!productList[index]) {
+      console.log("#店铺-基础信息>>>");
+      groub[type] = value;
+      this.setData({
+        groub
+      })
+      console.log(groub);
+    } else {
+      console.log("#店铺-商品信息");
+      productList[index][type] = value;
+      this.setData({
+        productList
+      })
+      console.log(productList)
+    }
+
   },
   add() {
     let productList = this.data.productList;
