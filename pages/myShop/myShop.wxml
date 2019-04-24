@@ -68,7 +68,7 @@
           <text class='yuanjia'>{{item.oldPrice?'￥'+item.oldPrice:''}}</text>
           <text class='zhekou'>{{item.price?'￥'+item.price:''}}</text>
         </view>
-        <image class='goodImg' src='{{item.img}}'></image>
+        <image class='goodsImg' src='{{item.img}}'></image>
         <!-- <view class='main-list-name'>沙拉果盘</view> -->
       </view>
       <view class='main-list-right'>

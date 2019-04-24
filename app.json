@@ -1,7 +1,7 @@
 {
   "pages": [
-    "pages/myShop/myShop",
     "pages/index/index",
+    "pages/myShop/myShop",
     "pages/sweepQrcode/sweepQrcode",
     "pages/myOrder/myOrder"
   ],

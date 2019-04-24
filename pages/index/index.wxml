@@ -34,7 +34,7 @@
           <input maxlength='4' type='number' class='antEdit' style='width:90rpx;' bindinput='bindinput' data-type='price' data-index='{{index}}' value='{{item.price}}' wx:if='{{editItem==index+"-price"}}' focus='{{editItem==index+"-price"}}' placeholder="请输入" />
           <view catchtap='catchtap' data-type='price' data-index='{{index}}' wx:if='{{editItem!=index+"-price"}}' class='{{item.price?"":"antScale"}}'>{{item.price?"现:"+item.price:"折扣金额"}}</view>
         </view>
-        <image wx:if='{{item.img}}' class='goodImg' src='{{item.img}}' catchtap='upImg2' data-index='{{index}}' mode='aspectFill'></image>
+        <image wx:if='{{item.img}}' class='goodsImg' src='{{item.img}}' catchtap='upImg2' data-index='{{index}}' mode='aspectFill'></image>
         <view wx:if='{{!item.img}}' class='main-list-left-up antScale' catchtap='upImg2' data-index='{{index}}'>
           <image src='../img/upImg2.png' data-index='{{index}}'></image>
           <view data-index='{{index}}'>上传商品照片</view>
