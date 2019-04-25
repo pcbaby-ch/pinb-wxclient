@@ -43,10 +43,10 @@ Page({
 
     img: ''
   },
-  
+
   //事件处理函数
   catchtap(e) {
-    app.gogo();
+    console.log("#事件捕捉>>>")
     console.log(e)
     let Index = e.target.dataset.index;
     this.setData({
@@ -128,35 +128,6 @@ Page({
   getPhoneNumber(e) {
     console.log(e)
   },
-  getLocation() {
-    //** 集中用户授权，方便后续接口调用体验 */
-    initAuth();
-
-    let This = this;
-    if (this.data.isEdit) {
-      let groub = this.data.groub;
-      wx.chooseLocation({
-        success(res) {
-          console.log(res)
-          groub.groubAddress = res.address;
-          This.setData({
-            groub
-          })
-        },
-        fail() {
-          This.setData({
-            usToast: {
-              text: '获取微信信息失败',
-              time: 3
-            }
-          })
-        }
-      })
-    } else {
-
-    }
-  },
-
   initAuth: function() {
     /** 集中用户授权，方便后续接口调用体验 **********************/
     wx.getSetting({
@@ -184,6 +155,36 @@ Page({
       }
     })
   },
+  getLocation() {
+    //** 集中用户授权，方便后续接口调用体验 */
+    //initAuth();
+
+    let This = this;
+    if (this.data.isEdit) {
+      let groub = this.data.groub;
+      wx.chooseLocation({
+        success(res) {
+          console.log(res)
+          groub.groubAddress = res.address;
+          This.setData({
+            groub
+          })
+        },
+        fail() {
+          This.setData({
+            usToast: {
+              text: '获取微信信息失败',
+              time: 3
+            }
+          })
+        }
+      })
+    } else {
+
+    }
+  },
+
+
   /** 店铺-图片获取 *********************************/
   upImg() {
     if (!this.data.isEdit) {
@@ -228,7 +229,19 @@ Page({
       }
     })
   },
+  getUserInfo: function(e) {
+    console.log(e)
+    app.globalData.userInfo = e.detail.userInfo
+    this.setData({
+      userInfo: e.detail.userInfo,
+      hasUserInfo: true
+    })
+  },
+  /**
+   * Lifecycle function--Called when page load
+   */
   onLoad: function() {
+    wx.showNavigationBarLoading()
     if (app.globalData.userInfo) {
       this.setData({
         userInfo: app.globalData.userInfo,
@@ -256,28 +269,12 @@ Page({
       })
     }
   },
-  getUserInfo: function(e) {
-    console.log(e)
-    app.globalData.userInfo = e.detail.userInfo
-    this.setData({
-      userInfo: e.detail.userInfo,
-      hasUserInfo: true
-    })
-  },
-
-
-  /**
-   * Lifecycle function--Called when page load
-   */
-  onLoad: function(options) {
-
-  },
 
   /**
    * Lifecycle function--Called when page is initially rendered
    */
   onReady: function() {
-
+    wx.hideNavigationBarLoading()
   },
 
   /**

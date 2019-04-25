@@ -11,7 +11,7 @@
       <image class='goodsImg' src='{{item.goodsImg}}' data-index='{{index}}' mode='aspectFill'></image>
 
       <view class='goodsName'>
-        <view data-type='name' data-index='{{index}}' class='{{item.name?"":""}}' wx:if='{{editItem!=index+"-name"}}'>{{item.name||'??商品名称??'}}</view>
+        <view data-type='name' data-index='{{index}}' class='{{item.goodsName?"":""}}' wx:if='{{editItem!=index+"-goodsName"}}'>{{item.goodsName||'??商品名称??'}}</view>
 
       </view>
     </view>

@@ -16,28 +16,30 @@ const formatNumber = n => {
 }
 /** # 网络请求工具类 ##################################### */
 function reqPost(url, params, success, fail) {
-  this.requestLoading(url, params, "", success, fail)
+  requestLoading(url, params, "", success, fail)
 }
+
 function reqGet(url, success, fail) {
-  this.requestLoading(url, null, "", success, fail)
+  requestLoading(url, null, "", success, fail)
 }
 
 function requestLoading(url, params, message, success, fail) {
-  console.log("#>>>请求参数:" + params)
+  console.log(">>>请求参数:" + JSON.stringify(params))
   wx.showNavigationBarLoading()
-  if (!message||message != "") {
-    wx.showLoading({
-      title: message,
-    })
+  if (!message || message != "") {
+    // wx.showLoading({
+    //   title: message,
+    // })
   }
   var reqMethod = "post";
   var reqHeader = {
-    'content-type': 'application/x-www-form-urlencoded'
+    'Content-Type': 'application/json'
+
   }
   if (JSON.stringify(params).length <= 0) {
     reqMethod = "get";
     reqHeader = {
-      'Content-Type': 'application/json'
+      'content-type': 'application/x-www-form-urlencoded'
     }
   }
 
@@ -47,8 +49,7 @@ function requestLoading(url, params, message, success, fail) {
     header: reqHeader,
     method: reqMethod,
     success: function(res) {
-      //console.log(res.data)
-      wx.hideNavigationBarLoading()
+      
       if (message != "") {
         wx.hideLoading()
       }
@@ -60,24 +61,16 @@ function requestLoading(url, params, message, success, fail) {
 
     },
     fail: function(res) {
-      wx.hideNavigationBarLoading()
       if (message != "") {
         wx.hideLoading()
       }
       fail()
     },
     complete: function(res) {
-
+      console.log(">>>响应数据:" + JSON.stringify(res))
+      wx.hideNavigationBarLoading()
     },
   })
-}
-module.exports = {
-  request: request,
-  requestLoading: requestLoading
-}
-
-function doGet() {
-
 }
 
 

@@ -1,5 +1,5 @@
 //app.js
-var util=require("/utils/util.js");
+var util = require("/utils/util.js");
 App({
     onLaunch: function() {
       // 登录
@@ -8,7 +8,16 @@ App({
           console.log("#登陆>>>")
           console.log(res)
           // 发送 res.code 到后台换取 openId, sessionKey, unionId
-          util.reqPost( );
+          util.reqPost(this.globalData.apiHost + "/user/getOpenid", {
+            "appid": "wx71de1973104f41cf",
+            "secret": "8dee514b29b84c7640b842e4e2d521aa",
+            "jsCode": res.code,
+            "grantType": "authorization_code"
+          },function success(data){
+            
+          },function fail(){
+
+          })
         }
       })
       // 获取用户信息
@@ -34,10 +43,10 @@ App({
         }
       })
     },
-    
+
     globalData: {
       //#api服务host地址
-      apiHost: "https://apitest.pinb.vip",
+      apiHost: "https://apitest.pinb.vip/pinb-service",
       //#用户-基础信息
       userInfo: null,
       //#用户-更多信息
