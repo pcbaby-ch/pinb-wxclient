@@ -157,7 +157,31 @@ Page({
   },
   getLocation() {
     //** 集中用户授权，方便后续接口调用体验 */
-    //initAuth();
+    /** 集中用户授权，方便后续接口调用体验 **********************/
+    wx.getSetting({
+      success(res) {
+        if (!res.authSetting['scope.userInfo', 'scope.userLocation', 'scope.address']) {
+          wx.authorize({
+            scope: 'scope.userInfo',
+            success() {
+              console.log("用户基本信息授权成功");
+            }
+          })
+          wx.authorize({
+            scope: 'scope.userLocation',
+            success() {
+              console.log("用户地理位置授权成功");
+            }
+          })
+          wx.authorize({
+            scope: 'scope.address',
+            success() {
+              console.log("用户地址授权成功");
+            }
+          })
+        }
+      }
+    })
 
     let This = this;
     if (this.data.isEdit) {
