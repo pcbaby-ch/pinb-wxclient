@@ -1,6 +1,6 @@
 <view class='order-list'>
-  <view class='goods-list-left-new'>新</view>
-  <view class='main-list-done'>成团</view>
+  <view class='goods-list-new'>新</view>
+  <view class='goods-list-done'>成团</view>
   <view class='goods-list-left'>
     <view class='goods-list-price'>
       <text class='yuanjia'>￥998</text>

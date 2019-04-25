@@ -1,16 +1,23 @@
 //index.js
 //获取应用实例
 const app = getApp()
+const defaultOrder = {
+  refUserImg: 'wx_head2.jpg',
+}
 const defalutProduct = {
-  name: '',
-  img: '',
-  oldPrice: '',
-  price: '',
-  numIndex: 0,
-  endTimeH: '1',
-  endTimeM: '',
-  maxNum: '6',
-  isPullNew: true,
+  groubaTrace: '',
+  refGroubTrace: '',
+  refUserWxUnionid: '',
+  groubaSize: 0,
+  groubaMaxCount: 8,
+  goodsName: '',
+  goodsImg: '',
+  goodsPrice: '',
+  groubaDiscountAmount: '',
+  groubaIsnew: 1,
+  groubaExpiredTime: '',
+  groubaActiveMinute: '',
+  refUsers: [defaultOrder, defaultOrder, defaultOrder, defaultOrder, defaultOrder, defaultOrder],
 }
 Page({
   data: {
@@ -27,13 +34,13 @@ Page({
       groubImg: "",
       groubPhone: "",
       groubAddress: "",
-      isOpen:"",
+      isOpen: "",
     },
     //店铺-商品信息
     productList: [defalutProduct, defalutProduct, defalutProduct],
     editIndex: 0, //当前编辑项
     editItem: '', //当前编辑项 index-type
-    location: {},
+
     img: ''
   },
   //事件处理函数
@@ -52,7 +59,10 @@ Page({
     this.change(Index, e.target.dataset.type, V)
   },
   ch_edit() {
-    this.setData({ isEdit: !this.data.isEdit, editItem: '' })
+    this.setData({
+      isEdit: !this.data.isEdit,
+      editItem: ''
+    })
   },
   save() {
     this.setData({
@@ -64,6 +74,7 @@ Page({
     let productList = this.data.productList;
     console.log(productList)
   },
+
   change(index, type, value) {
     let productList = this.data.productList;
     let groub = this.data.groub;
@@ -95,7 +106,7 @@ Page({
     let Index = e.target.dataset.index,
       V = e.detail.value;
     let productList = this.data.productList;
-    productList[Index].numIndex = V;
+    productList[Index].groubaSize = V;
     console.log(e)
     this.setData({
       productList,
@@ -106,7 +117,7 @@ Page({
     let Index = e.target.dataset.index,
       V = e.detail.value;
     let productList = this.data.productList;
-    productList[Index].isPullNew = V;
+    productList[Index].groubaIsnew = V;
     this.setData({
       productList,
       editItem: ''
@@ -117,36 +128,18 @@ Page({
   },
   getLocation() {
     //** 集中用户授权，方便后续接口调用体验 */
-    wx.getSetting({
-      success(res) {
-        if (!res.authSetting['scope.userInfo', 'scope.userLocation', 'scope.address']) {
-          wx.authorize({
-            scope: 'scope.userInfo',
-            success() {
-              console.log("用户基本信息授权成功");
-            }
-          })
-          wx.authorize({
-            scope: 'scope.userLocation',
-            success() {
-              console.log("用户地理位置授权成功");
-            }
-          })
-          wx.authorize({
-            scope: 'scope.address',
-            success() {
-              console.log("用户地址授权成功");
-            }
-          })
-        }
-      }
-    })
+    initAuth();
+
     let This = this;
-    if (!this.data.location.latitude || this.data.isEdit) {
+    if (this.data.isEdit) {
+      let groub = this.data.groub;
       wx.chooseLocation({
         success(res) {
           console.log(res)
-          This.setData({ location: res })
+          groub.groubAddress = res.address;
+          This.setData({
+            groub
+          })
         },
         fail() {
           This.setData({
@@ -158,15 +151,12 @@ Page({
         }
       })
     } else {
-      wx.openLocation({
-        latitude: this.data.location.latitude,
-        longitude: this.data.location.longitude
-      })
+
     }
   },
 
-  initAuth: function () {
-    //** 集中用户授权，方便后续接口调用体验 */
+  initAuth: function() {
+    /** 集中用户授权，方便后续接口调用体验 **********************/
     wx.getSetting({
       success(res) {
         if (!res.authSetting['scope.userInfo', 'scope.userLocation', 'scope.address']) {
@@ -192,25 +182,35 @@ Page({
       }
     })
   },
-
+  /** 店铺-图片获取 *********************************/
   upImg() {
-    if (!this.data.isEdit) { return }
+    if (!this.data.isEdit) {
+      return
+    }
     let This = this;
+    let groub = this.data.groub;
     wx.chooseImage({
       count: 1,
       sizeType: ['original', 'compressed'],
       sourceType: ['album', 'camera'],
       success(res) {
         // tempFilePath可以作为img标签的src属性显示图片
-        console.log(res)
-        This.setData({ img: res.tempFilePaths[0] })
+        console.log(res);
+        groub.groubImg = res.tempFilePaths[0];
+        This.setData({
+          groub
+        })
       }
     })
   },
+  /** 商品-图片获取 *********************************/
   upImg2(e) {
     const Index = e.target.dataset.index;
     let This = this;
-    This.setData({ editIndex: Index, editItem: '' })
+    This.setData({
+      editIndex: Index,
+      editItem: ''
+    })
     wx.chooseImage({
       count: 1,
       sizeType: ['original', 'compressed'],
@@ -219,14 +219,14 @@ Page({
         // tempFilePath可以作为img标签的src属性显示图片
         console.log(res)
         let productList = This.data.productList;
-        productList[Index].img = res.tempFilePaths[0];
+        productList[Index].goodsImg = res.tempFilePaths[0];
         This.setData({
           productList,
         })
       }
     })
   },
-  onLoad: function () {
+  onLoad: function() {
     if (app.globalData.userInfo) {
       this.setData({
         userInfo: app.globalData.userInfo,
@@ -254,7 +254,7 @@ Page({
       })
     }
   },
-  getUserInfo: function (e) {
+  getUserInfo: function(e) {
     console.log(e)
     app.globalData.userInfo = e.detail.userInfo
     this.setData({
@@ -267,56 +267,56 @@ Page({
   /**
    * Lifecycle function--Called when page load
    */
-  onLoad: function (options) {
+  onLoad: function(options) {
 
   },
 
   /**
    * Lifecycle function--Called when page is initially rendered
    */
-  onReady: function () {
+  onReady: function() {
 
   },
 
   /**
    * Lifecycle function--Called when page show
    */
-  onShow: function () {
+  onShow: function() {
 
   },
 
   /**
    * Lifecycle function--Called when page hide
    */
-  onHide: function () {
+  onHide: function() {
 
   },
 
   /**
    * Lifecycle function--Called when page unload
    */
-  onUnload: function () {
+  onUnload: function() {
 
   },
 
   /**
    * Page event handler function--Called when user drop down
    */
-  onPullDownRefresh: function () {
+  onPullDownRefresh: function() {
 
   },
 
   /**
    * Called when page reach bottom
    */
-  onReachBottom: function () {
+  onReachBottom: function() {
 
   },
 
   /**
    * Called when user click on the top right corner to share
    */
-  onShareAppMessage: function () {
+  onShareAppMessage: function() {
 
   }
 })

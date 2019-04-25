@@ -1,43 +1,41 @@
-<view wx:for='{{productList}}' wx:key='{{index}}'>
+<view wx:for='{{productList}}' wx:key='{{index}}' class='{{!isEdit?"opacityshow":""}}'>
   <view class='goods-list {{editIndex==index?"goods-list-error":""}}'>
-    <view class='goods-list-left-new'>新</view>
-    <view class='main-list-done'>成团</view>
+    <view wx:if="{{item.groubaIsnew}}" class='goods-list-new'>新</view>
+    <view wx:if="{{false}}" class='goods-list-done'>成团</view>
+    <!-- 活动商品-左侧 -->
     <view class='goods-list-left'>
-
-      <image class='goodsImg' src='{{item.img}}' data-index='{{index}}' mode='aspectFill'></image>
+      <view class='goods-list-price'>
+        <text class='yuanjia'>￥{{item.goodsPrice||'??'}}</text>
+        <!-- <text class='zhekou'>￥288</text> -->
+      </view>
+      <image class='goodsImg' src='{{item.goodsImg}}' data-index='{{index}}' mode='aspectFill'></image>
 
       <view class='goodsName'>
-        <view data-type='name' data-index='{{index}}' class='{{item.name?"":""}}' wx:if='{{editItem!=index+"-name"}}'>{{item.name||'点击填写商品名称'}}</view>
+        <view data-type='name' data-index='{{index}}' class='{{item.name?"":""}}' wx:if='{{editItem!=index+"-name"}}'>{{item.name||'??商品名称??'}}</view>
 
       </view>
     </view>
+    <!-- 活动商品-右侧 -->
     <view class='goods-list-right'>
       <view class='main-list-right-top'>
         <image src='../img/team.png'></image>
         <view class='main-list-num'>
-          <view data-index='{{index}}' value="{{item.numIndex}}" range="{{[6,8,9]}}">
-            {{[6,8,9][item.numIndex]+'人团'}}
+          <view data-index='{{index}}'>
+            {{[6,8,9][item.groubaSize]?[6,8,9][item.groubaSize]+'人团':'?人团'}}
           </view>
         </view>
-        <view class='main-list-share'>开团立省100元</view>
+        <view class='main-list-share'>开团立省{{item.groubaDiscountAmount||'??'}}元</view>
       </view>
       <view class='main-list-endTime {{item.endTimeH || item.endTimeM || editItem==index+"-endTime"?"":""}}' style='padding:6px 0;'>
         <image src='../img/time-circle2.png' data-type='endTime' data-index='{{index}}'></image>
         <view wx:if='{{editItem!=index+"-endTime"}}' data-type='endTime' data-index='{{index}}'>
-          {{item.endTimeH||item.endTimeM?(item.endTimeH?item.endTimeH+'时':'')+(item.endTimeM?item.endTimeM+'分':'')+'后结束':'设置结束时间'}}
+          {{item.endTimeH||item.endTimeM?(item.endTimeH?item.endTimeH+'时':'')+(item.endTimeM?item.endTimeM+'分':'')+'后结束':'??时??分后结束'}}
         </view>
-        
+
       </view>
+      <!-- 活动商品-用户头像 -->
       <view class='main-head-list'>
-        <image src='../img/wx_head1.jpg' mode='aspectFill'></image>
-        <image src='../img/wx_head2.jpg' mode='aspectFill'></image>
-        <image class='slt' src='../img/wx_head3.jpg' mode='aspectFill'></image>
-        <image src='../img/wx_head4.jpeg' mode='aspectFill'></image>
-        <image src='../img/wx_head5.jpg' mode='aspectFill'></image>
-        <image class='slt' src='../img/wx_head7.jpg' mode='aspectFill'></image>
-        <image src='../img/wx_head8.jpg' mode='aspectFill'></image>
-        <image src='../img/wx_head9.jpg' mode='aspectFill'></image>
-        <image src='../img/wx_head10.jpg' mode='aspectFill'></image>
+        <image wx:for='{{[6,8,9][item.groubaSize]}}' wx:key='{{index}}' class='slt' src='../img/wx_head2.jpg' mode='aspectFill'></image>
       </view>
     </view>
   </view>

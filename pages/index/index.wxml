@@ -1,15 +1,15 @@
 <!-- 店铺-head信息 #编辑页面# ############ -->
-<view wx:if='{{isEdit}}' class='top' bindtap='upImg'>
+<view wx:if='{{isEdit}}' class='top {{isEdit?"opacityshow":""}}' bindtap='upImg'>
   <view catchtap='catchtap' data-type='groub.groubName' data-index='' class='{{groub.groubName?"top-groubName":"antScale top-groubName"}}' style='margin-top:-20rpx' wx:if='{{editItem!="-groub.groubName"}}'>{{groub.groubName||'点击填写商铺名称'}}</view>
   <input maxlength='12' class="antEdit" style='width:98%;box-sizing: border-box;margin-top:5rpx' bindinput='bindinput' data-type='groubName' value='{{groub.groubName}}' wx:if='{{editItem=="-groub.groubName"}}' focus='{{editItem=="-groub.groubName"}}' />
-  <image wx:if='{{img}}' src='{{img}}' class='bgImg' mode='aspectFill'></image>
-  <view wx:if='{{img}}' class='top-tag'>
+  <image wx:if='{{groub.groubImg}}' src='{{groub.groubImg}}' class='bgImg' mode='aspectFill'></image>
+  <view wx:if='{{groub.groubImg}}' class='top-tag'>
     <view class='top-tag-i'>老用户开团</view>
     <view class='top-tag-i'>分享用户拼团</view>
     <view class='top-tag-i'>人满成团</view>
   </view>
 
-  <view wx:if='{{!img}}' class='top-main'>
+  <view wx:if='{{!groub.groubImg}}' class='top-main'>
     <view class='antScale'>
       <image class='upImg' src='../img/upImg.png'></image>
       上传店铺图片
@@ -28,29 +28,29 @@
     <view wx:if='{{isEdit}}' class='goods-list {{isEdit?"opacityshow":""}} {{editIndex==index?"goods-list-error":""}}'>
       <view class='goods-list-left'>
         <view class='goods-list-price'>
-          <input maxlength='4' type='number' class='antEdit' style='width:90rpx;' bindinput='bindinput' data-type='oldPrice' data-index='{{index}}' value='{{item.oldPrice}}' wx:if='{{editItem==index+"-oldPrice"}}' focus='{{editItem==index+"-oldPrice"}}' placeholder="请输入"
+          <input maxlength='4' type='number' class='antEdit' style='width:90rpx;' bindinput='bindinput' data-type='goodsPrice' data-index='{{index}}' value='{{item.goodsPrice}}' wx:if='{{editItem==index+"-goodsPrice"}}' focus='{{editItem==index+"-goodsPrice"}}' placeholder="请输入"
           />
-          <view catchtap='catchtap' data-type='oldPrice' data-index='{{index}}' wx:if='{{editItem!=index+"-oldPrice"}}' class='{{item.oldPrice?"":"antScale"}}'>{{item.oldPrice?"原:"+item.oldPrice:"配置原价"}}</view>
+          <view catchtap='catchtap' data-type='goodsPrice' data-index='{{index}}' wx:if='{{editItem!=index+"-goodsPrice"}}' class='{{item.goodsPrice?"":"antScale"}}'>{{item.goodsPrice?"原:"+item.goodsPrice:"配置原价"}}</view>
           <view> & </view>
-          <input maxlength='4' type='number' class='antEdit' style='width:90rpx;' bindinput='bindinput' data-type='price' data-index='{{index}}' value='{{item.price}}' wx:if='{{editItem==index+"-price"}}' focus='{{editItem==index+"-price"}}' placeholder="请输入" />
-          <view catchtap='catchtap' data-type='price' data-index='{{index}}' wx:if='{{editItem!=index+"-price"}}' class='{{item.price?"":"antScale"}}'>{{item.price?"现:"+item.price:"折扣金额"}}</view>
+          <input maxlength='4' type='number' class='antEdit' style='width:90rpx;' bindinput='bindinput' data-type='groubaDiscountAmount' data-index='{{index}}' value='{{item.groubaDiscountAmount}}' wx:if='{{editItem==index+"-groubaDiscountAmount"}}' focus='{{editItem==index+"-groubaDiscountAmount"}}' placeholder="请输入" />
+          <view catchtap='catchtap' data-type='groubaDiscountAmount' data-index='{{index}}' wx:if='{{editItem!=index+"-groubaDiscountAmount"}}' class='{{item.groubaDiscountAmount?"":"antScale"}}'>{{item.groubaDiscountAmount?"现:"+item.groubaDiscountAmount:"折扣金额"}}</view>
         </view>
-        <image wx:if='{{item.img}}' class='goodsImg' src='{{item.img}}' catchtap='upImg2' data-index='{{index}}' mode='aspectFill'></image>
-        <view wx:if='{{!item.img}}' class='main-list-left-up antScale' catchtap='upImg2' data-index='{{index}}'>
+        <image wx:if='{{item.goodsImg}}' class='goodsImg' src='{{item.goodsImg}}' catchtap='upImg2' data-index='{{index}}' mode='aspectFill'></image>
+        <view wx:if='{{!item.goodsImg}}' class='main-list-left-up antScale' catchtap='upImg2' data-index='{{index}}'>
           <image src='../img/upImg2.png' data-index='{{index}}'></image>
           <view data-index='{{index}}'>上传商品照片</view>
         </view>
         <view class='goodsName'>
-          <view catchtap='catchtap' data-type='name' data-index='{{index}}' class='{{item.name?"":"antScale"}}' wx:if='{{editItem!=index+"-name"}}'>{{item.name||'点击填写商品名称'}}</view>
-          <input maxlength='12' style='width:98%;box-sizing: border-box;' class='antEdit' bindinput='bindinput' data-type='name' data-index='{{index}}' value='{{item.name}}' wx:if='{{editItem==index+"-name"}}' focus='{{editItem==index+"-name"}}' />
+          <view catchtap='catchtap' data-type='goodsName' data-index='{{index}}' class='{{item.goodsName?"":"antScale"}}' wx:if='{{editItem!=index+"-goodsName"}}'>{{item.goodsName||'点击填写商品名称'}}</view>
+          <input maxlength='12' style='width:98%;box-sizing: border-box;' class='antEdit' bindinput='bindinput' data-type='goodsName' data-index='{{index}}' value='{{item.goodsName}}' wx:if='{{editItem==index+"-goodsName"}}' focus='{{editItem==index+"-goodsName"}}' />
         </view>
       </view>
       <view class='goods-list-right'>
         <view class='main-list-right-top'>
           <image src='../img/team.png'></image>
           <view class='main-list-num'>
-            <picker bindchange="set_num" data-index='{{index}}' value="{{item.numIndex}}" range="{{[6,8,9]}}">
-              {{[6,8,9][item.numIndex]?[6,8,9][item.numIndex]+'人团':'设置开团人数'}}
+            <picker bindchange="set_num" data-index='{{index}}' value="{{item.groubaSize}}" range="{{[6,8,9]}}">
+             {{[6,8,9][item.groubaSize]?[6,8,9][item.groubaSize]+'人团':'设置开团人数'}}
             </picker>
           </view>
           
@@ -58,7 +58,7 @@
         <view class='main-list-endTime {{item.endTimeH || item.endTimeM || editItem==index+"-endTime"?"":"antScale"}}' style='padding:6px 0;'>
           <image src='../img/time-circle2.png' catchtap='catchtap' data-type='endTime' data-index='{{index}}'></image>
           <view wx:if='{{editItem!=index+"-endTime"}}' catchtap='catchtap' data-type='endTime' data-index='{{index}}'>
-            {{item.endTimeH||item.endTimeM?(item.endTimeH?item.endTimeH+'时':'')+(item.endTimeM?item.endTimeM+'分':'')+'后结束':'设置结束时间'}}
+            {{item.endTimeH||item.endTimeM?(item.endTimeH?item.endTimeH+'时':'')+(item.endTimeM?item.endTimeM+'分':'')+'后结束':'设置拼团时长'}}
           </view>
           <view wx:if='{{editItem==index+"-endTime"}}'>
             <input maxlength='2' type='number' class='antEdit' style='width:28px;' bindinput='bindinput' data-type='endTimeH' data-index='{{index}}' value='{{item.endTimeH}}' />时
@@ -66,15 +66,15 @@
           </view>
         </view>
         <view class='main-list-laxin'>
-          <view maxlength='4' class='{{item.maxNum?"":"antScale"}}' catchtap='catchtap' data-type='maxNum' data-index='{{index}}' wx:if='{{editItem!=index+"-maxNum"}}'>{{item.maxNum?'至多成团数'+item.maxNum:'设置至多成团数'}}</view>
-          <view wx:if='{{editItem==index+"-maxNum"}}'>
-            至多成团数
-            <input type='number' class='antEdit' style='width:35px;' bindinput='bindinput' data-type='maxNum' data-index='{{index}}' value='{{item.maxNum}}' focus='{{editItem==index+"-maxNum"}}' />
+          <view maxlength='4' class='{{item.groubaMaxCount?"":"antScale"}}' catchtap='catchtap' data-type='groubaMaxCount' data-index='{{index}}' wx:if='{{editItem!=index+"-groubaMaxCount"}}'>{{item.groubaMaxCount?'至多开团数'+item.groubaMaxCount:'设置至多开团数'}}</view>
+          <view wx:if='{{editItem==index+"-groubaMaxCount"}}'>
+            至多开团数
+            <input type='number' class='antEdit' style='width:35px;' bindinput='bindinput' data-type='groubaMaxCount' data-index='{{index}}' value='{{item.groubaMaxCount}}' focus='{{editItem==index+"-groubaMaxCount"}}' />
           </view>
         </view>
         <view class='main-list-laxin'>
           拉新团
-          <switch checked='{{item.isPullNew}}' bindchange='switchChange' data-index='{{index}}' />
+          <switch checked='{{item.groubaIsnew}}' bindchange='switchChange' data-index='{{index}}' />
         </view>
       </view>
     </view>
@@ -92,7 +92,7 @@
 <view class='fixed'>
   <view class='fixed-list' catchtap='ch_edit'>
     <image src='{{isEdit?"../img/eye.png":"../img/edit-square.png"}}'></image>
-    <view>预览</view>
+    <view>{{isEdit?"预览":"编辑"}}</view>
   </view>
   <!-- <view class='fixed-list' catchtap='add'>
       <image src='../img/plus-square.png'></image>

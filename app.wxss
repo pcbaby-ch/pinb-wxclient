@@ -196,7 +196,7 @@
 
 .goods-list-left .goodsImg {
   width: 100%;
-  height: 80%;
+  height: 76%;
   display: block;
 }
 
@@ -209,7 +209,7 @@
   border-top: 2rpx solid #eee;
 }
 
-.goods-list-left-new {
+.goods-list-new {
   position: absolute;
   top: 0px;
   left: 0px;
@@ -226,7 +226,7 @@
   z-index: 2;
 }
 
-.main-list-done {
+.goods-list-done {
   position: absolute;
   bottom: 0px;
   right: 0px;
@@ -260,7 +260,7 @@
   vertical-align: middle;
 }
 
-.main-list-price .yuanjia {
+.goods-list-price .yuanjia {
   text-decoration: line-through;
   color: #777;
   font-size: 28rpx;
@@ -268,10 +268,10 @@
   padding-right: 12rpx;
 }
 
-.main-list-price .zhekou {
+.goods-list-price .zhekou {
   color: #ff5100;
   font-size: 28rpx;
-  font-weight: 800;
+  font-weight: 0;
   font-family: PingFangSC-regular;
 }
 
@@ -281,7 +281,7 @@
   justify-content: center;
   box-sizing: border-box;
   width: 100%;
-  height: 80%;
+  height: 76%;
   border-bottom: none;
   line-height: 40rpx;
   color: rgba(16, 16, 16, 1);
@@ -408,7 +408,7 @@
 }
 
 .main-head-list image.slt {
-  border: 2rpx dashed #ff9800;
+  border: 4rpx dotted #ff9800;
 }
 
 /** 右下角菜单样式 ***********************************/

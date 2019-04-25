@@ -7,7 +7,7 @@
 
   <view bindtap='getLocation'>
     <image src='../img/location2.png'></image>
-    <view bindtap='getLocation'>{{location.address||'选取店铺位置'}}</view>
+    <view bindtap='getLocation'>{{groub.groubAddress||'??店铺位置??'}}</view>
   </view>
 </view>
 <!-- </template> -->
