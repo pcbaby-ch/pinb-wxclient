@@ -327,8 +327,11 @@
 }
 
 .main-list-share {
-  flex: 1;
-  line-height: 60rpx;
+  width:200rpx;
+  position: absolute;
+  top: 5rpx;
+  right: 5rpx;
+  line-height: 55rpx;
   border-radius: 4rpx;
   background-color: rgba(15, 192, 96, 1);
   color: rgba(255, 255, 255, 1);
@@ -413,7 +416,7 @@
 .fixed {
   position: fixed;
   bottom: 20rpx;
-  right: 20rpx;
+  right: 10rpx;
   z-index: 3;
 }
 

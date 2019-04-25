@@ -1,0 +1,13 @@
+<!-- <template name="shopFoot"> -->
+<view class='main-btm'>
+  <button open-type="getPhoneNumber" bindgetphonenumber="getPhoneNumber" class='buttonBlock'>
+    <image src='../img/phone.png'></image>
+    <view style='padding-right:14rpx;'>18516369668</view>
+  </button>
+
+  <view bindtap='getLocation'>
+    <image src='../img/location2.png'></image>
+    <view bindtap='getLocation'>{{location.address||'选取店铺位置'}}</view>
+  </view>
+</view>
+<!-- </template> -->

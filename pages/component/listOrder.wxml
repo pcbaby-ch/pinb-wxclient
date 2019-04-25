@@ -1,0 +1,35 @@
+<view class='order-list'>
+  <view class='goods-list-left-new'>新</view>
+  <view class='main-list-done'>成团</view>
+  <view class='goods-list-left'>
+    <view class='goods-list-price'>
+      <text class='yuanjia'>￥998</text>
+      <text class='zhekou'>￥288</text>
+    </view>
+    <image class='goodsImg' mode='aspectFill' src='../img/goods_food01.jpg'></image>
+
+  </view>
+  <view class='goods-list-right'>
+    <!-- <view class='main-list-right-top'>
+        <image src='../img/team.png'></image>
+        <view class='main-list-num'>99人团</view>
+        <view class='main-list-share'>分享</view>
+      </view> -->
+    <view class='main-list-endTime'>
+      <image src='../img/time-circle2.png' mode='aspectFill'></image>
+      <view>距结束55:34:12</view>
+    </view>
+    <view class='main-head-list'>
+      <image src='../img/wx_head1.jpg' mode='aspectFill'></image>
+      <image src='../img/wx_head2.jpg' mode='aspectFill'></image>
+      <image class='slt' src='../img/wx_head3.jpg' mode='aspectFill'></image>
+      <image src='../img/wx_head4.jpeg' mode='aspectFill'></image>
+      <image src='../img/wx_head5.jpg' mode='aspectFill'></image>
+      <image class='slt' src='../img/wx_head7.jpg' mode='aspectFill'></image>
+      <image src='../img/wx_head8.jpg' mode='aspectFill'></image>
+      <image src='../img/wx_head9.jpg' mode='aspectFill'></image>
+      <image src='../img/wx_head10.jpg' mode='aspectFill'></image>
+    </view>
+  </view>
+</view>
+<!-- <include src="shopFoot.wxml" /> -->
