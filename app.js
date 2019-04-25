@@ -1,20 +1,20 @@
 //app.js
+var util=require("/utils/util.js");
 App({
     onLaunch: function() {
-
-
       // 登录
       wx.login({
         success: res => {
           console.log("#登陆>>>")
-
           console.log(res)
           // 发送 res.code 到后台换取 openId, sessionKey, unionId
+          util.reqPost( );
         }
       })
       // 获取用户信息
       wx.getSetting({
         success: res => {
+          console.log("#获取用户信息>>>")
           console.log(res)
           if (res.authSetting['scope.userInfo', 'scope.userLocation', 'scope.address']) {
             // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
@@ -34,6 +34,7 @@ App({
         }
       })
     },
+    
     globalData: {
       //#api服务host地址
       apiHost: "https://apitest.pinb.vip",

@@ -43,8 +43,10 @@ Page({
 
     img: ''
   },
+  
   //事件处理函数
   catchtap(e) {
+    app.gogo();
     console.log(e)
     let Index = e.target.dataset.index;
     this.setData({
