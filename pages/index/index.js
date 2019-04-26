@@ -46,8 +46,30 @@ Page({
 
   //事件处理函数
   catchtap(e) {
-    console.log("#事件捕捉>>>")
-    console.log(e)
+    console.log("#事件捕捉:" + e)
+    // 获取用户信息
+    wx.getSetting({
+      success: res => {
+        console.log("#获取用户信息>>>")
+        console.log(res)
+        if (res.authSetting['scope.userInfo', 'scope.userLocation', 'scope.address']) {
+          // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
+          wx.getUserInfo({
+            success: res => {
+              // 可以将 res 发送给后台解码出 unionId
+              this.globalData.userInfo = res.userInfo
+
+              // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
+              // 所以此处加入 callback 以防止这种情况
+              if (this.userInfoReadyCallback) {
+                this.userInfoReadyCallback(res)
+              }
+            }
+          })
+        }
+      }
+    })
+
     let Index = e.target.dataset.index;
     this.setData({
       editItem: Index + '-' + e.target.dataset.type,
@@ -88,7 +110,7 @@ Page({
       })
       console.log(groub);
     } else {
-      console.log("#店铺-商品信息");
+      console.log("#店铺-商品信息>>>");
       productList[index][type] = value;
       this.setData({
         productList
@@ -109,7 +131,7 @@ Page({
       V = e.detail.value;
     let productList = this.data.productList;
     productList[Index].groubaSize = V;
-    console.log(e)
+    console.log("#下拉数字选择:" + e)
     this.setData({
       productList,
       editItem: ''
@@ -126,57 +148,19 @@ Page({
     })
   },
   getPhoneNumber(e) {
-    console.log(e)
+    console.log("#获取手机号:" + JSON.stringify(res))
   },
-  initAuth: function() {
-    /** 集中用户授权，方便后续接口调用体验 **********************/
-    wx.getSetting({
-      success(res) {
-        if (!res.authSetting['scope.userInfo', 'scope.userLocation', 'scope.address']) {
-          wx.authorize({
-            scope: 'scope.userInfo',
-            success() {
-              console.log("用户基本信息授权成功");
-            }
-          })
-          wx.authorize({
-            scope: 'scope.userLocation',
-            success() {
-              console.log("用户地理位置授权成功");
-            }
-          })
-          wx.authorize({
-            scope: 'scope.address',
-            success() {
-              console.log("用户地址授权成功");
-            }
-          })
-        }
-      }
-    })
-  },
-  getLocation() {
+  
+  getLocation(res) {
+    console.log("#获取用户地址:" + JSON.stringify(res))
     //** 集中用户授权，方便后续接口调用体验 */
-    /** 集中用户授权，方便后续接口调用体验 **********************/
     wx.getSetting({
       success(res) {
-        if (!res.authSetting['scope.userInfo', 'scope.userLocation', 'scope.address']) {
-          wx.authorize({
-            scope: 'scope.userInfo',
-            success() {
-              console.log("用户基本信息授权成功");
-            }
-          })
-          wx.authorize({
-            scope: 'scope.userLocation',
-            success() {
-              console.log("用户地理位置授权成功");
-            }
-          })
+        if (!res.authSetting['scope.userInfo']) {
           wx.authorize({
             scope: 'scope.address',
             success() {
-              console.log("用户地址授权成功");
+              console.log("#用户地址授权成功");
             }
           })
         }
@@ -188,7 +172,7 @@ Page({
       let groub = this.data.groub;
       wx.chooseLocation({
         success(res) {
-          console.log(res)
+          console.log("#地址选择成功:" + JSON.stringify(res))
           groub.groubAddress = res.address;
           This.setData({
             groub
@@ -197,7 +181,7 @@ Page({
         fail() {
           This.setData({
             usToast: {
-              text: '获取微信信息失败',
+              text: '地址获取失败',
               time: 3
             }
           })

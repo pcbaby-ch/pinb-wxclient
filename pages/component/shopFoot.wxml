@@ -5,9 +5,11 @@
     <view style='padding-right:14rpx;'>18516369668</view>
   </button>
 
+<button open-type="getUserInfo" bindgetuserinfo='getLocation' class='buttonBlock'>
   <view bindtap='getLocation' class='{{groub.groubAddress?"":"antScale"}}'>
     <image src='../img/location2.png'></image>
     <view bindtap='getLocation'>{{groub.groubAddress||'点击选取店铺位置'}}</view>
-  </view>
+    </view>
+  </button>
 </view>
 <!-- </template> -->
