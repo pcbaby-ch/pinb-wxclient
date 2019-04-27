@@ -1,6 +1,7 @@
 //index.js
 //获取应用实例
-const app = getApp()
+var app = getApp()
+let util = require("../../utils/util.js")
 const defaultOrder = {
   refUserImg: 'wx_head2.jpg',
 }
@@ -21,9 +22,6 @@ const defalutProduct = {
 }
 Page({
   data: {
-    userInfo: {},
-    hasUserInfo: false,
-    canIUse: wx.canIUse('button.open-type.getUserInfo'),
 
     isEdit: true,
     //店铺-基础信息
@@ -46,29 +44,7 @@ Page({
 
   //事件处理函数
   catchtap(e) {
-    console.log("#事件捕捉:" + e)
-    // 获取用户信息
-    wx.getSetting({
-      success: res => {
-        console.log("#获取用户信息>>>")
-        console.log(res)
-        if (res.authSetting['scope.userInfo', 'scope.userLocation', 'scope.address']) {
-          // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
-          wx.getUserInfo({
-            success: res => {
-              // 可以将 res 发送给后台解码出 unionId
-              this.globalData.userInfo = res.userInfo
-
-              // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
-              // 所以此处加入 callback 以防止这种情况
-              if (this.userInfoReadyCallback) {
-                this.userInfoReadyCallback(res)
-              }
-            }
-          })
-        }
-      }
-    })
+    util.log("#事件捕捉:" + JSON.stringify(e))
 
     let Index = e.target.dataset.index;
     this.setData({
@@ -79,7 +55,7 @@ Page({
   bindinput(e) {
     let Index = e.target.dataset.index,
       V = e.detail.value;
-    console.log(Index, V)
+    util.log(Index, V)
     this.change(Index, e.target.dataset.type, V)
   },
   ch_edit() {
@@ -96,26 +72,26 @@ Page({
       }
     })
     let productList = this.data.productList;
-    console.log(productList)
+    util.log(productList)
   },
 
   change(index, type, value) {
     let productList = this.data.productList;
     let groub = this.data.groub;
     if (!productList[index]) {
-      console.log("#店铺-基础信息>>>");
+      util.log("#店铺-基础信息>>>");
       groub[type] = value;
       this.setData({
         groub
       })
-      console.log(groub);
+      util.log(groub);
     } else {
-      console.log("#店铺-商品信息>>>");
+      util.log("#店铺-商品信息>>>");
       productList[index][type] = value;
       this.setData({
         productList
       })
-      console.log(productList)
+      util.log(productList)
     }
 
   },
@@ -131,7 +107,7 @@ Page({
       V = e.detail.value;
     let productList = this.data.productList;
     productList[Index].groubaSize = V;
-    console.log("#下拉数字选择:" + e)
+    util.log("#下拉数字选择:" + e)
     this.setData({
       productList,
       editItem: ''
@@ -148,23 +124,46 @@ Page({
     })
   },
   getPhoneNumber(e) {
-    console.log("#获取手机号:" + JSON.stringify(res))
+    util.log("#获取手机号:" + JSON.stringify(res))
   },
-  
+
   getLocation(res) {
-    console.log("#获取用户地址:" + JSON.stringify(res))
+    util.log(util.apiHost+"#获取用户地址:" + JSON.stringify(res))
     //** 集中用户授权，方便后续接口调用体验 */
-    wx.getSetting({
-      success(res) {
-        if (!res.authSetting['scope.userInfo']) {
-          wx.authorize({
-            scope: 'scope.address',
-            success() {
-              console.log("#用户地址授权成功");
-            }
-          })
+    if (wx.canIUse('button.open-type.getUserInfo')) {
+      util.log("#button模式授权成功，并获取用户信息" + JSON.stringify(res.detail.userInfo))
+      util.setCache(util.cacheKey.userinfo, res.detail.userInfo)
+      util.log("#userinfo:" + JSON.stringify(util.getCache(util.cacheKey.userinfo)))
+    } else {
+      util.log("#(旧)自动弹出模式授权，并获取用户信息")
+      wx.getSetting({
+        success(res) {
+          if (!res.authSetting['scope.userInfo']) {
+            wx.authorize({
+              scope: 'scope.userInfo',
+              success() {
+                util.log("#(旧)自动弹出模式授权-成功-开始获取用户信息");
+                wx.getUserInfo({
+                  success: res => {
+                    util.setCache(util.cacheKey.userinfo, res.userInfo)
+                    util.log("#userinfo:" + JSON.stringify(util.getCache(util.cacheKey.userinfo)))
+                  }
+                })
+              }
+            })
+          }
         }
-      }
+      })
+    }
+    wx.getSystemInfo({
+      success: function(res) {
+        util.log("#获取用户设备信息成功:" + JSON.stringify(res))
+        util.putCache(util.cacheKey.userinfo, "model", res.model);
+        util.putCache(util.cacheKey.userinfo, "system", res.system);
+        util.putCache(util.cacheKey.userinfo, "brand", res.brand);
+        util.putCache(util.cacheKey.userinfo, "platform", res.platform);
+        util.log("#userinfo:" + JSON.stringify(util.getCache(util.cacheKey.userinfo)))
+      },
     })
 
     let This = this;
@@ -172,8 +171,10 @@ Page({
       let groub = this.data.groub;
       wx.chooseLocation({
         success(res) {
-          console.log("#地址选择成功:" + JSON.stringify(res))
+          util.log("#地址选择成功:" + JSON.stringify(res))
           groub.groubAddress = res.address;
+          util.putCache(util.cacheKey.userinfo, "address", res.address)
+          util.log("#userinfo:" + JSON.stringify(util.getCache(util.cacheKey.userinfo)))
           This.setData({
             groub
           })
@@ -206,7 +207,7 @@ Page({
       sourceType: ['album', 'camera'],
       success(res) {
         // tempFilePath可以作为img标签的src属性显示图片
-        console.log(res);
+        util.log(res);
         groub.groubImg = res.tempFilePaths[0];
         This.setData({
           groub
@@ -228,7 +229,7 @@ Page({
       sourceType: ['album', 'camera'],
       success(res) {
         // tempFilePath可以作为img标签的src属性显示图片
-        console.log(res)
+        util.log(res)
         let productList = This.data.productList;
         productList[Index].goodsImg = res.tempFilePaths[0];
         This.setData({
@@ -237,45 +238,14 @@ Page({
       }
     })
   },
-  getUserInfo: function(e) {
-    console.log(e)
-    app.globalData.userInfo = e.detail.userInfo
-    this.setData({
-      userInfo: e.detail.userInfo,
-      hasUserInfo: true
-    })
-  },
+
+
   /**
    * Lifecycle function--Called when page load
    */
   onLoad: function() {
     wx.showNavigationBarLoading()
-    if (app.globalData.userInfo) {
-      this.setData({
-        userInfo: app.globalData.userInfo,
-        hasUserInfo: true
-      })
-    } else if (this.data.canIUse) {
-      // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
-      // 所以此处加入 callback 以防止这种情况
-      app.userInfoReadyCallback = res => {
-        this.setData({
-          userInfo: res.userInfo,
-          hasUserInfo: true
-        })
-      }
-    } else {
-      // 在没有 open-type=getUserInfo 版本的兼容处理
-      wx.getUserInfo({
-        success: res => {
-          app.globalData.userInfo = res.userInfo
-          this.setData({
-            userInfo: res.userInfo,
-            hasUserInfo: true
-          })
-        }
-      })
-    }
+
   },
 
   /**
