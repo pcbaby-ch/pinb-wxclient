@@ -2,6 +2,7 @@
 //获取应用实例
 var app = getApp()
 let util = require("../../utils/util.js")
+var md5 = require('../../utils/md5.js')
 const defaultOrder = {
   refUserImg: 'wx_head2.jpg',
 }
@@ -128,11 +129,13 @@ Page({
   },
 
   getLocation(res) {
-    util.log(util.apiHost+"#获取用户地址:" + JSON.stringify(res))
+    util.log(util.apiHost + "#获取用户地址:" + JSON.stringify(res))
     //** 集中用户授权，方便后续接口调用体验 */
     if (wx.canIUse('button.open-type.getUserInfo')) {
       util.log("#button模式授权成功，并获取用户信息" + JSON.stringify(res.detail.userInfo))
-      util.setCache(util.cacheKey.userinfo, res.detail.userInfo)
+      util.putCache(util.cacheKey.userinfo, null, res.detail.userInfo)
+      util.putCache(util.cacheKey.userinfo, "encryptedData", res.detail.encryptedData)
+      util.putCache(util.cacheKey.userinfo, "iv", res.detail.iv)
       util.log("#userinfo:" + JSON.stringify(util.getCache(util.cacheKey.userinfo)))
     } else {
       util.log("#(旧)自动弹出模式授权，并获取用户信息")
@@ -145,7 +148,7 @@ Page({
                 util.log("#(旧)自动弹出模式授权-成功-开始获取用户信息");
                 wx.getUserInfo({
                   success: res => {
-                    util.setCache(util.cacheKey.userinfo, res.userInfo)
+                    util.putCache(util.cacheKey.userinfo, null, res.userInfo)
                     util.log("#userinfo:" + JSON.stringify(util.getCache(util.cacheKey.userinfo)))
                   }
                 })
@@ -155,16 +158,6 @@ Page({
         }
       })
     }
-    wx.getSystemInfo({
-      success: function(res) {
-        util.log("#获取用户设备信息成功:" + JSON.stringify(res))
-        util.putCache(util.cacheKey.userinfo, "model", res.model);
-        util.putCache(util.cacheKey.userinfo, "system", res.system);
-        util.putCache(util.cacheKey.userinfo, "brand", res.brand);
-        util.putCache(util.cacheKey.userinfo, "platform", res.platform);
-        util.log("#userinfo:" + JSON.stringify(util.getCache(util.cacheKey.userinfo)))
-      },
-    })
 
     let This = this;
     if (this.data.isEdit) {
@@ -178,6 +171,8 @@ Page({
           This.setData({
             groub
           })
+          //util.log("#请求后台服务，解析encryptedData")
+
         },
         fail() {
           This.setData({
@@ -201,13 +196,38 @@ Page({
     }
     let This = this;
     let groub = this.data.groub;
+    let imageMd5 = null;
     wx.chooseImage({
       count: 1,
       sizeType: ['original', 'compressed'],
       sourceType: ['album', 'camera'],
       success(res) {
+        //#计算文件md5
+        wx.getFileSystemManager().readFile({
+          filePath: res.tempFilePaths[0], //选择图片返回的相对路径
+          // encoding: 'binary', //编码格式
+          success: res => {
+            //成功的回调
+            var spark = new md5.ArrayBuffer();
+            spark.append(res.data);
+            imageMd5 = spark.end(false);
+            util.log("#图片md5:" + imageMd5)
+          }
+        })
         // tempFilePath可以作为img标签的src属性显示图片
-        util.log(res);
+        util.log("#店铺图片准备上传:" + JSON.stringify(res));
+        wx.uploadFile({
+          url: util.apiHost + '/fileUpload',
+          filePath: res.tempFilePaths[0],
+          name: 'file',
+          formData: {
+            fileMd5: imageMd5
+          },
+          success(res) {
+            const data = res.data
+            util.log("#文件上传完成" + JSON.stringify(res))
+          }
+        })
         groub.groubImg = res.tempFilePaths[0];
         This.setData({
           groub
@@ -245,6 +265,18 @@ Page({
    */
   onLoad: function() {
     wx.showNavigationBarLoading()
+    let loginTips = util.getCache(util.cacheKey.loginTips)
+    if (loginTips) {
+      //#未入驻，则提示用户完善店铺商品信息
+      this.setData({
+        usToast: loginTips
+      })
+    } else {
+      //#已入驻，直接展示店铺商品信息
+      this.setData({
+        isEdit: false,
+      })
+    }
 
   },
 

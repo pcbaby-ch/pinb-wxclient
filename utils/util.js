@@ -54,8 +54,6 @@ function requestLoading(url, params, message, successCallback, failCallback) {
     header: reqHeader,
     method: reqMethod,
     success: function(res) {
-
-
       if (res.statusCode == 200) {
         successCallback(res.data)
       } else {
@@ -76,12 +74,34 @@ function requestLoading(url, params, message, successCallback, failCallback) {
   })
 }
 //全局-缓存操作工具类 ###########################################################
-function getCache(key_) {
-  return wx.getStorageSync(key_);
-}
 
-function getCacheAsyn(key_) {
-  return wx.getStorage(key_);
+/** 提取缓存or缓存对象属性值(同步) */
+function getCache(key_, prop) {
+  let cache = wx.getStorageSync(key_)
+  if (prop && Object.prototype.toString.call(prop) === '[object String]') {
+    if (Object.prototype.toString.call(cache) === '[object Object]') {
+      // log("#缓存是对象，提取属性值")
+      return cache[prop]
+    } else {
+      log("######error缓存不是对象，不能提取属性值")
+    }
+  } else {
+    return cache;
+  }
+}
+/** 提取缓存or缓存对象属性值(异步) */
+function getCacheAsyn(key_, prop) {
+  let cache = wx.getStorageSync(key_)
+  if (prop && Object.prototype.toString.call(prop) === '[object String]') {
+    if (Object.prototype.toString.call(cache) === '[object Object]') {
+      // log("#缓存是对象，提取属性值")
+      return cache[prop]
+    } else {
+      log("######error缓存不是对象，不能提取属性值")
+    }
+  } else {
+    return cache;
+  }
 }
 
 function setCache(key_, value) {
@@ -92,54 +112,73 @@ function setCacheAsyn(key_, value) {
   wx.setStorage(key_, value);
 }
 /**
- * 往已缓存对象加属性；往已缓存数组加对象
- * 如果key_缓存对应是null，则初始化为prop:value的对象
+ * 往对象类型缓存加属性；往数组类型缓存加元素{单值、对象、数组}
+ * 如果key_下的旧缓存是不存在，则初始化
  */
 function putCache(key_, prop, value) {
-  let cache = getCache(key_)
+  let cache = getCache(key_, null)
   let cacheArray = [];
+  if (prop && Object.prototype.toString.call(prop) != '[object String]') {
+    log("###error 缓存属性必须是string类型")
+    throw "#error缓存属性必须是string类型"
+  }
   if (!cache) {
-    log(">>>缓存put-初始化")
-    cache = {}
-    cache[prop] = value
-    setCache(key_, cache)
+    log(">>>缓存put-初始化缓存")
+    if (prop) {
+      cache = {}
+      cache[prop] = value
+      setCache(key_, cache)
+      return
+    } else {
+      if (Object.prototype.toString.call(value) === '[object Object]') {
+        putObject2Cache(key_, value)
+        return
+      } else {
+        log("###error没有指定prop时，不能push一个单值或数组到缓存对象中")
+        throw "#error没有指定prop时，不能push一个单值或数组到缓存对象中"
+      }
+    }
   }
   if (Object.prototype.toString.call(cache) === '[object Array]') {
-    log(">>>缓存put-数组添加对象")
+    log(">>>缓存put-数组缓存-添加元素{单值、对象、数组}")
     cacheArray = cache;
     cacheArray.push(value)
     setCache(key_, cacheArray)
+  } else if (Object.prototype.toString.call(cache) === '[object Object]') {
+    if (prop) { //#如果prop不为空
+      log(">>>缓存put-对象缓存-添加属性")
+      cache[prop] = value
+      setCache(key_, cache)
+    } else { //#如果prop为空，则将待push的对象的所有属性全部push到缓存对象中
+      log(">>>缓存put-对象缓存-开始合并对象到缓存对象中")
+      putObject2Cache(key_, value)
+    }
   } else {
-    log(">>>缓存put-对象添加属性")
-    cache[prop] = value
-    setCache(key_, cache)
+    log("###error单值缓存无法添加元素")
+    throw "#error缓存put-单值缓存无法添加元素"
   }
 
 }
-/**
- * 往已缓存对象加属性；往已缓存数组加对象（异步）
- * 如果key_缓存对应是null，则初始化为prop:value的对象
- */
-function putCacheAsyn(key_, prop, value) {
-  let cache = getCacheAsyn(key_)
-  let cacheArray = [];
+/** 将待push的对象value的所有属性全部push到缓存对象cache中 */
+function putObject2Cache(key_, value) {
+  let cache = getCache(key_)
   if (!cache) {
-    log(">>>缓存put-初始化")
     cache = {}
-    cache[prop] = value
-    setCacheAsyn(key_, cache)
   }
-  if (Object.prototype.toString.call(cache) === '[object Array]') {
-    log(">>>缓存put-数组添加对象")
-    cacheArray = cache;
-    cacheArray.push(value)
-    setCacheAsyn(key_, cacheArray)
+  if (Object.prototype.toString.call(value) === '[object Object]') {
+    for (var p in value) {
+      if (typeof(value[p]) == "function") {
+        log("###error 对象中包含方法，不能push操作")
+        throw "#error对象中包含方法，不能push操作"
+      } else {
+        cache[p] = value[p]; //#缓存中如果以及存在属性，则替换
+      }
+    }
+    setCache(key_, cache)
   } else {
-    log(">>>缓存put-对象添加属性")
-    cache[prop] = value
-    setCacheAsyn(key_, cache)
+    log("###error没有指定prop时，不能push一个单值或数组到缓存对象中")
+    throw "#error没有指定prop时，不能push一个单值或数组到缓存对象中"
   }
-
 }
 /** 统一日志，如果是产线即关闭日志 */
 function log(logText) {
@@ -172,6 +211,9 @@ const apiHost = "http://127.0.0.1:9660/pinb-service"
 
 const cacheKey = {
   userinfo: 'userinfo',
+  loginTips: "loginTips",
+  groubinfo: "groubinfo",
+  goodsinfo: 'goodsinfo',
 }
 
 
@@ -180,11 +222,7 @@ module.exports = {
   reqPost: reqPost,
   reqGet: reqGet,
   getCache: getCache,
-  getCacheAsyn: getCacheAsyn,
-  setCache: setCache,
-  setCacheAsyn: setCacheAsyn,
   putCache: putCache,
-  putCacheAsyn: putCacheAsyn,
   log: log,
 
 
