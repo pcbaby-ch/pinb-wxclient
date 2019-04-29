@@ -1,7 +1,7 @@
 <view class='top {{!isEdit?"opacityshow":""}}' bindtap='upImg'>
   <view data-type='groub.groubName' data-index='' class='{{groub.groubName?"top-groubName":" top-groubName"}}' style='margin-top:-20rpx' wx:if='{{editItem!="-groub.groubName"}}'>{{groub.groubName||'??商铺名称??'}}</view>
 
-  <image src='{{groub.groubImg}}' class='bgImg' mode='aspectFill'></image>
+  <image src='{{groub.groubImgView}}' class='bgImg' mode='aspectFill'></image>
   <view class='top-tag'>
     <view class='top-tag-i'>老用户开团</view>
     <view class='top-tag-i'>分享用户拼团</view>

@@ -1,3 +1,6 @@
+var md5 = require('md5.js')
+var Promise = require('bluebird.min.js')
+
 //全局-时间工具类 ###########################################################
 /** 时间工具类 */
 const formatTime = date => {
@@ -23,6 +26,21 @@ function reqPost(url, params, success, fail) {
 /** 不带任何请求报文体的get网络请求 */
 function reqGet(url, success, fail) {
   requestLoading(url, null, "", success, fail)
+}
+/** 解析服务端响应报文，并做业务错误提示 */
+function respParse(resp, This) {
+  log("#开始解析响应报文:" + resp)
+  if (!resp.retCode) {
+    resp = JSON.parse(resp)
+  }
+  if (resp.retCode != '10000') {
+    This.setData({
+      usToast: {
+        text: resp.retMsg,
+        time: 3
+      }
+    })
+  }
 }
 
 function requestLoading(url, params, message, successCallback, failCallback) {
@@ -71,6 +89,39 @@ function requestLoading(url, params, message, successCallback, failCallback) {
         wx.hideLoading()
       }
     },
+  })
+}
+/** 图片上传 (resImage是chooseImage组件的资源)
+ * return {图片文件名称}}}
+ */
+function imageUpload(resImage, This) {
+  //#计算文件md5
+  let imageMd5 = "'图片md5缺省值'"
+  wx.getFileSystemManager().readFile({
+    filePath: resImage.tempFilePaths[0], //选择图片返回的相对路径
+    // encoding: 'binary', //编码格式
+    success: res => {
+      //成功的回调
+      var spark = new md5.ArrayBuffer();
+      spark.append(res.data);
+      imageMd5 = spark.end(false);
+      log("#图片md5:" + imageMd5)
+      log("#图片准备上传,#resImage" + JSON.stringify(resImage) + "#res" + JSON.stringify(res));
+      wx.uploadFile({
+        url: apiHost + '/fileUpload',
+        filePath: resImage.tempFilePaths[0],
+        name: 'file',
+        formData: {
+          fileMd5: imageMd5
+        },
+        success(res) {
+          //#未入驻，则提示用户完善店铺商品信息
+          respParse(res.data, This)
+          log("#图片上传完成,#res" + JSON.stringify(res) + "#imageMd5:" + imageMd5)
+          return imageMd5
+        }
+      })
+    }
   })
 }
 //全局-缓存操作工具类 ###########################################################
@@ -204,6 +255,22 @@ function reqBodyWrap(url, reqBody) {
   }
   return reqBody
 }
+//其它-工具类 ##############################################################
+function wxPromise(fn) {
+  return function(obj = {}) {
+    return new Promise((resole, reject) => {
+      obj.success = function(res) {
+        resole(res)
+      }
+
+      obj.fail = function(res) {
+        reject(res)
+      }
+
+      fn(obj)
+    })
+  }
+}
 
 
 //全局-常量、变量 ###########################################################
@@ -217,15 +284,21 @@ const cacheKey = {
 }
 
 
+
 module.exports = {
   formatTime: formatTime,
   reqPost: reqPost,
   reqGet: reqGet,
+  respParse: respParse,
+  imageUpload: imageUpload,
+
   getCache: getCache,
   putCache: putCache,
+
   log: log,
 
 
+  wxPromise: wxPromise,
 
   /** api服务host地址 https://apitest.pinb.vip/pinb-service */
   apiHost: apiHost,

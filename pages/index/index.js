@@ -2,7 +2,6 @@
 //获取应用实例
 var app = getApp()
 let util = require("../../utils/util.js")
-var md5 = require('../../utils/md5.js')
 const defaultOrder = {
   refUserImg: 'wx_head2.jpg',
 }
@@ -196,39 +195,16 @@ Page({
     }
     let This = this;
     let groub = this.data.groub;
-    let imageMd5 = null;
+    var imageMd5 = "'文件md5缺省值'";
     wx.chooseImage({
       count: 1,
       sizeType: ['original', 'compressed'],
       sourceType: ['album', 'camera'],
-      success(res) {
-        //#计算文件md5
-        wx.getFileSystemManager().readFile({
-          filePath: res.tempFilePaths[0], //选择图片返回的相对路径
-          // encoding: 'binary', //编码格式
-          success: res => {
-            //成功的回调
-            var spark = new md5.ArrayBuffer();
-            spark.append(res.data);
-            imageMd5 = spark.end(false);
-            util.log("#图片md5:" + imageMd5)
-          }
-        })
-        // tempFilePath可以作为img标签的src属性显示图片
-        util.log("#店铺图片准备上传:" + JSON.stringify(res));
-        wx.uploadFile({
-          url: util.apiHost + '/fileUpload',
-          filePath: res.tempFilePaths[0],
-          name: 'file',
-          formData: {
-            fileMd5: imageMd5
-          },
-          success(res) {
-            const data = res.data
-            util.log("#文件上传完成" + JSON.stringify(res))
-          }
-        })
-        groub.groubImg = res.tempFilePaths[0];
+      success(resImage) {
+        imageMd5 = util.imageUpload(resImage, This)
+        groub.groubImgView = resImage.tempFilePaths[0]
+        groub.groubImg = imageMd5;
+        util.log("#groub:" + JSON.stringify(groub))
         This.setData({
           groub
         })
@@ -247,11 +223,11 @@ Page({
       count: 1,
       sizeType: ['original', 'compressed'],
       sourceType: ['album', 'camera'],
-      success(res) {
-        // tempFilePath可以作为img标签的src属性显示图片
-        util.log(res)
+      success(resImage) {
+        imageMd5 = util.imageUpload(resImage, This)
         let productList = This.data.productList;
-        productList[Index].goodsImg = res.tempFilePaths[0];
+        productList[Index].goodsImgView = resImage.tempFilePaths[0]
+        productList[Index].goodsImg = imageMd5;
         This.setData({
           productList,
         })

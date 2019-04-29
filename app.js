@@ -3,7 +3,7 @@ var util = require("/utils/util.js");
 App({
     onLaunch: function() {
       //#如果缓存显示，用户一直未入驻，则直接进入编辑模式，并提示用户填写店铺商品信息
-      if(util.getCache(util.cacheKey.loginTips)){
+      if (util.getCache(util.cacheKey.loginTips)) {
         util.log("#未入驻，无需登陆")
         return
       }
@@ -46,20 +46,21 @@ App({
             "latitude": util.getCache(util.cacheKey.userinfo, "latitude"),
             "longitude": util.getCache(util.cacheKey.userinfo, "longitude"),
           }, function success(data) {
-            if(data.retCode!='10000'){
+            util.log("#data:" + JSON.stringify(data))
+            if (data.retCode != '10000') {
               //未入驻，进入编辑模式，完善店铺商品信息
               util.putCache(util.cacheKey.loginTips, null, {
                 "text": data.retMsg,
                 time: 3
               })
-            }else{
+            } else {
               //已入驻，展示店铺商品信息
               wx.removeStorageSync(util.cacheKey.loginTips)
             }
           }, function fail() {
 
           })
-          
+
         }
       })
       /** 快速 测试区 */

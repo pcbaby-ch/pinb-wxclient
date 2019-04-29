@@ -8,7 +8,7 @@
         <text class='yuanjia'>￥{{item.goodsPrice||'??'}}</text>
         <!-- <text class='zhekou'>￥288</text> -->
       </view>
-      <image class='goodsImg' src='{{item.goodsImg}}' data-index='{{index}}' mode='aspectFill'></image>
+      <image class='goodsImg' src='{{item.goodsImgView}}' data-index='{{index}}' mode='aspectFill'></image>
 
       <view class='goodsName'>
         <view data-type='name' data-index='{{index}}' class='{{item.goodsName?"":""}}' wx:if='{{editItem!=index+"-goodsName"}}'>{{item.goodsName||'??商品名称??'}}</view>
