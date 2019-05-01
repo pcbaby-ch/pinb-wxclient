@@ -1,5 +1,5 @@
 <view wx:for='{{productList}}' wx:key='{{index}}' class='{{!isEdit?"opacityshow":""}}'>
-  <view class='goods-list {{editIndex==index?"goods-list-error":""}}'>
+  <view wx:if="{{item.goodsImgView}}" class='goods-list {{editIndex==index?"goods-list-error":""}}'>
     <view wx:if="{{item.groubaIsnew}}" class='goods-list-new'>新</view>
     <view wx:if="{{false}}" class='goods-list-done'>成团</view>
     <!-- 活动商品-左侧 -->
@@ -28,8 +28,8 @@
       </view>
       <view class='main-list-endTime {{item.endTimeH || item.endTimeM || editItem==index+"-endTime"?"":""}}' style='padding:6px 0;'>
         <image src='../img/time-circle2.png' data-type='endTime' data-index='{{index}}'></image>
-        <view wx:if='{{editItem!=index+"-endTime"}}' data-type='endTime' data-index='{{index}}'>
-          {{item.endTimeH||item.endTimeM?(item.endTimeH?item.endTimeH+'时':'')+(item.endTimeM?item.endTimeM+'分':'')+'后结束':'??时??分后结束'}}
+        <view data-type='endTime' data-index='{{index}}'>
+          {{item.groubaActiveMinute?(item.groubaActiveMinute?item.groubaActiveMinute+'分':'')+'后结束':'??拼团时长??'}}
         </view>
 
       </view>

@@ -1,9 +1,10 @@
 <!-- <template name="shopFoot"> -->
 <view class='main-btm'>
-  <button open-type="getPhoneNumber" bindgetphonenumber="getPhoneNumber" class='buttonBlock'>
+  <view  class='buttonBlock'>
     <image src='../img/phone.png'></image>
-    <view style='padding-right:14rpx;'>18516369668</view>
-  </button>
+    <view catchtap='catchtap' data-type='groub.groubPhone'  data-index='' class='antScale' style='margin-top:-20rpx' wx:if='{{editItem!="-groub.groubPhone"}}'>{{groub.groubPhone||'点击填写客服热线'}}</view>
+  <input maxlength='11' class="antEdit" style='width:220rpx;box-sizing: border-box;margin-top:5rpx' bindblur='bindinput' data-type='groubPhone' value='{{groub.groubPhone}}' wx:if='{{editItem=="-groub.groubPhone"}}' focus='{{editItem=="-groub.groubPhone"}}' />
+  </view>
 
 <button open-type="getUserInfo" bindgetuserinfo='getLocation' class='buttonBlock'>
   <view bindtap='getLocation' class='{{groub.groubAddress?"":"antScale"}}'>

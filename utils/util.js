@@ -21,6 +21,8 @@ const formatNumber = n => {
 //全局-网络请求工具类 ###########################################################
 /** 带json请求报文体的post网络请求 */
 function reqPost(url, params, success, fail) {
+  //添加请求公参
+  params[cacheKey.userinfo]=getCache(cacheKey.userinfo)
   requestLoading(url, params, "", success, fail)
 }
 /** 不带任何请求报文体的get网络请求 */
@@ -94,7 +96,7 @@ function requestLoading(url, params, message, successCallback, failCallback) {
 /** 图片上传 (resImage是chooseImage组件的资源)
  * return {图片文件名称}}}
  */
-function imageUpload(resImage, This) {
+function imageUpload(resImage, This, callBack) {
   //#计算文件md5
   let imageMd5 = "'图片md5缺省值'"
   wx.getFileSystemManager().readFile({
@@ -118,7 +120,7 @@ function imageUpload(resImage, This) {
           //#未入驻，则提示用户完善店铺商品信息
           respParse(res.data, This)
           log("#图片上传完成,#res" + JSON.stringify(res) + "#imageMd5:" + imageMd5)
-          return imageMd5
+          callBack(imageMd5)
         }
       })
     }
@@ -174,7 +176,7 @@ function putCache(key_, prop, value) {
     throw "#error缓存属性必须是string类型"
   }
   if (!cache) {
-    log(">>>缓存put-初始化缓存")
+    // log(">>>缓存put-初始化缓存")
     if (prop) {
       cache = {}
       cache[prop] = value
@@ -186,27 +188,27 @@ function putCache(key_, prop, value) {
         return
       } else {
         log("###error没有指定prop时，不能push一个单值或数组到缓存对象中")
-        throw "#error没有指定prop时，不能push一个单值或数组到缓存对象中"
+        throw new Error("#error没有指定prop时，不能push一个单值或数组到缓存对象中")
       }
     }
   }
   if (Object.prototype.toString.call(cache) === '[object Array]') {
-    log(">>>缓存put-数组缓存-添加元素{单值、对象、数组}")
+    // log(">>>缓存put-数组缓存-添加元素{单值、对象、数组}")
     cacheArray = cache;
     cacheArray.push(value)
     setCache(key_, cacheArray)
   } else if (Object.prototype.toString.call(cache) === '[object Object]') {
     if (prop) { //#如果prop不为空
-      log(">>>缓存put-对象缓存-添加属性")
+      // log(">>>缓存put-对象缓存-添加属性")
       cache[prop] = value
       setCache(key_, cache)
     } else { //#如果prop为空，则将待push的对象的所有属性全部push到缓存对象中
-      log(">>>缓存put-对象缓存-开始合并对象到缓存对象中")
+      // log(">>>缓存put-对象缓存-开始合并对象到缓存对象中")
       putObject2Cache(key_, value)
     }
   } else {
     log("###error单值缓存无法添加元素")
-    throw "#error缓存put-单值缓存无法添加元素"
+    throw new Error("#error缓存put-单值缓存无法添加元素")
   }
 
 }
@@ -228,11 +230,12 @@ function putObject2Cache(key_, value) {
     setCache(key_, cache)
   } else {
     log("###error没有指定prop时，不能push一个单值或数组到缓存对象中")
-    throw "#error没有指定prop时，不能push一个单值或数组到缓存对象中"
+    throw new Error("#error没有指定prop时，不能push一个单值或数组到缓存对象中")
   }
 }
 /** 统一日志，如果是产线即关闭日志 */
 function log(logText) {
+  // TODO 待获取调用函数行号
   if (apiHost.indexOf("api.pinb.vip") >= 0) {
     //产线环境，不打印日志
   } else if (apiHost.indexOf("apitest.pinb.vip") >= 0) {
@@ -256,6 +259,8 @@ function reqBodyWrap(url, reqBody) {
   return reqBody
 }
 //其它-工具类 ##############################################################
+
+/** 微信异步方法，同步化封装 */
 function wxPromise(fn) {
   return function(obj = {}) {
     return new Promise((resole, reject) => {
@@ -271,6 +276,15 @@ function wxPromise(fn) {
     })
   }
 }
+/** 轻提示 */
+function softTips(that, text_, time_) {
+  that.setData({
+    usToast: {
+      text: text_,
+      time: time_||1,
+    }
+  })
+}
 
 
 //全局-常量、变量 ###########################################################
@@ -278,7 +292,7 @@ const apiHost = "http://127.0.0.1:9660/pinb-service"
 
 const cacheKey = {
   userinfo: 'userinfo',
-  loginTips: "loginTips",
+  isOpen: "is_oisOpenpen",
   groubinfo: "groubinfo",
   goodsinfo: 'goodsinfo',
 }
@@ -299,10 +313,12 @@ module.exports = {
 
 
   wxPromise: wxPromise,
+  softTips: softTips,
 
   /** api服务host地址 https://apitest.pinb.vip/pinb-service */
   apiHost: apiHost,
   /** 全局缓存key，防止缓存key冲突 */
   cacheKey: cacheKey,
+
 
 }
