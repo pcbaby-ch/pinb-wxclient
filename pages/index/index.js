@@ -3,6 +3,7 @@
 var app = getApp()
 let util = require("../../utils/util.js")
 var Promise = require("../../utils/bluebird.min.js")
+
 const defaultOrder = {
   refUserImg: 'wx_head2.jpg',
 }
@@ -19,7 +20,6 @@ const defalutProduct = {
   groubaIsnew: 1,
   groubaExpiredTime: '',
   groubaActiveMinute: '60',
-  refUsers: [defaultOrder, defaultOrder, defaultOrder, defaultOrder, defaultOrder, defaultOrder],
 }
 Page({
   data: {
@@ -40,12 +40,21 @@ Page({
     editIndex: 0, //当前编辑项
     editItem: '', //当前编辑项 index-type
 
-    img: ''
+  },
+
+  arraySetTest(productList) {
+    util.log("#productList（变更前）:" + JSON.stringify(productList) + "#00:" + JSON.stringify(productList[0]));
+    productList[0]['goodsName'] = "goodsNameA";
+    productList[1]['goodsName'] = "goodsNameB";
+    //productList[5]['goodsName'] = "goodsNameC";
+    util.log("#productList（变更后）:" + JSON.stringify(productList))
   },
 
   //事件处理函数
   catchtap(e) {
     util.log("#事件捕捉:" + JSON.stringify(e))
+    var productList = this.data.productList
+    // this.arraySetTest(productList)
 
     let Index = e.target.dataset.index;
     this.setData({
@@ -53,26 +62,69 @@ Page({
       editIndex: Index,
     })
   },
+  /** 空间失去焦点触发事件 */
   bindinput(e) {
     let Index = e.target.dataset.index,
       V = e.detail.value;
     util.log("#控件失去焦点,#index:" + Index + "#value:" + V + "#e:" + JSON.stringify(e))
     this.change(Index, e.target.dataset.type, V)
   },
+  change(index, type, value) {
+    var productList = this.data.productList;
+    var groub = this.data.groub;
+
+    if (!productList[index]) {
+      util.log("#店铺-基础信息,#index:" + index + "#type:" + type + "#value:" + value);
+      groub[type] = value;
+      this.setData({
+        groub
+      })
+      util.log(JSON.stringify(groub));
+    } else {
+      productList[index][type] = value;
+      util.log("#店铺-商品信息,#index:" + index + "#type:" + type + "#value:" + value + "#productList:" + JSON.stringify(productList));
+      this.setData({
+        productList
+      })
+      // util.log(JSON.stringify(productList))
+    }
+
+  },
+  /** 右下角编辑 */
   ch_edit() {
+    let isEdit = this.data.isEdit
+    let productList = this.data.productList
     this.setData({
-      isEdit: !this.data.isEdit,
+      isEdit: !isEdit,
       editItem: ''
     })
+    util.log("#isEdit:" + isEdit + "#productList.length:" + productList.length)
+    if (!isEdit) {
+      if (productList && productList.length < 3) {
+        util.log("#如果编辑模式下，商品数组不是3，则补齐,#productList:" + JSON.stringify(productList))
+        let productListLength = productList.length
+        for (var i = 0; i < 3 - productListLength; i++) {
+          productList.push(defalutProduct)
+        }
+        this.setData({
+          productList
+        })
+      }
+    }
   },
   save() {
-
+    let that = this
     let groub = this.data.groub;
     util.log("#店铺信息" + JSON.stringify(groub))
     let productList = this.data.productList;
-    util.log("#商品信息" + JSON.stringify(productList))
+    // util.log("#商品信息" + JSON.stringify(productList))
+    //填写信息，缓存
+    util.putCache(util.cacheKey.groubInfo, null, groub)
+    util.setCache(util.cacheKey.goodsList, productList)
     //#参数完整性校验
-    this.checkParams(groub, productList)
+    if (!this.checkParams(groub, productList)) {
+      return
+    }
     //#提交服务器
     util.reqPost(util.apiHost + "/groupBar/add", {
       groub: groub,
@@ -80,10 +132,10 @@ Page({
     }, function success(data) {
       if (data.retCode != '10000') { //#提交失败
         wx.removeStorageSync(util.cacheKey.isOpen)
-        util.softTips(that, data.retMsg,3)
+        util.softTips(that, data.retMsg, 3)
       } else { //#提交成功
-        util.putCache(util.cacheKey.isOpen, "isOpen", true)
-        this.setData({
+        util.putCache(util.cacheKey.isOpen, null, true)
+        that.setData({
           isEdit: false,
         })
       }
@@ -94,26 +146,6 @@ Page({
     //#
   },
 
-  change(index, type, value) {
-    let productList = this.data.productList;
-    let groub = this.data.groub;
-    if (!productList[index]) {
-      util.log("#店铺-基础信息>>>");
-      groub[type] = value;
-      this.setData({
-        groub
-      })
-      util.log(JSON.stringify(groub));
-    } else {
-      util.log("#店铺-商品信息>>>");
-      productList[index][type] = value;
-      this.setData({
-        productList
-      })
-      // util.log(JSON.stringify(productList))
-    }
-
-  },
   add() {
     let productList = this.data.productList;
     productList.push(defalutProduct)
@@ -185,6 +217,8 @@ Page({
           util.log("#地址选择成功:" + JSON.stringify(res))
           groub.groubAddress = res.address;
           util.putCache(util.cacheKey.userinfo, "address", res.address)
+          util.putCache(util.cacheKey.userinfo, "latitude", res.latitude)
+          util.putCache(util.cacheKey.userinfo, "longitude", res.longitude)
           util.log("#userinfo:" + JSON.stringify(util.getCache(util.cacheKey.userinfo)))
           This.setData({
             groub
@@ -217,16 +251,18 @@ Page({
     var imageMd5 = "'文件md5缺省值'";
     wx.chooseImage({
       count: 1,
-      sizeType: ['original', 'compressed'],
+      sizeType: ['original'],
       sourceType: ['album', 'camera'],
       success(resImage) {
-        util.imageUpload(resImage, This, imageMd5 => {
-          groub.groubImgView = resImage.tempFilePaths[0]
-          groub.groubImg = imageMd5;
-          util.log("#groub:" + JSON.stringify(groub))
-          This.setData({
-            groub
-          })
+        util.imageUpload(resImage, This, image => {
+          if (image) {            
+            groub.groubImgView = resImage.tempFilePaths[0]
+            groub.groubImg = image
+            util.log("#groub:" + JSON.stringify(groub) + "，#resImage:" + JSON.stringify(resImage))
+            This.setData({
+              groub
+            })
+          }
         })
       }
     })
@@ -244,13 +280,15 @@ Page({
       sizeType: ['original', 'compressed'],
       sourceType: ['album', 'camera'],
       success(resImage) {
-        util.imageUpload(resImage, This, imageMd5 => {
-          let productList = This.data.productList;
-          productList[Index].goodsImgView = resImage.tempFilePaths[0]
-          productList[Index].goodsImg = imageMd5;
-          This.setData({
-            productList,
-          })
+        util.imageUpload(resImage, This, image => {
+          if (image) {
+            let productList = This.data.productList;            
+            productList[Index].goodsImgView = resImage.tempFilePaths[0]
+            productList[Index].goodsImg = image
+            This.setData({
+              productList,
+            })
+          }
         })
 
       }
@@ -258,21 +296,21 @@ Page({
   },
 
   checkParams(groub, goods) {
-    if (!groub.groubName) {
-      util.softTips(this, "店铺名称未选择")
-      return
-    }
+    // if (!groub.groubName) {
+    //   util.softTips(this, "店铺名称未选择")
+    //   return false
+    // }
     if (!groub.groubImg) {
       util.softTips(this, "店铺图片未选择")
-      return
+      return false
     }
     if (!groub.groubAddress) {
       util.softTips(this, "店铺地址未选择")
-      return
+      return false
     }
     if (!groub.groubPhone) {
       util.softTips(this, "店铺电话未填写")
-      return
+      return false
     }
     for (var i in goods) {
       let g = goods[i]
@@ -280,20 +318,21 @@ Page({
       if (g.goodsImg) { //#选区商品图片的才校验，没选区的直接忽略废弃
         if (!g.goodsName) {
           util.softTips(this, "商品" + i + ",名称未填写")
-          return
+          return false
         }
         if (!g.goodsPrice) {
           util.softTips(this, "商品" + i + ",原价未填写")
-          return
+          return false
         }
         if (!g.groubaDiscountAmount) {
           util.softTips(this, "商品" + i + ",折扣金额未填写")
-          return
+          return false
         }
 
       }
     }
     util.softTips(this, "店铺信息,一个月最多更改6次", 3)
+    return true
   },
 
 
@@ -303,12 +342,51 @@ Page({
   onLoad: function() {
     wx.showNavigationBarLoading()
     let that = this
+    var productList = this.data.productList
+    this.arraySetTest(productList)
 
     //#如果缓存显示，用户一直未入驻，则直接进入编辑模式，并提示用户填写店铺商品信息
-    if (util.getCache(util.cacheKey.isOpen)) {
-      util.softTips(that, "您未入驻，请完善店铺、商品信息", 3);
-      util.log("#未入驻，无需登陆")
+    let isOpen = util.getCache(util.cacheKey.isOpen)
+    util.log("#页面开始加载。。。#isOpen:" + isOpen)
+    if (isOpen) {
+      if (isOpen == true) {
+        util.log("#缓存-已入驻")
+        //#请求服务器，抓取店铺、商品信息
+        util.reqPost(util.apiHost + "/groupBar/selectOne", {
+          refUserWxUnionid: util.getCache(util.cacheKey.userinfo, "wxUnionid")
+        }, resp => {
+          if (resp.retCode == '10000') {
+            resp.data.groubInfo.groubImgView = util.apiHost + "/images/" + resp.data.groubInfo.groubImg
+            for (var i in resp.data.goodsList) {
+              resp.data.goodsList[i]['goodsImgView'] = util.apiHost + "/images/" + resp.data.goodsList[i].goodsImg
+            }
+            that.setData({
+              groub: resp.data.groubInfo,
+              productList: resp.data.goodsList,
+            })
+
+          } else {
+            util.softTips(that, resp.retMsg)
+          }
+        })
+
+        that.setData({
+          isEdit: false,
+        })
+      } else {
+        util.log("#缓存-未入驻,#groubInfo:" + util.getCache(util.cacheKey.groubInfo) + "#goodsList:" + util.getCache(util.cacheKey.goodsList))
+        util.softTips(that, "请完善店铺、商品信息,闪电入驻", 2)
+        that.setData({
+          isEdit: true,
+          groub: util.getCache(util.cacheKey.groubInfo) || {},
+          //#此处赋值可能导致商品赋值同化问题?????????????????????????????????????????????????????
+          productList: util.getCache(util.cacheKey.goodsList) || [defalutProduct, defalutProduct, defalutProduct],
+        })
+
+      }
       return
+    } else {
+      util.log("#无缓存-请求登录接口")
     }
 
     // 登录
@@ -334,26 +412,29 @@ Page({
         util.reqPost(util.apiHost + "/user/wxLogin4Shop", {
           "appid": "wx71de1973104f41cf",
           "secret": "8dee514b29b84c7640b842e4e2d521aa",
-          "jsCode": res.code,
+          "jsCode": resLogin.code,
           "grantType": "authorization_code",
-        }, function success(data) {
-          util.log("#data:" + JSON.stringify(data))
-          if (data.retCode == '10000') {
-            util.putCache(util.cacheKey.isOpen, "isOpen", true)
-            util.putCache(util.cacheKey.userinfo, "wxUnionid", data.unionid)
-            util.putCache(util.cacheKey.userinfo, "wxOpenid", data.openid)
-            util.softTips(that, data.retMsg, 5)
-
-          } else {
+        }, function success(resp) {
+          //#缓存服务端获取的openid、unionid
+          util.putCache(util.cacheKey.userinfo, "wxUnionid", resp.data.wxUnionid)
+          util.putCache(util.cacheKey.userinfo, "wxOpenid", resp.data.wxOpenid)
+          if (resp.retCode == '10000') {
+            util.log("#已入驻:" + JSON.stringify(resp))
             //已入驻，展示店铺商品信息
-            wx.removeStorageSync(util.cacheKey.isOpen)
-            this.setData({
+            util.putCache(util.cacheKey.isOpen, null, true)
+            that.setData({
               isEdit: false,
             })
-          }
-        }, function fail() {
 
-        })
+          } else {
+            util.log("#未入驻")
+            util.softTips(that, resp.retMsg, 5)
+            util.putCache(util.cacheKey.isOpen, null, false)
+            that.setData({
+              isEdit: true,
+            })
+          }
+        }, function fail() {})
 
       }
     })
@@ -365,6 +446,8 @@ Page({
    */
   onReady: function() {
     wx.hideNavigationBarLoading()
+    // 快速测试区
+
 
   },
 

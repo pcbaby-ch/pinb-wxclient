@@ -22,7 +22,7 @@ const formatNumber = n => {
 /** 带json请求报文体的post网络请求 */
 function reqPost(url, params, success, fail) {
   //添加请求公参
-  params[cacheKey.userinfo]=getCache(cacheKey.userinfo)
+  params[cacheKey.userinfo] = getCache(cacheKey.userinfo)
   requestLoading(url, params, "", success, fail)
 }
 /** 不带任何请求报文体的get网络请求 */
@@ -30,13 +30,13 @@ function reqGet(url, success, fail) {
   requestLoading(url, null, "", success, fail)
 }
 /** 解析服务端响应报文，并做业务错误提示 */
-function respParse(resp, This) {
+function respParse(resp, that) {
   log("#开始解析响应报文:" + resp)
   if (!resp.retCode) {
     resp = JSON.parse(resp)
   }
   if (resp.retCode != '10000') {
-    This.setData({
+    that.setData({
       usToast: {
         text: resp.retMsg,
         time: 3
@@ -46,7 +46,7 @@ function respParse(resp, This) {
 }
 
 function requestLoading(url, params, message, successCallback, failCallback) {
-  log(">>>请求参数(包装处理前):" + JSON.stringify(params) + " #url:" + url)
+  //log(">>>请求参数(包装处理前):" + JSON.stringify(params) + " #url:" + url)
   wx.showNavigationBarLoading()
   if (!message || message != "") {
     // wx.showLoading({
@@ -77,12 +77,14 @@ function requestLoading(url, params, message, successCallback, failCallback) {
       if (res.statusCode == 200) {
         successCallback(res.data)
       } else {
-        failCallback()
+        if (failCallback)
+          failCallback()
       }
 
     },
     fail: function(res) {
-      failCallback()
+      if (failCallback)
+        failCallback()
     },
     complete: function(res) {
       log(">>>响应数据:" + JSON.stringify(res) + " #url:" + url)
@@ -117,10 +119,10 @@ function imageUpload(resImage, This, callBack) {
           fileMd5: imageMd5
         },
         success(res) {
-          //#未入驻，则提示用户完善店铺商品信息
+          //#图片上传失败，
           respParse(res.data, This)
-          log("#图片上传完成,#res" + JSON.stringify(res) + "#imageMd5:" + imageMd5)
-          callBack(imageMd5)
+          log("#图片上传完成,#res" + JSON.stringify(res) + "#image:" + res.data.data)
+          callBack(JSON.parse(res.data).data)
         }
       })
     }
@@ -134,11 +136,13 @@ function getCache(key_, prop) {
   if (prop && Object.prototype.toString.call(prop) === '[object String]') {
     if (Object.prototype.toString.call(cache) === '[object Object]') {
       // log("#缓存是对象，提取属性值")
+      log("#缓存get完成，#key_:" + key_ + "#prop:" + prop + "#value:" + cache[prop])
       return cache[prop]
     } else {
       log("######error缓存不是对象，不能提取属性值")
     }
   } else {
+    log("#缓存get完成，#key_:" + key_ + "#prop:" + prop + "#value:" + JSON.stringify(cache))
     return cache;
   }
 }
@@ -156,13 +160,15 @@ function getCacheAsyn(key_, prop) {
     return cache;
   }
 }
-
+/** 直接缓存，已有同key缓存直接覆盖 */
 function setCache(key_, value) {
   wx.setStorageSync(key_, value);
+  log("#缓存完成,#key:" + key_ + ",#value:" + value)
 }
 
 function setCacheAsyn(key_, value) {
   wx.setStorage(key_, value);
+  log("#缓存完成,#key:" + key_ + ",#value:" + value)
 }
 /**
  * 往对象类型缓存加属性；往数组类型缓存加元素{单值、对象、数组}
@@ -172,25 +178,24 @@ function putCache(key_, prop, value) {
   let cache = getCache(key_, null)
   let cacheArray = [];
   if (prop && Object.prototype.toString.call(prop) != '[object String]') {
-    log("###error 缓存属性必须是string类型")
-    throw "#error缓存属性必须是string类型"
+    throw new Error("#error缓存属性必须是string类型")
   }
+
   if (!cache) {
     // log(">>>缓存put-初始化缓存")
     if (prop) {
       cache = {}
       cache[prop] = value
       setCache(key_, cache)
-      return
     } else {
       if (Object.prototype.toString.call(value) === '[object Object]') {
         putObject2Cache(key_, value)
-        return
       } else {
-        log("###error没有指定prop时，不能push一个单值或数组到缓存对象中")
-        throw new Error("#error没有指定prop时，不能push一个单值或数组到缓存对象中")
+        // throw new Error("#error没有指定prop时，不能push一个单值或数组到缓存对象中")
+        setCache(key_, value)
       }
     }
+    return
   }
   if (Object.prototype.toString.call(cache) === '[object Array]') {
     // log(">>>缓存put-数组缓存-添加元素{单值、对象、数组}")
@@ -207,10 +212,9 @@ function putCache(key_, prop, value) {
       putObject2Cache(key_, value)
     }
   } else {
-    log("###error单值缓存无法添加元素")
-    throw new Error("#error缓存put-单值缓存无法添加元素")
+    // throw new Error("#error没有指定prop时，不能push一个单值或数组到缓存对象中")
+    setCache(key_, value)
   }
-
 }
 /** 将待push的对象value的所有属性全部push到缓存对象cache中 */
 function putObject2Cache(key_, value) {
@@ -229,8 +233,8 @@ function putObject2Cache(key_, value) {
     }
     setCache(key_, cache)
   } else {
-    log("###error没有指定prop时，不能push一个单值或数组到缓存对象中")
-    throw new Error("#error没有指定prop时，不能push一个单值或数组到缓存对象中")
+    // throw new Error("#error没有指定prop时，不能push一个单值或数组到缓存对象中")
+    setCache(key_, value)
   }
 }
 /** 统一日志，如果是产线即关闭日志 */
@@ -281,7 +285,7 @@ function softTips(that, text_, time_) {
   that.setData({
     usToast: {
       text: text_,
-      time: time_||1,
+      time: time_ || 1,
     }
   })
 }
@@ -292,9 +296,9 @@ const apiHost = "http://127.0.0.1:9660/pinb-service"
 
 const cacheKey = {
   userinfo: 'userinfo',
-  isOpen: "is_oisOpenpen",
-  groubinfo: "groubinfo",
-  goodsinfo: 'goodsinfo',
+  isOpen: "isOpen",
+  groubInfo: "groubInfo",
+  goodsList: 'goodsList',
 }
 
 
@@ -307,6 +311,7 @@ module.exports = {
   imageUpload: imageUpload,
 
   getCache: getCache,
+  setCache: setCache,
   putCache: putCache,
 
   log: log,

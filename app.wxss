@@ -111,10 +111,10 @@
 
 .top-groubName {
   position: absolute;
-  width: 100%;
+  width: 95%;
   left: 0rpx;
   top: 30rpx;
-  margin: 0rpx 400rpx 0 0;
+  text-align: center;
 }
 
 .top-tag-i {

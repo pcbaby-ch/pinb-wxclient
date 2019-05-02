@@ -1,6 +1,6 @@
 <!-- 店铺-head信息 #编辑页面# ############ -->
 <view wx:if='{{isEdit}}' class='top {{isEdit?"opacityshow":""}}' bindtap='upImg'>
-  <view catchtap='catchtap' data-type='groub.groubName' data-index='' class='{{groub.groubName?"top-groubName":" top-groubName"}} antScale' style='margin-top:-20rpx' wx:if='{{editItem!="-groub.groubName"}}'>{{groub.groubName||'点击填写商铺名称'}}</view>
+  <view catchtap='catchtap' data-type='groub.groubName' data-index='' class='{{groub.groubName?"top-groubName":" top-groubName"}} antScale' style='margin-top:-20rpx' wx:if='{{editItem!="-groub.groubName"}}'>{{groub.groubName||'点此填写商铺名称'}}</view>
   <input maxlength='12' class="antEdit" style='width:98%;box-sizing: border-box;margin-top:5rpx' bindblur='bindinput' data-type='groubName' value='{{groub.groubName}}' wx:if='{{editItem=="-groub.groubName"}}' focus='{{editItem=="-groub.groubName"}}' />
   <image wx:if='{{groub.groubImg}}' src='{{groub.groubImgView}}' class='bgImg' mode='aspectFill'></image>
   <view wx:if='{{groub.groubImg}}' class='top-tag'>
@@ -15,7 +15,7 @@
     <view class='antScale'>
       <image class='upImg' src='../img/upImg.png'></image>
       上传店铺图片
-      <view class='antScale' style='font-size:10px;'>“尽可能的让买家容易辨识出你的店铺</view>
+      <view class='antScale' style='font-size:10px;'>“店铺实拍图、活动海报图皆可</view>
       <view class='antScale' style='font-size:10px;'>如采用相机拍照，建议横向拍摄”</view>
     </view>
   </view>
@@ -26,7 +26,7 @@
 
 <view class='main'>
   <!-- 店铺-商品信息 #编辑页面# ############  -->
-  <view wx:for='{{productList}}' wx:key='{{index}}'>
+  <view wx:for='{{productList}}' wx:key='{{index}}' class='productList'>
     <view wx:if='{{isEdit}}' class='goods-list {{isEdit?"opacityshow":""}} {{editIndex==index?"goods-list-error":""}}'>
       <!-- 活动商品-左侧 -->
       <view class='goods-list-left'>
@@ -45,7 +45,7 @@
           <view data-index='{{index}}'>上传商品照片</view>
         </view>
         <view class='goodsName'>
-          <view catchtap='catchtap' data-type='goodsName' data-index='{{index}}' class='{{item.goodsName?"":"antScale"}}' wx:if='{{editItem!=index+"-goodsName"}}'>{{item.goodsName||'点击填写商品名称'}}</view>
+          <view catchtap='catchtap' data-type='goodsName' data-index='{{index}}' class='{{item.goodsName?"":"antScale"}}' wx:if='{{editItem!=index+"-goodsName"}}'>{{item.goodsName||'点此填写商品名称'}}</view>
           <input maxlength='12' style='width:98%;box-sizing: border-box;' class='antEdit' bindblur='bindinput' data-type='goodsName' data-index='{{index}}' value='{{item.goodsName}}' wx:if='{{editItem==index+"-goodsName"}}' focus='{{editItem==index+"-goodsName"}}'
           />
         </view>
@@ -95,6 +95,10 @@
 
 <!-- 右下角悬浮菜单 -->
 <view class='fixed'>
+  <view wx:if='{{isEdit}}' class='fixed-list' catchtap='save'>
+    <image src='../img/save.png'></image>
+    <view>保存</view>
+  </view>
   <view class='fixed-list' catchtap='ch_edit'>
     <image src='{{isEdit?"../img/eye.png":"../img/edit-square.png"}}'></image>
     <view>{{isEdit?"预览":"编辑"}}</view>
@@ -103,10 +107,7 @@
       <image src='../img/plus-square.png'></image>
       <view>增加</view>
     </view> -->
-  <view class='fixed-list' catchtap='save'>
-    <image src='../img/save.png'></image>
-    <view>保存</view>
-  </view>
+
 </view>
 
 <toast usToast='{{usToast}}'></toast>

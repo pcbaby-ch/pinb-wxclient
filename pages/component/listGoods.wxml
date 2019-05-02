@@ -1,5 +1,5 @@
-<view wx:for='{{productList}}' wx:key='{{index}}' class='{{!isEdit?"opacityshow":""}}'>
-  <view wx:if="{{item.goodsImgView}}" class='goods-list {{editIndex==index?"goods-list-error":""}}'>
+<view wx:for='{{productList}}' wx:key='{{index}}' class='{{!isEdit?"opacityshow":""}} productList'>
+  <view wx:if='{{!isEdit}}' class='goods-list {{editIndex==index?"goods-list-error":""}}'>
     <view wx:if="{{item.groubaIsnew}}" class='goods-list-new'>新</view>
     <view wx:if="{{false}}" class='goods-list-done'>成团</view>
     <!-- 活动商品-左侧 -->
