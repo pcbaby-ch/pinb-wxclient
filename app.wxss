@@ -111,7 +111,7 @@
 
 .top-groubName {
   position: absolute;
-  width: 95%;
+  width: 100%;
   left: 0rpx;
   top: 30rpx;
   text-align: center;
