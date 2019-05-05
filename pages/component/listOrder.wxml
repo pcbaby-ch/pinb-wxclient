@@ -1,4 +1,4 @@
-<view class='order-list'>
+<view class='order-list' wx:for="{{6}}" wx:key="{{index}}">
   <view class='goods-list-new'>新</view>
   <view class='goods-list-done'>成团</view>
   <view class='goods-list-left'>

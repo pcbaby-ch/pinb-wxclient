@@ -260,7 +260,7 @@
   vertical-align: middle;
 }
 
-.goods-list-price .yuanjia {
+.yuanjia {
   text-decoration: line-through;
   color: #777;
   font-size: 28rpx;
@@ -327,7 +327,7 @@
 }
 
 .main-list-share {
-  width:200rpx;
+  width: 200rpx;
   position: absolute;
   top: 5rpx;
   right: 5rpx;
@@ -436,4 +436,41 @@
   width: 48rpx;
   height: 48rpx;
   display: block;
+}
+
+/** 支付浮窗样式 ***********************************/
+.pay-container{
+   position: fixed;
+   height: 100%;
+   top: 300rpx;
+   text-align: center;
+   z-index: 668;
+}
+.pay {
+  
+  background-color: rgba(227, 224, 224, 1);
+  text-align: center;
+  border: 2rpx solid rgba(187, 187, 187, 1);
+  border-radius: 20rpx;
+}
+
+.pay canvas {
+  display: inline-block;
+  width: 600rpx;
+  height: 600rpx;
+}
+
+.pay-type {
+  height: 40rpx;
+  margin: 16rpx 0;
+  line-height: 40rpx;
+  color: rgba(16, 16, 16, 1);
+  font-size: 28rpx;
+  text-align: center;
+  font-family: PingFangSC-regular;
+}
+
+.pay-close {
+  width: 80rpx;
+  height: 80rpx;
 }

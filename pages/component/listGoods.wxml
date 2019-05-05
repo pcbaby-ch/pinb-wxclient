@@ -1,17 +1,16 @@
 <view wx:for='{{productList}}' wx:key='{{index}}' class='{{!isEdit?"opacityshow":""}} productList'>
-  <view wx:if='{{!isEdit}}' class='goods-list {{editIndex==index?"goods-list-error":""}}'>
+  <view wx:if='{{!isEdit}}' class='goods-list {{editIndex==index?"goods-list-error":""}}' bindtap='toQrCode'>
     <view wx:if="{{item.groubaIsnew}}" class='goods-list-new'>新</view>
     <view wx:if="{{false}}" class='goods-list-done'>成团</view>
     <!-- 活动商品-左侧 -->
     <view class='goods-list-left'>
-      <view class='goods-list-price'>
-        <text class='yuanjia'>￥{{item.goodsPrice||'??'}}</text>
-        <!-- <text class='zhekou'>￥288</text> -->
-      </view>
+
       <image class='goodsImg' src='{{item.goodsImgView}}' data-index='{{index}}' mode='aspectFill'></image>
 
       <view class='goodsName'>
-        <view data-type='name' data-index='{{index}}' class='{{item.goodsName?"":""}}' wx:if='{{editItem!=index+"-goodsName"}}'>{{item.goodsName||'??商品名称??'}}</view>
+        <view data-type='name' data-index='{{index}}' class='{{item.goodsName?"":""}}' wx:if='{{editItem!=index+"-goodsName"}}'>{{item.goodsName||'??商品名称??'}}
+          <text class='yuanjia'>￥{{item.goodsPrice||'??'}}</text>
+        </view>
 
       </view>
     </view>
@@ -24,7 +23,8 @@
             {{[6,8,9][item.groubaSize]?[6,8,9][item.groubaSize]+'人团':'?人团'}}
           </view>
         </view>
-        <view class='main-list-share'>开团立省{{item.groubaDiscountAmount||'??'}}元</view>
+        <button open-type='share' class='buttonBlock main-list-share'>开团立省{{item.groubaDiscountAmount||'??'}}元</button>
+        <!-- <view class='main-list-share' >开团立省{{item.groubaDiscountAmount||'??'}}元</view> -->
       </view>
       <view class='main-list-endTime {{item.endTimeH || item.endTimeM || editItem==index+"-endTime"?"":""}}' style='padding:6px 0;'>
         <image src='../img/time-circle2.png' data-type='endTime' data-index='{{index}}'></image>
@@ -35,7 +35,7 @@
       </view>
       <!-- 活动商品-用户头像 -->
       <view class='main-head-list'>
-        <image wx:for='{{[6,8,9][item.groubaSize]}}' wx:key='{{index}}' class='slt' src='../img/wx_head2.jpg' mode='aspectFill'></image>
+        <image wx:for='{{[6,8,9][item.groubaSize]}}' wx:key='{{index}}' class='' src='../img/wx_head2.jpg' mode='aspectFill'></image>
       </view>
     </view>
   </view>

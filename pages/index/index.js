@@ -2,6 +2,7 @@
 //获取应用实例
 var app = getApp()
 let util = require("../../utils/util.js")
+var QRCode = require('../../utils/weapp-qrcode.js')
 var Promise = require("../../utils/bluebird.min.js")
 
 const defaultOrder = {
@@ -24,7 +25,7 @@ const defalutProduct = {
 Page({
   data: {
 
-    isEdit: true,
+    isEdit: false,
     //店铺-基础信息
     groub: {
       groubTrace: "",
@@ -341,6 +342,7 @@ Page({
    */
   onLoad: function() {
     wx.showNavigationBarLoading()
+    
     let that = this
     var productList = this.data.productList
     this.arraySetTest(productList)
@@ -352,23 +354,7 @@ Page({
       if (isOpen == true) {
         util.log("#缓存-已入驻")
         //#请求服务器，抓取店铺、商品信息
-        util.reqPost(util.apiHost + "/groupBar/selectOne", {
-          refUserWxUnionid: util.getCache(util.cacheKey.userinfo, "wxUnionid")
-        }, resp => {
-          if (resp.retCode == '10000') {
-            resp.data.groubInfo.groubImgView = util.apiHost + "/images/" + resp.data.groubInfo.groubImg
-            for (var i in resp.data.goodsList) {
-              resp.data.goodsList[i]['goodsImgView'] = util.apiHost + "/images/" + resp.data.goodsList[i].goodsImg
-            }
-            that.setData({
-              groub: resp.data.groubInfo,
-              productList: resp.data.goodsList,
-            })
-
-          } else {
-            util.softTips(that, resp.retMsg)
-          }
-        })
+        that.getGroubInfo(that)
 
         that.setData({
           isEdit: false,
@@ -425,7 +411,7 @@ Page({
             that.setData({
               isEdit: false,
             })
-
+            that.getGroubInfo(that)
           } else {
             util.log("#未入驻")
             util.softTips(that, resp.retMsg, 5)
@@ -439,6 +425,26 @@ Page({
       }
     })
 
+  },
+
+  getGroubInfo(that){
+    util.reqPost(util.apiHost + "/groupBar/selectOne", {
+      refUserWxUnionid: util.getCache(util.cacheKey.userinfo, "wxUnionid")
+    }, resp => {
+      if (resp.retCode == '10000') {
+        resp.data.groubInfo.groubImgView = util.apiHost + "/images/" + resp.data.groubInfo.groubImg
+        for (var i in resp.data.goodsList) {
+          resp.data.goodsList[i]['goodsImgView'] = util.apiHost + "/images/" + resp.data.goodsList[i].goodsImg
+        }
+        that.setData({
+          groub: resp.data.groubInfo,
+          productList: resp.data.goodsList,
+        })
+
+      } else {
+        util.softTips(that, resp.retMsg)
+      }
+    })
   },
 
   /**
@@ -486,10 +492,58 @@ Page({
 
   },
 
+  toQrCode: function () {
+    //#生成二维码
+    var qrcode = new QRCode('canvas', {
+      // usingIn: this,
+      text: "orderNumber" + util.formatTime(new Date()),
+
+      colorDark: "#000000",
+      colorLight: "#ffffff",
+      correctLevel: QRCode.CorrectLevel.H,
+    });
+
+    qrcode.makeCode("orderNumber" + util.formatTime(new Date()))
+
+    this.setData({
+      payContainerShow: true,
+    })
+  },
+
+  closePay: function () {
+    this.setData({
+      payContainerShow: false,
+    })
+  },
+
   /**
    * Called when user click on the top right corner to share
    */
-  onShareAppMessage: function() {
+  onShareAppMessage: function () {
+    let that = this;
+    return {
+      title: '参团立享优惠'+util.getCache(util.cacheKey.isOpen), // 转发后 所显示的title
+      path: '/pages/group/index', // 相对的路径
+      // imageUrl:'http://127.0.0.1:9660/pinb-service/images/15a9bdccdfc851450bd9ab802c631475.jpg',
+      success: (res) => {    // 成功后要做的事情
+        util.log("#分享成功"+res.shareTickets[0])
 
+        wx.getShareInfo({
+          shareTicket: res.shareTickets[0],
+          success: (res) => {
+            that.setData({
+              isShow: true
+            })
+            util.log(that.setData.isShow)
+          },
+          fail: function (res) { console.log(res) },
+          complete: function (res) { console.log(res) }
+        })
+      },
+      fail: function (res) {
+        // 分享失败
+        util.log("#分享失败"+res)
+      }
+    }
   }
 })

@@ -93,6 +93,14 @@
   <include src="../component/shopFoot.wxml" />
 </view>
 
+<!-- 消费二维码 -->
+<view class='pay-container' wx:if="{{payContainerShow}}">
+  <view class='pay'>
+    <canvas class='canvas' canvas-id='canvas'></canvas>
+    <view class='pay-type'>-- 付款方式 --</view>
+    <image class='pay-close' src='../img/close-circle.png' bindtap='closePay'></image>
+  </view>
+</view>
 <!-- 右下角悬浮菜单 -->
 <view class='fixed'>
   <view wx:if='{{isEdit}}' class='fixed-list' catchtap='save'>

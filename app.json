@@ -1,7 +1,6 @@
 {
   "pages": [
     "pages/index/index",
-    "pages/sweepQrcode/sweepQrcode",
     "pages/myOrder/myOrder"
   ],
   "window": {

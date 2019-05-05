@@ -109,8 +109,8 @@ function imageUpload(resImage, This, callBack) {
       var spark = new md5.ArrayBuffer();
       spark.append(res.data);
       imageMd5 = spark.end(false);
-      log("#图片md5:" + imageMd5)
-      log("#图片准备上传,#resImage" + JSON.stringify(resImage) + "#res" + JSON.stringify(res));
+      //log("#图片md5:" + imageMd5)
+      //log("#图片准备上传,#resImage" + JSON.stringify(resImage) + "#res" + JSON.stringify(res));
       wx.uploadFile({
         url: apiHost + '/fileUpload',
         filePath: resImage.tempFilePaths[0],
@@ -121,7 +121,7 @@ function imageUpload(resImage, This, callBack) {
         success(res) {
           //#图片上传失败，
           respParse(res.data, This)
-          log("#图片上传完成,#res" + JSON.stringify(res) + "#image:" + res.data.data)
+          //log("#图片上传完成,#res" + JSON.stringify(res) + "#image:" + res.data.data)
           callBack(JSON.parse(res.data).data)
         }
       })
@@ -135,14 +135,13 @@ function getCache(key_, prop) {
   let cache = wx.getStorageSync(key_)
   if (prop && Object.prototype.toString.call(prop) === '[object String]') {
     if (Object.prototype.toString.call(cache) === '[object Object]') {
-      // log("#缓存是对象，提取属性值")
-      log("#缓存get完成，#key_:" + key_ + "#prop:" + prop + "#value:" + cache[prop])
+      // log("#缓存get完成，#key_:" + key_ + "#prop:" + prop + "#value:" + cache[prop])
       return cache[prop]
     } else {
       log("######error缓存不是对象，不能提取属性值")
     }
   } else {
-    log("#缓存get完成，#key_:" + key_ + "#prop:" + prop + "#value:" + JSON.stringify(cache))
+    // log("#缓存get完成，#key_:" + key_ + "#prop:" + prop + "#value:" + JSON.stringify(cache))
     return cache;
   }
 }
@@ -163,12 +162,12 @@ function getCacheAsyn(key_, prop) {
 /** 直接缓存，已有同key缓存直接覆盖 */
 function setCache(key_, value) {
   wx.setStorageSync(key_, value);
-  log("#缓存完成,#key:" + key_ + ",#value:" + value)
+  // log("#缓存完成,#key:" + key_ + ",#value:" + value)
 }
 
 function setCacheAsyn(key_, value) {
   wx.setStorage(key_, value);
-  log("#缓存完成,#key:" + key_ + ",#value:" + value)
+  // log("#缓存完成,#key:" + key_ + ",#value:" + value)
 }
 /**
  * 往对象类型缓存加属性；往数组类型缓存加元素{单值、对象、数组}
@@ -225,7 +224,6 @@ function putObject2Cache(key_, value) {
   if (Object.prototype.toString.call(value) === '[object Object]') {
     for (var p in value) {
       if (typeof(value[p]) == "function") {
-        log("###error 对象中包含方法，不能push操作")
         throw "#error对象中包含方法，不能push操作"
       } else {
         cache[p] = value[p]; //#缓存中如果以及存在属性，则替换
@@ -292,7 +290,7 @@ function softTips(that, text_, time_) {
 
 
 //全局-常量、变量 ###########################################################
-const apiHost = "http://127.0.0.1:9660/pinb-service"
+const apiHost = "http://127.0.0.1:9660/pinb-service"//https://apitest.pinb.vip/pinb-service
 
 const cacheKey = {
   userinfo: 'userinfo',

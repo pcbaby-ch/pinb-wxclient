@@ -1,4 +1,5 @@
-// pages/myOrder/myOrder.js
+let util = require("../../utils/util.js")
+
 Page({
 
   /**
@@ -14,10 +15,19 @@ Page({
   onLoad: function(options) {
     wx.showNavigationBarLoading();
   },
+
   
-  sweepQrcode: function() {
-    wx.navigateTo({
-      url: '../sweepQrcode/sweepQrcode'
+
+  scanPayCode: function() {
+    let that = this
+    wx.scanCode({
+      onlyFromCamera: true,
+      success(res) {
+        console.log("#扫码结果:" + JSON.stringify(res))
+        wx.setNavigationBarTitle({
+          title: res.result,
+        })
+      }
     })
   },
 

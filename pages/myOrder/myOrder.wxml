@@ -9,4 +9,16 @@
 <view class='main'>
   <!-- 订单list -->
   <include src="../component/listOrder.wxml" />
+  
+
+  <!-- 右下角悬浮菜单 -->
+  <view class='fixed'>
+    <view class='fixed-list' bindtap='scanPayCode'>
+      <image src='../img/scan.png'></image>
+      <view>扫码</view>
+    </view>
+    
+
+  </view>
+
 </view>
