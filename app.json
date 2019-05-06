@@ -22,7 +22,7 @@
     "backgroundColor":"#fff",
     "list":[{
       "pagePath":"pages/index/index",
-      "text": "我的店铺",
+      "text": "万物可团",
       "iconPath":"pages/img/index.png",
       "selectedIconPath":"pages/img/indexB.png"
     },{

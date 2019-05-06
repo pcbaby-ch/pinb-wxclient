@@ -241,7 +241,8 @@ function log(logText) {
   if (apiHost.indexOf("api.pinb.vip") >= 0) {
     //产线环境，不打印日志
   } else if (apiHost.indexOf("apitest.pinb.vip") >= 0) {
-    //测试环境，不打印日志
+    //测试环境，打印日志
+    console.log(logText + " >>" + formatTime(new Date()))
   } else if (apiHost.indexOf("127.0.0.1") >= 0 || apiHost.indexOf("localhost") >= 0) {
     //本地环境，打印日志
     console.log(logText + " >>" + formatTime(new Date()))
@@ -290,7 +291,7 @@ function softTips(that, text_, time_) {
 
 
 //全局-常量、变量 ###########################################################
-const apiHost = "http://127.0.0.1:9660/pinb-service"//https://apitest.pinb.vip/pinb-service
+const apiHost = "https://apitest.pinb.vip/pinb-service"//https://apitest.pinb.vip/pinb-service
 
 const cacheKey = {
   userinfo: 'userinfo',

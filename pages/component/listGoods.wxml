@@ -23,7 +23,7 @@
             {{[6,8,9][item.groubaSize]?[6,8,9][item.groubaSize]+'人团':'?人团'}}
           </view>
         </view>
-        <button open-type='share' class='buttonBlock main-list-share'>开团立省{{item.groubaDiscountAmount||'??'}}元</button>
+        <button open-type='share' data-index='{{index}}' bindtap='' class='buttonBlock main-list-share'>开团立省{{item.groubaDiscountAmount||'??'}}元</button>
         <!-- <view class='main-list-share' >开团立省{{item.groubaDiscountAmount||'??'}}元</view> -->
       </view>
       <view class='main-list-endTime {{item.endTimeH || item.endTimeM || editItem==index+"-endTime"?"":""}}' style='padding:6px 0;'>

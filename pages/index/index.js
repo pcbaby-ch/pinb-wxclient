@@ -256,7 +256,7 @@ Page({
       sourceType: ['album', 'camera'],
       success(resImage) {
         util.imageUpload(resImage, This, image => {
-          if (image) {            
+          if (image) {
             groub.groubImgView = resImage.tempFilePaths[0]
             groub.groubImg = image
             util.log("#groub:" + JSON.stringify(groub) + "，#resImage:" + JSON.stringify(resImage))
@@ -283,7 +283,7 @@ Page({
       success(resImage) {
         util.imageUpload(resImage, This, image => {
           if (image) {
-            let productList = This.data.productList;            
+            let productList = This.data.productList;
             productList[Index].goodsImgView = resImage.tempFilePaths[0]
             productList[Index].goodsImg = image
             This.setData({
@@ -340,9 +340,9 @@ Page({
   /**
    * Lifecycle function--Called when page load
    */
-  onLoad: function() {
+  onLoad: function(res) {
     wx.showNavigationBarLoading()
-    
+    util.log("#页面传参:" + JSON.stringify(res))
     let that = this
     var productList = this.data.productList
     this.arraySetTest(productList)
@@ -425,9 +425,26 @@ Page({
       }
     })
 
+    //#获取分享信息：
+    wx.getShareInfo({
+      shareTicket: res.shareTickets[0],
+      success: (res) => {
+        that.setData({
+          isShow: true
+        })
+        util.log(that.setData.isShow)
+      },
+      fail: function(res) {
+        console.log(res)
+      },
+      complete: function(res) {
+        console.log(res)
+      }
+    })
+
   },
 
-  getGroubInfo(that){
+  getGroubInfo(that) {
     util.reqPost(util.apiHost + "/groupBar/selectOne", {
       refUserWxUnionid: util.getCache(util.cacheKey.userinfo, "wxUnionid")
     }, resp => {
@@ -492,7 +509,7 @@ Page({
 
   },
 
-  toQrCode: function () {
+  toQrCode: function() {
     //#生成二维码
     var qrcode = new QRCode('canvas', {
       // usingIn: this,
@@ -510,23 +527,41 @@ Page({
     })
   },
 
-  closePay: function () {
+  closePay: function() {
     this.setData({
       payContainerShow: false,
     })
   },
-
+  shareGrouba(e) {
+    let productList = this.data.productList
+    util.log("#商品活动分享:" + JSON.stringify(productList))
+    let index = e.target.dataset.index
+    let productList0 = productList[0]
+    productList[0] = productList[index]
+    productList[index] = productList0
+    this.setData({
+      productList,
+    })
+  },
   /**
    * Called when user click on the top right corner to share
    */
-  onShareAppMessage: function () {
+  onShareAppMessage(e) {
     let that = this;
+    let index = e.target.dataset.index
+    let productList = this.data.productList
+    let productList0 = productList[0]
+    productList[0] = productList[index]
+    productList[index] = productList0
+    this.setData({
+      productList,
+    })
     return {
-      title: '参团立享优惠'+util.getCache(util.cacheKey.isOpen), // 转发后 所显示的title
-      path: '/pages/group/index', // 相对的路径
+      title: '参团立享优惠' + util.getCache(util.cacheKey.isOpen), // 转发后 所显示的title
+      path: '/pages/index/index?groubaTrace=GA2019050600000004', // 相对的路径
       // imageUrl:'http://127.0.0.1:9660/pinb-service/images/15a9bdccdfc851450bd9ab802c631475.jpg',
-      success: (res) => {    // 成功后要做的事情
-        util.log("#分享成功"+res.shareTickets[0])
+      success: (res) => { // 成功后要做的事情
+        util.log("#分享成功" + res.shareTickets[0])
 
         wx.getShareInfo({
           shareTicket: res.shareTickets[0],
@@ -536,13 +571,17 @@ Page({
             })
             util.log(that.setData.isShow)
           },
-          fail: function (res) { console.log(res) },
-          complete: function (res) { console.log(res) }
+          fail: function(res) {
+            console.log(res)
+          },
+          complete: function(res) {
+            console.log(res)
+          }
         })
       },
-      fail: function (res) {
+      fail: function(res) {
         // 分享失败
-        util.log("#分享失败"+res)
+        util.log("#分享失败" + res)
       }
     }
   }
