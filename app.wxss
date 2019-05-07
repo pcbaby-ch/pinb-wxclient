@@ -309,6 +309,7 @@
 
 .goods-list-right {
   flex: 1;
+  flex-direction: column;
   padding: 6rpx 0 0 15rpx;
   box-sizing: border-box;
 }
@@ -321,8 +322,8 @@
 }
 
 .main-list-right-groubaSize image {
-  width: 40rpx;
-  height: 40rpx;
+  width: 38rpx;
+  height: 38rpx;
 }
 
 .main-list-right-groubaSize view {
@@ -336,7 +337,7 @@
 }
 
 .goodsName {
-  padding-bottom: 10rpx;
+  padding-bottom: 0rpx;
   color: rgba(16, 16, 16, 1);
   font-size: 30rpx;
   text-align: left;
@@ -358,7 +359,7 @@
 }
 
 .main-list-endTime {
-  padding-bottom: 3rpx;
+  padding-bottom: 0rpx;
 }
 
 .main-list-endTime image {
@@ -395,8 +396,8 @@
   padding-left: 12rpx;
   color: #8a8a8a;
   font-size: 28rpx;
-  text-align: left;
   font-family: PingFangSC-regular;
+  text-align: left;
   position: block;
 }
 

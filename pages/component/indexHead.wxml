@@ -1,11 +1,20 @@
-<view class='top {{!isEdit?"opacityshow":""}}' bindtap='upImg'>
-  <view data-type='groub.groubName' data-index='' class='{{groub.groubName?"top-groubName":" top-groubName"}}' style='margin-top:-20rpx' wx:if='{{editItem!="-groub.groubName"}}'>{{groub.groubName||'??商铺名称??'}}</view>
+<!-- 首页-头部 -->
+<view class='index-head'>
+  <view class='heat-line1'>
+    <view class='head-location'>
+      <image src='../img/location3.png'></image>
+      <view class='locatoion-text'>{{}}创智新天地8号楼创智新天地8号楼</view>
+      <!-- <view class="locatoion-text" style='font-size:38rpx;'>▽</view> -->
+    </view>
 
-  <image src='{{groub.groubImgView}}' class='bgImg' mode='aspectFill'></image>
-  <view class='top-tag'>
-    <view class='top-tag-i'>老用户开团</view>
-    <view class='top-tag-i'>分享用户拼团</view>
-    <view class='top-tag-i'>人满成团</view>
-  </view>
+    <view class='head-scan' bindtap='scanPayCode'>
+      <image src='../img/scan1.png'></image>
+      <view>扫码</view>
+    </view>
+</view>
+
+<view class='heat-line2 head-search'>
+  <input maxlength='25' type="text" class="antEdit" style='' bindblur='bindinput' data-type='search' value='{{groub.search}}' focus='{{editItem=="-groub.search"}}' placeholder='输入商家、商品名称' placeholder-class='search-placeholder' />
+</view>
 
 </view>

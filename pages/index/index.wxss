@@ -1,0 +1,74 @@
+.heat-line1 {
+  display: flex;
+}
+
+.head-location {
+  padding-left: 10rpx;
+  padding-bottom: 15rpx;
+  width: 83%;
+  display: flex;
+  position: block;
+  float: left;
+}
+
+.head-location image {
+  width: 38rpx;
+  height: 38rpx;
+}
+
+.head-location .locatoion-text {
+  padding-left: 2rpx;
+  font-size: 30rpx;
+  line-height: 36rpx;
+  text-align: left;
+  
+  font-family: PingFangSC-regular;
+  position: block;
+}
+
+.head-scan {
+  padding-right: 10rpx;
+  display: flex;
+  position: block;
+  justify-self: flex-end;
+  
+}
+
+.head-scan image {
+  width: 38rpx;
+  height: 38rpx;
+}
+
+.head-scan view {
+  padding-left: 5rpx;
+  color: #49a3f8;
+  font-size: 28rpx;
+  font-family: PingFangSC-regular;
+  text-align: left;
+  position: block;
+}
+
+.head-search {
+  width: 100%;
+  padding-bottom: 5rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.head-search input {
+  text-align: center;
+  width: 98%;
+  box-sizing: border-box;
+  margin-top: 5rpx;
+  border-radius: 30rpx;
+  border: 0;
+  background-color: #ececec;
+  font-size: 28rpx;
+  font-family: PingFangSC-regular;
+}
+
+.search-placeholder {
+  font-size: 28rpx;
+  font-family: PingFangSC-regular;
+}
