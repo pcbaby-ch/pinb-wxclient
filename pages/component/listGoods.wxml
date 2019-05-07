@@ -1,3 +1,4 @@
+<!-- 为开团商品展示 -->
 <view wx:for='{{productList}}' wx:key='{{index}}' class='{{!isEdit?"opacityshow":""}} productList'>
   <view wx:if='{{!isEdit}}' class='goods-list {{editIndex==index?"goods-list-error":""}}' bindtap='toQrCode'>
     <view wx:if="{{item.groubaIsnew}}" class='goods-list-new'>新</view>

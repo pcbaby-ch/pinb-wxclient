@@ -186,6 +186,16 @@
   box-shadow: 0 0 5px #ff9800;
 }
 
+.goods-list-active {
+  display: flex;
+  height: 200rpx;
+  position: relative;
+  margin-bottom: 10rpx;
+  box-shadow: 0 0 5px #888;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
 /** 商品list-左侧 *********************/
 
 .goods-list-left {
@@ -299,37 +309,44 @@
 
 .goods-list-right {
   flex: 1;
-  padding-top: 6rpx;
-  padding-left: 22rpx;
+  padding: 6rpx 0 0 15rpx;
   box-sizing: border-box;
 }
 
-.main-list-right-top {
+.main-list-right-groubaSize {
+  padding-bottom: 3rpx;
   width: 100%;
   display: flex;
-  align-items: center;
+  position: block;
 }
 
-.main-list-right-top image {
+.main-list-right-groubaSize image {
   width: 40rpx;
   height: 40rpx;
 }
 
-.main-list-num {
+.main-list-right-groubaSize view {
   padding-left: 10rpx;
-  line-height: 40rpx;
-  color: rgba(63, 81, 181, 0.66);
+  line-height: 24px;
+  color: #1296db;
   font-size: 28rpx;
   text-align: left;
   font-family: PingFangSC-regular;
-  position: relative;
-  top: 6rpx;
+  position: block;
+}
+
+.goodsName {
+  padding-bottom: 10rpx;
+  color: rgba(16, 16, 16, 1);
+  font-size: 30rpx;
+  text-align: left;
+  font-family: Arial;
 }
 
 .main-list-share {
   width: 200rpx;
   position: absolute;
-  top: 5rpx;
+  bottom: 5rpx;
   right: 5rpx;
   line-height: 55rpx;
   border-radius: 4rpx;
@@ -341,23 +358,46 @@
 }
 
 .main-list-endTime {
-  line-height: 44rpx;
-  color: rgba(255, 152, 0, 0.66);
-  font-size: 28rpx;
-  text-align: left;
-  font-family: PingFangSC-regular;
+  padding-bottom: 3rpx;
 }
 
 .main-list-endTime image {
-  width: 40rpx;
-  height: 40rpx;
+  padding: 0 2rpx 0 2rpx;
+  width: 38rpx;
+  height: 38rpx;
   vertical-align: middle;
   margin-right: 8rpx;
 }
 
 .main-list-endTime view {
+  line-height: 24px;
   display: inline-block;
   vertical-align: middle;
+  color: #f4ea2a;
+  font-size: 28rpx;
+  text-align: left;
+  font-family: PingFangSC-regular;
+}
+
+.main-list-right-location {
+  padding-bottom: 5rpx;
+  width: 100%;
+  display: flex;
+  position: block;
+}
+
+.main-list-right-location image {
+  width: 38rpx;
+  height: 38rpx;
+}
+
+.main-list-right-location view {
+  padding-left: 12rpx;
+  color: #8a8a8a;
+  font-size: 28rpx;
+  text-align: left;
+  font-family: PingFangSC-regular;
+  position: block;
 }
 
 .main-list-laxin {
@@ -439,15 +479,16 @@
 }
 
 /** 支付浮窗样式 ***********************************/
-.pay-container{
-   position: fixed;
-   height: 100%;
-   top: 300rpx;
-   text-align: center;
-   z-index: 668;
+
+.pay-container {
+  position: fixed;
+  height: 100%;
+  top: 300rpx;
+  text-align: center;
+  z-index: 668;
 }
+
 .pay {
-  
   background-color: rgba(227, 224, 224, 1);
   text-align: center;
   border: 2rpx solid rgba(187, 187, 187, 1);
