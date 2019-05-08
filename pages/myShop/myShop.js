@@ -3,7 +3,6 @@
 var app = getApp()
 let util = require("../../utils/util.js")
 var QRCode = require('../../utils/weapp-qrcode.js')
-var Promise = require("../../utils/bluebird.min.js")
 
 const defaultOrder = {
   refUserImg: 'wx_head2.jpg',
@@ -180,6 +179,7 @@ Page({
   },
 
   getLocation(res) {
+    let that = this;
     util.log(util.apiHost + "#获取用户地址:" + JSON.stringify(res))
     //** 集中用户授权，方便后续接口调用体验 */
     if (wx.canIUse('button.open-type.getUserInfo')) {
@@ -188,57 +188,55 @@ Page({
       util.putCache(util.cacheKey.userinfo, "encryptedData", res.detail.encryptedData)
       util.putCache(util.cacheKey.userinfo, "iv", res.detail.iv)
       util.log("#userinfo:" + JSON.stringify(util.getCache(util.cacheKey.userinfo)))
-    } else {
-      util.log("#(旧)自动弹出模式授权，并获取用户信息")
-      wx.getSetting({
-        success(res) {
-          if (!res.authSetting['scope.userInfo']) {
-            wx.authorize({
-              scope: 'scope.userInfo',
-              success() {
-                util.log("#(旧)自动弹出模式授权-成功-开始获取用户信息");
-                wx.getUserInfo({
-                  success: res => {
-                    util.putCache(util.cacheKey.userinfo, null, res.userInfo)
-                    util.log("#userinfo:" + JSON.stringify(util.getCache(util.cacheKey.userinfo)))
-                  }
-                })
-              }
-            })
+      util.softTips(that, JSON.stringify(util.getCache(util.cacheKey.userinfo)),8)
+    }
+    // else {
+    //   util.log("#(旧)自动弹出模式授权，并获取用户信息")
+    //   wx.getSetting({
+    //     success(res) {
+    //       if (!res.authSetting['scope.userInfo']) {
+    //         wx.authorize({
+    //           scope: 'scope.userInfo',
+    //           success() {
+    //             util.log("#(旧)自动弹出模式授权-成功-开始获取用户信息");
+    //             wx.getUserInfo({
+    //               success: res => {
+    //                 util.putCache(util.cacheKey.userinfo, null, res.userInfo)
+    //                 util.log("#userinfo:" + JSON.stringify(util.getCache(util.cacheKey.userinfo)))
+    //               }
+    //             })
+    //           }
+    //         })
+    //       }
+    //     }
+    //   })
+    // }
+
+    let groub = this.data.groub;
+    wx.chooseLocation({
+      success(res) {
+        util.log("#地址选择成功:" + JSON.stringify(res))
+        groub.groubAddress = res.address;
+        util.putCache(util.cacheKey.userinfo, "address", res.address)
+        util.putCache(util.cacheKey.userinfo, "latitude", res.latitude)
+        util.putCache(util.cacheKey.userinfo, "longitude", res.longitude)
+        util.log("#userinfo:" + JSON.stringify(util.getCache(util.cacheKey.userinfo)))
+        that.setData({
+          groub
+        })
+        //util.log("#请求后台服务，解析encryptedData")
+
+      },
+      fail() {
+        that.setData({
+          usToast: {
+            text: '地址获取失败',
+            time: 3
           }
-        }
-      })
-    }
+        })
+      }
+    })
 
-    let This = this;
-    if (this.data.isEdit) {
-      let groub = this.data.groub;
-      wx.chooseLocation({
-        success(res) {
-          util.log("#地址选择成功:" + JSON.stringify(res))
-          groub.groubAddress = res.address;
-          util.putCache(util.cacheKey.userinfo, "address", res.address)
-          util.putCache(util.cacheKey.userinfo, "latitude", res.latitude)
-          util.putCache(util.cacheKey.userinfo, "longitude", res.longitude)
-          util.log("#userinfo:" + JSON.stringify(util.getCache(util.cacheKey.userinfo)))
-          This.setData({
-            groub
-          })
-          //util.log("#请求后台服务，解析encryptedData")
-
-        },
-        fail() {
-          This.setData({
-            usToast: {
-              text: '地址获取失败',
-              time: 3
-            }
-          })
-        }
-      })
-    } else {
-
-    }
   },
 
 
@@ -340,7 +338,7 @@ Page({
   /**
    * Lifecycle function--Called when page load
    */
-  onLoad: function(res) {
+  onLoad: function(pageRes) {
     wx.showNavigationBarLoading()
     util.log("#页面传参:" + JSON.stringify(pageRes))
     let isOpen = pageRes.isOpen
@@ -374,7 +372,7 @@ Page({
           productList: resp.data.goodsList,
         })
         util.log("#店铺数据加载完成")
-      }else{
+      } else {
         util.log("#店铺数据加载失败")
       }
     })

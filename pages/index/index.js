@@ -3,7 +3,6 @@
 var app = getApp()
 let util = require("../../utils/util.js")
 var QRCode = require('../../utils/weapp-qrcode.js')
-var Promise = require("../../utils/bluebird.min.js")
 
 const defaultOrder = {
   refUserImg: 'wx_head2.jpg',
@@ -24,6 +23,9 @@ const defalutProduct = {
 }
 Page({
   data: {
+    searchAddress: util.getCache(util.cacheKey.userinfo,"address"),
+    searchText: util.getCache("searchText"),
+
     //店铺-基础信息
     groub: {
       groubTrace: "",
@@ -183,66 +185,31 @@ Page({
     util.log("#获取手机号:" + JSON.stringify(res))
   },
 
-  getLocation(res) {
-    util.log(util.apiHost + "#获取用户地址:" + JSON.stringify(res))
-    //** 集中用户授权，方便后续接口调用体验 */
-    if (wx.canIUse('button.open-type.getUserInfo')) {
-      util.log("#button模式授权成功，并获取用户信息" + JSON.stringify(res.detail.userInfo))
-      util.putCache(util.cacheKey.userinfo, null, res.detail.userInfo)
-      util.putCache(util.cacheKey.userinfo, "encryptedData", res.detail.encryptedData)
-      util.putCache(util.cacheKey.userinfo, "iv", res.detail.iv)
-      util.log("#userinfo:" + JSON.stringify(util.getCache(util.cacheKey.userinfo)))
-    } else {
-      util.log("#(旧)自动弹出模式授权，并获取用户信息")
-      wx.getSetting({
-        success(res) {
-          if (!res.authSetting['scope.userInfo']) {
-            wx.authorize({
-              scope: 'scope.userInfo',
-              success() {
-                util.log("#(旧)自动弹出模式授权-成功-开始获取用户信息");
-                wx.getUserInfo({
-                  success: res => {
-                    util.putCache(util.cacheKey.userinfo, null, res.userInfo)
-                    util.log("#userinfo:" + JSON.stringify(util.getCache(util.cacheKey.userinfo)))
-                  }
-                })
-              }
-            })
+  getLocation() {
+    let that=this
+    wx.chooseLocation({
+      success(res) {
+        util.log("#地址选择成功:" + JSON.stringify(res))
+        util.putCache(util.cacheKey.userinfo, "address", res.name)
+        util.putCache(util.cacheKey.userinfo, "latitude", res.latitude)
+        util.putCache(util.cacheKey.userinfo, "longitude", res.longitude)
+        util.log("#userinfo:" + JSON.stringify(util.getCache(util.cacheKey.userinfo)))
+        that.setData({
+          searchAddress: res.name,
+        })
+        //util.log("#请求后台服务，解析encryptedData")
+
+      },
+      fail() {
+        that.setData({
+          usToast: {
+            text: '地址获取失败',
+            time: 3
           }
-        }
-      })
-    }
+        })
+      }
+    })
 
-    let This = this;
-    if (this.data.isEdit) {
-      let groub = this.data.groub;
-      wx.chooseLocation({
-        success(res) {
-          util.log("#地址选择成功:" + JSON.stringify(res))
-          groub.groubAddress = res.address;
-          util.putCache(util.cacheKey.userinfo, "address", res.address)
-          util.putCache(util.cacheKey.userinfo, "latitude", res.latitude)
-          util.putCache(util.cacheKey.userinfo, "longitude", res.longitude)
-          util.log("#userinfo:" + JSON.stringify(util.getCache(util.cacheKey.userinfo)))
-          This.setData({
-            groub
-          })
-          //util.log("#请求后台服务，解析encryptedData")
-
-        },
-        fail() {
-          This.setData({
-            usToast: {
-              text: '地址获取失败',
-              time: 3
-            }
-          })
-        }
-      })
-    } else {
-
-    }
   },
 
 
@@ -402,16 +369,17 @@ Page({
     })
   },
   getNearGrouba(that, orderTrace) {
-    util.reqPost(util.apiHost + "/groupBar/selectNearGrouba", {
-      orderTrace: orderTrace,
+    util.reqPost(util.apiHost + "/groubActivity/selectNearGrouba", {
+      latitude: util.getCache(util.cacheKey.userinfo, "latitude"),
+      longitude: util.getCache(util.cacheKey.userinfo, "longitude"),
     }, resp => {
       if (util.parseResp(that, resp)) {
-        resp.data.groubInfo.groubImgView = util.apiHost + "/images/" + resp.data.groubInfo.groubImg
-        for (var i in resp.data.goodsList) {
-          resp.data.goodsList[i]['goodsImgView'] = util.apiHost + "/images/" + resp.data.goodsList[i].goodsImg
+        
+        for (var i in resp.data) {
+          resp.data[i]['goodsImgView'] = util.apiHost + "/images/" + resp.data[i].goodsImg
         }
         that.setData({
-          productList: resp.data.goodsList,
+          productList: resp.data,
         })
         util.log("#分享活动订单-数据加载-完成")
       } else {
@@ -422,7 +390,7 @@ Page({
   getShareOrder(that) {
     util.reqPost(util.apiHost + "/groupBar/selectShareOrder", {
       latitude: util.getCache(util.cacheKey.userinfo, "latitude"),
-      longitude: util.getCache(util.cacheKey.userinfo, "longitude")
+      longitude: util.getCache(util.cacheKey.userinfo, "longitude"),
     }, resp => {
       if (util.parseResp(that, resp)) {
         resp.data.groubInfo.groubImgView = util.apiHost + "/images/" + resp.data.groubInfo.groubImg

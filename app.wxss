@@ -41,8 +41,9 @@
 }
 
 .buttonBlock {
-  display: inline-block;
+  /* display: inline-block; */
   vertical-align: middle;
+  text-align: center;
   padding: 0;
   border-radius: 0;
   -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
@@ -51,6 +52,9 @@
   border: none;
   line-height: 40rpx;
   box-sizing: content-box;
+
+  width: 100%;
+  position: block;
 }
 
 .buttonBlock::after {
@@ -354,7 +358,7 @@
   background-color: rgb(73, 167, 115);
   color: rgba(255, 255, 255, 1);
   font-size: 28rpx;
-  text-align: center;
+  align-items: center;
   font-family: Microsoft Yahei;
 }
 
@@ -403,18 +407,20 @@
   margin-left: 30rpx;
 }
 
-.main-btm {
+.head-foot {
   padding: 4rpx 4rpx;
-  font-size: 30rpx;
+  width: 100%;
+  display: flex;
+  position: block;
 }
 
-.main-btm image {
+.head-foot image {
   width: 40rpx;
   height: 40rpx;
   vertical-align: middle;
 }
 
-.main-btm view {
+.head-foot view {
   display: inline;
   vertical-align: middle;
   line-height: 40rpx;

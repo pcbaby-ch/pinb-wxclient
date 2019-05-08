@@ -1,5 +1,4 @@
 var md5 = require('md5.js')
-var Promise = require('bluebird.min.js')
 
 //全局-时间工具类 ###########################################################
 /** 时间工具类 */
@@ -327,7 +326,6 @@ module.exports = {
   
 
 
-  wxPromise: wxPromise,
   softTips: softTips,
 
   /** api服务host地址 https://apitest.pinb.vip/pinb-service */

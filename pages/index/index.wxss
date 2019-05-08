@@ -8,7 +8,9 @@
   width: 83%;
   display: flex;
   position: block;
-  float: left;
+  
+
+  
 }
 
 .head-location image {
@@ -27,10 +29,11 @@
 }
 
 .head-scan {
-  padding-right: 10rpx;
   display: flex;
   position: block;
   justify-self: flex-end;
+  width: 130rpx;
+  
   
 }
 
