@@ -53,15 +53,15 @@
       <!-- 活动商品-右侧 -->
       <view class='goods-list-right'>
         <picker bindchange="set_num" data-index='{{index}}' value="{{item.groubaSize}}" range="{{[6,8,9]}}">
-          <view class='main-list-right-top' value="{{item.groubaSize}}">
-            <image src='../img/team.png'></image>
+          <view class='main-list-right-groubaSize' value="{{item.groubaSize}}">
+            <image class='goods-list-right-icon' src='../img/team.png'></image>
             <view class='main-list-num'>
               {{[6,8,9][item.groubaSize]?[6,8,9][item.groubaSize]+'人团':'设置开团人数'}}
             </view>
           </view>
         </picker>
         <view class='main-list-endTime {{item.groubaActiveMinute?"":"antScale"}}' style='padding:6px 0;'>
-          <image src='../img/time-circle2.png' catchtap='catchtap' data-type='groubaActiveMinute' data-index='{{index}}'></image>
+          <image class='goods-list-right-icon' src='../img/time-circle2.png' catchtap='catchtap' data-type='groubaActiveMinute' data-index='{{index}}'></image>
           <view wx:if='{{editItem!=index+"-groubaActiveMinute"}}' catchtap='catchtap' data-type='groubaActiveMinute' data-index='{{index}}'>
             {{item.groubaActiveMinute?(item.groubaActiveMinute?item.groubaActiveMinute+'分':'')+'后结束':'设置拼团时长'}}
           </view>
@@ -112,9 +112,9 @@
     <view>{{isEdit?"预览":"编辑"}}</view>
   </view>
   <!-- <view class='fixed-list' catchtap='add'>
-      <image src='../img/plus-square.png'></image>
-      <view>增加</view>
-    </view> -->
+    <image src='../img/plus-square.png'></image>
+    <view>增加</view>
+  </view> -->
 
 </view>
 

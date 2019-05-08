@@ -16,8 +16,8 @@
         <view class='main-list-num'>99人团</view>
         <view class='main-list-share'>分享</view>
       </view> -->
-    <view class='main-list-endTime'>
-      <image src='../img/time-circle2.png' mode='aspectFill'></image>
+    <view class='main-list-endTime' style='padding-bottom:10rpx;'>
+      <image class='goods-list-right-icon' src='../img/time-circle2.png' mode='aspectFill'></image>
       <view>距结束55:34:12</view>
     </view>
     <view class='main-head-list'>

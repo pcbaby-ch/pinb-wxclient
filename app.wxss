@@ -308,32 +308,32 @@
 /** 商品list-右侧 *********************/
 
 .goods-list-right {
-  flex: 1;
+  width: 50%;
+  display: flex;
   flex-direction: column;
-  padding: 6rpx 0 0 15rpx;
+  padding: 6rpx 0 0 10rpx;
   box-sizing: border-box;
 }
 
 .main-list-right-groubaSize {
-  padding-bottom: 3rpx;
   width: 100%;
   display: flex;
   position: block;
 }
 
-.main-list-right-groubaSize image {
-  width: 38rpx;
-  height: 38rpx;
-}
-
 .main-list-right-groubaSize view {
   padding-left: 10rpx;
-  line-height: 24px;
   color: #1296db;
   font-size: 28rpx;
-  text-align: left;
   font-family: PingFangSC-regular;
+  text-align: left;
   position: block;
+}
+
+.goods-list-right-icon {
+  width: 38rpx;
+  height: 38rpx;
+  vertical-align: middle;
 }
 
 .goodsName {
@@ -351,7 +351,7 @@
   right: 5rpx;
   line-height: 55rpx;
   border-radius: 4rpx;
-  background-color: rgba(15, 192, 96, 1);
+  background-color: rgb(73, 167, 115);
   color: rgba(255, 255, 255, 1);
   font-size: 28rpx;
   text-align: center;
@@ -359,41 +359,29 @@
 }
 
 .main-list-endTime {
-  padding-bottom: 0rpx;
-}
-
-.main-list-endTime image {
-  padding: 0 2rpx 0 2rpx;
-  width: 38rpx;
-  height: 38rpx;
-  vertical-align: middle;
-  margin-right: 8rpx;
-}
-
-.main-list-endTime view {
-  line-height: 24px;
-  display: inline-block;
-  vertical-align: middle;
-  color: #f4ea2a;
-  font-size: 28rpx;
-  text-align: left;
-  font-family: PingFangSC-regular;
-}
-
-.main-list-right-location {
-  padding-bottom: 5rpx;
-  width: 100%;
   display: flex;
   position: block;
 }
 
-.main-list-right-location image {
-  width: 38rpx;
-  height: 38rpx;
+.main-list-endTime view {
+  padding-left: 10rpx;
+  color: #f4ea2a;
+  font-size: 28rpx;
+  font-family: PingFangSC-regular;
+  text-align: left;
+  position: block;
+}
+
+.main-list-right-location {
+  width: 100%;
+  display: flex;
+  position: block;
+  /* justify-self: flex-end; */
+  align-self: flex-end;
 }
 
 .main-list-right-location view {
-  padding-left: 12rpx;
+  padding-left: 10rpx;
   color: #8a8a8a;
   font-size: 28rpx;
   font-family: PingFangSC-regular;

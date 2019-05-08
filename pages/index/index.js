@@ -24,8 +24,6 @@ const defalutProduct = {
 }
 Page({
   data: {
-
-    isEdit: false,
     //店铺-基础信息
     groub: {
       groubTrace: "",
@@ -41,6 +39,12 @@ Page({
     editIndex: 0, //当前编辑项
     editItem: '', //当前编辑项 index-type
 
+  },
+  /** 页面跳转 ############################################# */
+  goMyShop() {
+    wx.navigateTo({
+      url: '/pages/myShop/myShop',
+    })
   },
 
   arraySetTest(productList) {
@@ -340,115 +344,48 @@ Page({
   /**
    * Lifecycle function--Called when page load
    */
-  onLoad: function(res) {
+  onLoad: function(pageRes) {
     wx.showNavigationBarLoading()
-    util.log("#页面传参:" + JSON.stringify(res))
+    util.log("#页面传参:" + JSON.stringify(pageRes))
+    let groubTrace = pageRes.groubTrace
+    let groubaTrace = pageRes.groubaTrace
+    let orderTrace = pageRes.orderTrace
+    groubaTrace = 'sdfsdlj' //测试
+    // orderTrace = 'orderTrace' //测试
     let that = this
-    var productList = this.data.productList
-    this.arraySetTest(productList)
+    //根据首页加载模式加载数据
+    let indexMode = "userNear"
+    if (groubaTrace && orderTrace) {
+      indexMode = "userShare"
+    }
+    that.setData({
+      indexMode,
+    })
 
-    //#如果缓存显示，用户一直未入驻，则直接进入编辑模式，并提示用户填写店铺商品信息
-    let isOpen = util.getCache(util.cacheKey.isOpen)
-    util.log("#页面开始加载。。。#isOpen:" + isOpen)
-    if (isOpen) {
-      if (isOpen == true) {
-        util.log("#缓存-已入驻")
-        //#请求服务器，抓取店铺、商品信息
-        that.getGroubInfo(that)
-
-        that.setData({
-          isEdit: false,
-        })
-      } else {
-        util.log("#缓存-未入驻,#groubInfo:" + util.getCache(util.cacheKey.groubInfo) + "#goodsList:" + util.getCache(util.cacheKey.goodsList))
-        util.softTips(that, "请完善店铺、商品信息,闪电入驻", 2)
-        that.setData({
-          isEdit: true,
-          groub: util.getCache(util.cacheKey.groubInfo) || {},
-          //#此处赋值可能导致商品赋值同化问题?????????????????????????????????????????????????????
-          productList: util.getCache(util.cacheKey.goodsList) || [defalutProduct, defalutProduct, defalutProduct],
-        })
-
-      }
-      return
+    if (indexMode == "userShare") {
+      //#加载指定商铺的基本信息+商品信息（如果是分享来源，则需要去除分享订单对应的商品）+ 分享活动商品（带订单信息）
+      that.getGroubInfo(that, groubTrace, orderTrace)
     } else {
-      util.log("#无缓存-请求登录接口")
+      //#加载附近的活动商品信息
+      that.getNearGrouba(that)
+    }
+    if (indexMode == "userShare") {
+      //#加载分享商品订单参团信息
+      that.getShareGrouba(that, groubTrace, orderTrace)
     }
 
-    // 登录
-    wx.login({
-      success: resLogin => {
-        util.log("#登陆code:" + JSON.stringify(resLogin))
-        if (util.getCache(util.cacheKey.userinfo, "system")) {
-          util.log("#命中缓存-无需再获取用户设备信息")
-        } else {
-          util.log("#未命中缓存-获取用户设备信息")
-          wx.getSystemInfo({
-            success: function(res) {
-              util.putCache(util.cacheKey.userinfo, "model", res.model);
-              util.putCache(util.cacheKey.userinfo, "system", res.system);
-              util.putCache(util.cacheKey.userinfo, "brand", res.brand);
-              util.putCache(util.cacheKey.userinfo, "platform", res.platform);
-              util.log("#userinfo:" + JSON.stringify(util.getCache(util.cacheKey.userinfo)))
-            },
-          })
-        }
 
-        // 发送 res.code 到后台换取 openId, sessionKey, unionId
-        util.reqPost(util.apiHost + "/user/wxLogin4Shop", {
-          "appid": "wx71de1973104f41cf",
-          "secret": "8dee514b29b84c7640b842e4e2d521aa",
-          "jsCode": resLogin.code,
-          "grantType": "authorization_code",
-        }, function success(resp) {
-          //#缓存服务端获取的openid、unionid
-          util.putCache(util.cacheKey.userinfo, "wxUnionid", resp.data.wxUnionid)
-          util.putCache(util.cacheKey.userinfo, "wxOpenid", resp.data.wxOpenid)
-          if (resp.retCode == '10000') {
-            util.log("#已入驻:" + JSON.stringify(resp))
-            //已入驻，展示店铺商品信息
-            util.putCache(util.cacheKey.isOpen, null, true)
-            that.setData({
-              isEdit: false,
-            })
-            that.getGroubInfo(that)
-          } else {
-            util.log("#未入驻")
-            util.softTips(that, resp.retMsg, 5)
-            util.putCache(util.cacheKey.isOpen, null, false)
-            that.setData({
-              isEdit: true,
-            })
-          }
-        }, function fail() {})
-
-      }
-    })
-
-    //#获取分享信息：
-    wx.getShareInfo({
-      shareTicket: res.shareTickets[0],
-      success: (res) => {
-        that.setData({
-          isShow: true
-        })
-        util.log(that.setData.isShow)
-      },
-      fail: function(res) {
-        console.log(res)
-      },
-      complete: function(res) {
-        console.log(res)
-      }
-    })
 
   },
 
-  getGroubInfo(that) {
+  getGroubInfo(that, groubTrace, orderTrace) {
     util.reqPost(util.apiHost + "/groupBar/selectOne", {
-      refUserWxUnionid: util.getCache(util.cacheKey.userinfo, "wxUnionid")
+      refUserWxUnionid: groubTrace ? null : util.getCache(util.cacheKey.userinfo, "wxUnionid"),
+      groubTrace: groubTrace,
+      orderTrace: orderTrace,
+      refUserWxUnionid: util.getCache(util.cacheKey.userinfo, 'wxUnionid')
     }, resp => {
-      if (resp.retCode == '10000') {
+      if (util.parseResp(that, resp)) {
         resp.data.groubInfo.groubImgView = util.apiHost + "/images/" + resp.data.groubInfo.groubImg
         for (var i in resp.data.goodsList) {
           resp.data.goodsList[i]['goodsImgView'] = util.apiHost + "/images/" + resp.data.goodsList[i].goodsImg
@@ -456,10 +393,48 @@ Page({
         that.setData({
           groub: resp.data.groubInfo,
           productList: resp.data.goodsList,
+          shareGoods: resp.data.shareGoods,
         })
-
+        util.log("#店铺-数据加载-完成")
       } else {
-        util.softTips(that, resp.retMsg)
+        util.log("#店铺-数据加载-失败")
+      }
+    })
+  },
+  getNearGrouba(that, orderTrace) {
+    util.reqPost(util.apiHost + "/groupBar/selectNearGrouba", {
+      orderTrace: orderTrace,
+    }, resp => {
+      if (util.parseResp(that, resp)) {
+        resp.data.groubInfo.groubImgView = util.apiHost + "/images/" + resp.data.groubInfo.groubImg
+        for (var i in resp.data.goodsList) {
+          resp.data.goodsList[i]['goodsImgView'] = util.apiHost + "/images/" + resp.data.goodsList[i].goodsImg
+        }
+        that.setData({
+          productList: resp.data.goodsList,
+        })
+        util.log("#分享活动订单-数据加载-完成")
+      } else {
+        util.log("#分享活动订单-数据加载-失败")
+      }
+    })
+  },
+  getShareOrder(that) {
+    util.reqPost(util.apiHost + "/groupBar/selectShareOrder", {
+      latitude: util.getCache(util.cacheKey.userinfo, "latitude"),
+      longitude: util.getCache(util.cacheKey.userinfo, "longitude")
+    }, resp => {
+      if (util.parseResp(that, resp)) {
+        resp.data.groubInfo.groubImgView = util.apiHost + "/images/" + resp.data.groubInfo.groubImg
+        for (var i in resp.data.goodsList) {
+          resp.data.goodsList[i]['goodsImgView'] = util.apiHost + "/images/" + resp.data.goodsList[i].goodsImg
+        }
+        that.setData({
+          productList: resp.data.goodsList,
+        })
+        util.log("#附近活动商品-数据加载-完成")
+      } else {
+        util.log("#附近活动商品-数据加载-失败")
       }
     })
   },
@@ -563,21 +538,6 @@ Page({
       success: (res) => { // 成功后要做的事情
         util.log("#分享成功" + res.shareTickets[0])
 
-        wx.getShareInfo({
-          shareTicket: res.shareTickets[0],
-          success: (res) => {
-            that.setData({
-              isShow: true
-            })
-            util.log(that.setData.isShow)
-          },
-          fail: function(res) {
-            console.log(res)
-          },
-          complete: function(res) {
-            console.log(res)
-          }
-        })
       },
       fail: function(res) {
         // 分享失败

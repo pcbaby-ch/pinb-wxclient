@@ -25,7 +25,7 @@ const defalutProduct = {
 Page({
   data: {
 
-    isEdit: false,
+    isEdit: true,
     //店铺-基础信息
     groub: {
       groubTrace: "",
@@ -342,113 +342,29 @@ Page({
    */
   onLoad: function(res) {
     wx.showNavigationBarLoading()
-    util.log("#页面传参:" + JSON.stringify(res))
+    util.log("#页面传参:" + JSON.stringify(pageRes))
+    let isOpen = pageRes.isOpen
+    let groubTrace = pageRes.groubTrace
+    let groubaTrace = pageRes.groubaTrace
+    let orderTrace = pageRes.orderTrace
     let that = this
-    var productList = this.data.productList
-    this.arraySetTest(productList)
 
-    //#如果缓存显示，用户一直未入驻，则直接进入编辑模式，并提示用户填写店铺商品信息
-    let isOpen = util.getCache(util.cacheKey.isOpen)
-    util.log("#页面开始加载。。。#isOpen:" + isOpen)
-    if (isOpen) {
-      if (isOpen == true) {
-        util.log("#缓存-已入驻")
-        //#请求服务器，抓取店铺、商品信息
-        that.getGroubInfo(that)
+    //#加载指定商铺的基本信息+商品信息
+    that.getGroubInfo(that, groubTrace)
+    //#加载分享商品订单参团信息
 
-        that.setData({
-          isEdit: false,
-        })
-      } else {
-        util.log("#缓存-未入驻,#groubInfo:" + util.getCache(util.cacheKey.groubInfo) + "#goodsList:" + util.getCache(util.cacheKey.goodsList))
-        util.softTips(that, "请完善店铺、商品信息,闪电入驻", 2)
-        that.setData({
-          isEdit: true,
-          groub: util.getCache(util.cacheKey.groubInfo) || {},
-          //#此处赋值可能导致商品赋值同化问题?????????????????????????????????????????????????????
-          productList: util.getCache(util.cacheKey.goodsList) || [defalutProduct, defalutProduct, defalutProduct],
-        })
 
-      }
-      return
-    } else {
-      util.log("#无缓存-请求登录接口")
-    }
 
-    // 登录
-    wx.login({
-      success: resLogin => {
-        util.log("#登陆code:" + JSON.stringify(resLogin))
-        if (util.getCache(util.cacheKey.userinfo, "system")) {
-          util.log("#命中缓存-无需再获取用户设备信息")
-        } else {
-          util.log("#未命中缓存-获取用户设备信息")
-          wx.getSystemInfo({
-            success: function(res) {
-              util.putCache(util.cacheKey.userinfo, "model", res.model);
-              util.putCache(util.cacheKey.userinfo, "system", res.system);
-              util.putCache(util.cacheKey.userinfo, "brand", res.brand);
-              util.putCache(util.cacheKey.userinfo, "platform", res.platform);
-              util.log("#userinfo:" + JSON.stringify(util.getCache(util.cacheKey.userinfo)))
-            },
-          })
-        }
 
-        // 发送 res.code 到后台换取 openId, sessionKey, unionId
-        util.reqPost(util.apiHost + "/user/wxLogin4Shop", {
-          "appid": "wx71de1973104f41cf",
-          "secret": "8dee514b29b84c7640b842e4e2d521aa",
-          "jsCode": resLogin.code,
-          "grantType": "authorization_code",
-        }, function success(resp) {
-          //#缓存服务端获取的openid、unionid
-          util.putCache(util.cacheKey.userinfo, "wxUnionid", resp.data.wxUnionid)
-          util.putCache(util.cacheKey.userinfo, "wxOpenid", resp.data.wxOpenid)
-          if (resp.retCode == '10000') {
-            util.log("#已入驻:" + JSON.stringify(resp))
-            //已入驻，展示店铺商品信息
-            util.putCache(util.cacheKey.isOpen, null, true)
-            that.setData({
-              isEdit: false,
-            })
-            that.getGroubInfo(that)
-          } else {
-            util.log("#未入驻")
-            util.softTips(that, resp.retMsg, 5)
-            util.putCache(util.cacheKey.isOpen, null, false)
-            that.setData({
-              isEdit: true,
-            })
-          }
-        }, function fail() {})
-
-      }
-    })
-
-    //#获取分享信息：
-    wx.getShareInfo({
-      shareTicket: res.shareTickets[0],
-      success: (res) => {
-        that.setData({
-          isShow: true
-        })
-        util.log(that.setData.isShow)
-      },
-      fail: function(res) {
-        console.log(res)
-      },
-      complete: function(res) {
-        console.log(res)
-      }
-    })
 
   },
 
-  getGroubInfo(that) {
+  getGroubInfo(that, groubTrace) {
     util.reqPost(util.apiHost + "/groupBar/selectOne", {
-      refUserWxUnionid: util.getCache(util.cacheKey.userinfo, "wxUnionid")
+      refUserWxUnionid: groubTrace ? null : util.getCache(util.cacheKey.userinfo, "wxUnionid"),
+      groubTrace: groubTrace
     }, resp => {
-      if (resp.retCode == '10000') {
+      if (util.parseResp(that, resp)) {
         resp.data.groubInfo.groubImgView = util.apiHost + "/images/" + resp.data.groubInfo.groubImg
         for (var i in resp.data.goodsList) {
           resp.data.goodsList[i]['goodsImgView'] = util.apiHost + "/images/" + resp.data.goodsList[i].goodsImg
@@ -457,9 +373,9 @@ Page({
           groub: resp.data.groubInfo,
           productList: resp.data.goodsList,
         })
-
-      } else {
-        util.softTips(that, resp.retMsg)
+        util.log("#店铺数据加载完成")
+      }else{
+        util.log("#店铺数据加载失败")
       }
     })
   },

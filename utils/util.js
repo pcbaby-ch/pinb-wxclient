@@ -29,8 +29,11 @@ function reqPost(url, params, success, fail) {
 function reqGet(url, success, fail) {
   requestLoading(url, null, "", success, fail)
 }
-/** 解析服务端响应报文，并做业务错误提示 */
-function respParse(resp, that) {
+/** 解析服务端响应报文，并做业务错误提示
+ * args{that,resp}
+ * return{false:发生业务错误}
+ */
+function parseResp(that,resp) {
   log("#开始解析响应报文:" + resp)
   if (!resp.retCode) {
     resp = JSON.parse(resp)
@@ -42,7 +45,9 @@ function respParse(resp, that) {
         time: 3
       }
     })
+    return false
   }
+  return true
 }
 
 function requestLoading(url, params, message, successCallback, failCallback) {
@@ -288,14 +293,19 @@ function softTips(that, text_, time_) {
     }
   })
 }
+//统一业务封装 ###########################################################
+
+
+
 
 
 //全局-常量、变量 ###########################################################
-const apiHost = "https://apitest.pinb.vip/pinb-service"//https://apitest.pinb.vip/pinb-service
+const apiHost = "http://127.0.0.1:9660/pinb-service" //https://apitest.pinb.vip/pinb-service
 
 const cacheKey = {
   userinfo: 'userinfo',
   isOpen: "isOpen",
+  groubaTrace: 'groubaTrace',
   groubInfo: "groubInfo",
   goodsList: 'goodsList',
 }
@@ -306,7 +316,7 @@ module.exports = {
   formatTime: formatTime,
   reqPost: reqPost,
   reqGet: reqGet,
-  respParse: respParse,
+  parseResp: parseResp,
   imageUpload: imageUpload,
 
   getCache: getCache,
@@ -314,6 +324,7 @@ module.exports = {
   putCache: putCache,
 
   log: log,
+  
 
 
   wxPromise: wxPromise,

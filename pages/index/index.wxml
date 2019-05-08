@@ -1,10 +1,14 @@
-<!-- 店铺-head信息 #预览页面# ############ -->
-<include src="../component/indexHead.wxml" />
+<!-- 地址、搜索-首页head #预览页面# ##########################  -->
+<include src="../component/indexHead.wxml" wx:if="{{indexMode=='userNear'}}" />
+<!-- 店铺信息-首页head #预览页面# ##########################  -->
+<include src="../component/shopHead.wxml" wx:if="{{indexMode=='userShare'}}" />
 
 <view class='main'>
-  
-  <!-- 附近-活动商品信息 #预览页面# ############  -->
+
+  <!-- 指定店铺-活动商品 #预览页面# ##########################  -->
   <include src="../component/listActiveGoods.wxml" />
+  <!-- 附近-活动商品 #预览页面# ##########################  -->
+  <include src="../component/listNearGoods.wxml" />
 
   <!-- 页脚（含加载动态提示） -->
   <include src="../component/indexFoot.wxml" />
@@ -20,13 +24,9 @@
 </view>
 <!-- 右下角悬浮菜单 -->
 <view class='fixed'>
-  <view wx:if='{{isEdit}}' class='fixed-list' catchtap='save'>
-    <image src='../img/save.png'></image>
-    <view>保存</view>
-  </view>
-  <view class='fixed-list' catchtap='ch_edit'>
-    <image src='{{isEdit?"../img/eye.png":"../img/edit-square.png"}}'></image>
-    <view>{{isEdit?"预览":"编辑"}}</view>
+  <view class='fixed-list' bindtap='goMyShop'>
+    <image src='{{isOpen?"../img/index.png":"../img/edit-square.png"}}'></image>
+    <view>{{isOpen?"店铺":"入驻"}}</view>
   </view>
   <!-- <view class='fixed-list' catchtap='add'>
       <image src='../img/plus-square.png'></image>
