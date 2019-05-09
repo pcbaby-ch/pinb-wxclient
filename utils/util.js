@@ -32,7 +32,7 @@ function reqGet(url, success, fail) {
  * args{that,resp}
  * return{false:发生业务错误}
  */
-function parseResp(that,resp) {
+function parseResp(that, resp) {
   log("#开始解析响应报文:" + resp)
   if (!resp.retCode) {
     resp = JSON.parse(resp)
@@ -71,7 +71,14 @@ function requestLoading(url, params, message, successCallback, failCallback) {
       'content-type': 'application/x-www-form-urlencoded'
     }
   }
-
+  wx.getNetworkType({
+    success: function(res) {
+      // log("#网络连接情况:" + JSON.stringify(res))
+      if (res.networkType == 'none') {
+        heavyTips('网络异常', '亲，你的网络异常，请恢复后重试!')
+      }
+    },
+  })
   wx.request({
     url: url,
     data: params,
@@ -113,8 +120,15 @@ function imageUpload(resImage, This, callBack) {
       var spark = new md5.ArrayBuffer();
       spark.append(res.data);
       imageMd5 = spark.end(false);
-      //log("#图片md5:" + imageMd5)
       //log("#图片准备上传,#resImage" + JSON.stringify(resImage) + "#res" + JSON.stringify(res));
+      wx.getNetworkType({
+        success: function(res) {
+          // log("#网络连接情况:" + JSON.stringify(res))
+          if (res.networkType == 'none') {
+            heavyTips('网络异常', '亲，你的网络异常，请恢复后重试!')
+          }
+        },
+      })
       wx.uploadFile({
         url: apiHost + '/fileUpload',
         filePath: resImage.tempFilePaths[0],
@@ -292,6 +306,13 @@ function softTips(that, text_, time_) {
     }
   })
 }
+/** 重提示 */
+function heavyTips(tile_, text_) {
+  wx.showModal({
+    title: tile_,
+    content: text_,
+  })
+}
 //统一业务封装 ###########################################################
 
 
@@ -323,10 +344,11 @@ module.exports = {
   putCache: putCache,
 
   log: log,
-  
+
 
 
   softTips: softTips,
+  heavyTips: heavyTips,
 
   /** api服务host地址 https://apitest.pinb.vip/pinb-service */
   apiHost: apiHost,

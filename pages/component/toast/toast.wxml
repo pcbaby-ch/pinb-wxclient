@@ -1,1 +1,3 @@
-<view class='toast {{show?"show":""}} {{close?"close":""}}' wx:if='{{show}}'>{{text}}</view>
+<view class='toast-container'>
+  <view class='toast {{show?"show":""}} {{close?"close":""}}' wx:if='{{show}}'>{{text}}</view>
+</view>

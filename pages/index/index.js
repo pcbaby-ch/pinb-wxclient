@@ -25,6 +25,7 @@ Page({
   data: {
     searchAddress: util.getCache(util.cacheKey.userinfo, "address"),
     searchText: util.getCache("searchText"),
+    indexMode: 'userNear',
 
     //店铺-基础信息
     groub: {
@@ -212,41 +213,6 @@ Page({
     })
 
   },
-  /** 微信登陆--共用js 注意保持多个页面js同步此方法逻辑########## */
-  wxLogin(res) {
-    let that = this
-    if (wx.canIUse('button.open-type.getUserInfo')) {
-      util.log("#(新)button模式授权成功，并获取用户信息" + JSON.stringify(res.detail.userInfo))
-      util.putCache(util.cacheKey.userinfo, null, res.detail.userInfo)
-      util.putCache(util.cacheKey.userinfo, "encryptedData", res.detail.encryptedData)
-      util.putCache(util.cacheKey.userinfo, "iv", res.detail.iv)
-      // util.log("#userinfo:" + JSON.stringify(util.getCache(util.cacheKey.userinfo)))
-      that.onLoad()
-    } else {
-      util.log("#(旧)自动弹出模式授权，并获取用户信息")
-      wx.getSetting({
-        success(res) {
-          if (!res.authSetting['scope.userInfo']) {
-            wx.authorize({
-              scope: 'scope.userInfo',
-              success() {
-                util.log("#(旧)自动弹出模式授权-成功-开始获取用户信息");
-                wx.getUserInfo({
-                  success: res => {
-                    util.putCache(util.cacheKey.userinfo, null, res.userInfo)
-                    // util.log("#userinfo:" + JSON.stringify(util.getCache(util.cacheKey.userinfo)))
-                    that.onLoad()
-                  }
-                })
-              }
-            })
-          }
-        }
-      })
-    }
-
-  },
-
 
   /** 店铺-图片获取 *********************************/
   upImg() {
@@ -354,6 +320,7 @@ Page({
     let orderTrace = pageRes ? pageRes.orderTrace : null
     let that = this
     /** 根据首页加载模式加载数据 {userNear userShare userLogin} ############################### */
+    let isLoadData = true
     let indexMode = "userNear"
     let userinfoCache = util.getCache(util.cacheKey.userinfo)
     if (userinfoCache && userinfoCache.city) {
@@ -363,25 +330,30 @@ Page({
       }
     } else {
       util.log("#无缓存-未授权过用户信息")
-      indexMode = "userLogin"
+      wx.navigateTo({
+        url: '/pages/login/login',
+      })
+      return
     }
-
     that.setData({
       indexMode,
     })
-
+    /** 根据页面加载规则，加载对于数据 ################################## */
     if (indexMode == "userShare") {
       //#加载指定商铺的基本信息+商品信息（如果是分享来源，则需要去除分享订单对应的商品）+ 分享活动商品（带订单信息）
       that.getGroubInfo(that, groubTrace, orderTrace)
     } else if (indexMode == "userNear") {
-      //#加载附近的活动商品信息
-      that.getNearGrouba(that)
-    } else if (indexMode == "userLogin") {
-      //#登陆页面，无需加载任何数据
-      util.log("#登陆页面，无需加载任何数据")
+      //#提示未初始选择当前位置
+      if (userinfoCache.latitude) {
+        //已经初始选过当前位置-加载附近的活动商品信息
+        that.getNearGrouba(that)
+      } else {
+        util.log("#未初始选过当前位置")
+        util.softTips(that, "亲，请选择你的位置",6)
+      }
+
+
     }
-
-
 
   },
 
@@ -410,6 +382,8 @@ Page({
   },
   getNearGrouba(that, orderTrace) {
     util.reqPost(util.apiHost + "/groubActivity/selectNearGrouba", {
+      province: util.getCache(util.cacheKey.userinfo, "province"),
+      city: util.getCache(util.cacheKey.userinfo, "city"),
       latitude: util.getCache(util.cacheKey.userinfo, "latitude"),
       longitude: util.getCache(util.cacheKey.userinfo, "longitude"),
     }, resp => {
@@ -552,5 +526,6 @@ Page({
         util.log("#分享失败" + res)
       }
     }
-  }
+  },
+
 })
