@@ -2,9 +2,10 @@
 <include src="../component/indexHead.wxml" wx:if="{{indexMode=='userNear'}}" />
 <!-- 店铺信息-首页head #预览页面# ##########################  -->
 <include src="../component/shopHead.wxml" wx:if="{{indexMode=='userShare'}}" />
+<!-- 登陆页面# ##########################  -->
+<include src="../component/login.wxml" wx:if="{{indexMode=='userLogin'}}" />
 
-<view class='main'>
-
+<view class='main opacityshow' wx:if="{{indexMode!='userLogin'}}">
   <!-- 指定店铺-活动商品 #预览页面# ##########################  -->
   <include src="../component/listActiveGoods.wxml" />
   <!-- 附近-活动商品 #预览页面# ##########################  -->
@@ -23,7 +24,7 @@
   </view>
 </view>
 <!-- 右下角悬浮菜单 -->
-<view class='fixed'>
+<view class='fixed' wx:if="{{indexMode!='userLogin'}}">
   <view class='fixed-list' bindtap='goMyShop'>
     <image src='{{isOpen?"../img/index.png":"../img/edit-square.png"}}'></image>
     <view>{{isOpen?"店铺":"入驻"}}</view>
@@ -34,5 +35,6 @@
     </view> -->
 
 </view>
+
 
 <toast usToast='{{usToast}}'></toast>

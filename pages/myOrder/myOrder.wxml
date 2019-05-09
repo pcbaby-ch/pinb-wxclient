@@ -6,10 +6,13 @@
     <view class='top-tag-i'>人满成团</view>
   </view>
 </view> -->
-<view class='main'>
+<!-- 登陆页面# ##########################  -->
+<include src="../component/login.wxml" wx:if="{{pageMode=='userLogin'}}" />
+
+<view class='main opacityshow' wx:if="{{pageMode!='userLogin'}}">
   <!-- 订单list -->
   <include src="../component/listOrder.wxml" />
-  
+
 
   <!-- 右下角悬浮菜单 -->
   <view class='fixed'>
@@ -17,7 +20,7 @@
       <image src='../img/scan.png'></image>
       <view>扫码</view>
     </view>
-    
+
 
   </view>
 

@@ -23,7 +23,7 @@ const defalutProduct = {
 }
 Page({
   data: {
-    searchAddress: util.getCache(util.cacheKey.userinfo,"address"),
+    searchAddress: util.getCache(util.cacheKey.userinfo, "address"),
     searchText: util.getCache("searchText"),
 
     //店铺-基础信息
@@ -186,7 +186,7 @@ Page({
   },
 
   getLocation() {
-    let that=this
+    let that = this
     wx.chooseLocation({
       success(res) {
         util.log("#地址选择成功:" + JSON.stringify(res))
@@ -197,6 +197,7 @@ Page({
         that.setData({
           searchAddress: res.name,
         })
+
         //util.log("#请求后台服务，解析encryptedData")
 
       },
@@ -209,6 +210,40 @@ Page({
         })
       }
     })
+
+  },
+  /** 微信登陆--共用js 注意保持多个页面js同步此方法逻辑########## */
+  wxLogin(res) {
+    let that = this
+    if (wx.canIUse('button.open-type.getUserInfo')) {
+      util.log("#(新)button模式授权成功，并获取用户信息" + JSON.stringify(res.detail.userInfo))
+      util.putCache(util.cacheKey.userinfo, null, res.detail.userInfo)
+      util.putCache(util.cacheKey.userinfo, "encryptedData", res.detail.encryptedData)
+      util.putCache(util.cacheKey.userinfo, "iv", res.detail.iv)
+      // util.log("#userinfo:" + JSON.stringify(util.getCache(util.cacheKey.userinfo)))
+      that.onLoad()
+    } else {
+      util.log("#(旧)自动弹出模式授权，并获取用户信息")
+      wx.getSetting({
+        success(res) {
+          if (!res.authSetting['scope.userInfo']) {
+            wx.authorize({
+              scope: 'scope.userInfo',
+              success() {
+                util.log("#(旧)自动弹出模式授权-成功-开始获取用户信息");
+                wx.getUserInfo({
+                  success: res => {
+                    util.putCache(util.cacheKey.userinfo, null, res.userInfo)
+                    // util.log("#userinfo:" + JSON.stringify(util.getCache(util.cacheKey.userinfo)))
+                    that.onLoad()
+                  }
+                })
+              }
+            })
+          }
+        }
+      })
+    }
 
   },
 
@@ -314,17 +349,23 @@ Page({
   onLoad: function(pageRes) {
     wx.showNavigationBarLoading()
     util.log("#页面传参:" + JSON.stringify(pageRes))
-    let groubTrace = pageRes.groubTrace
-    let groubaTrace = pageRes.groubaTrace
-    let orderTrace = pageRes.orderTrace
-    groubaTrace = 'sdfsdlj' //测试
-    // orderTrace = 'orderTrace' //测试
+    let groubTrace = pageRes ? pageRes.groubTrace : null
+    let groubaTrace = pageRes ? pageRes.groubaTrace : null
+    let orderTrace = pageRes ? pageRes.orderTrace : null
     let that = this
-    //根据首页加载模式加载数据
+    /** 根据首页加载模式加载数据 {userNear userShare userLogin} ############################### */
     let indexMode = "userNear"
-    if (groubaTrace && orderTrace) {
-      indexMode = "userShare"
+    let userinfoCache = util.getCache(util.cacheKey.userinfo)
+    if (userinfoCache && userinfoCache.city) {
+      util.log("#命中缓存-授权过用户信息")
+      if (groubaTrace && orderTrace) {
+        indexMode = "userShare"
+      }
+    } else {
+      util.log("#无缓存-未授权过用户信息")
+      indexMode = "userLogin"
     }
+
     that.setData({
       indexMode,
     })
@@ -332,13 +373,12 @@ Page({
     if (indexMode == "userShare") {
       //#加载指定商铺的基本信息+商品信息（如果是分享来源，则需要去除分享订单对应的商品）+ 分享活动商品（带订单信息）
       that.getGroubInfo(that, groubTrace, orderTrace)
-    } else {
+    } else if (indexMode == "userNear") {
       //#加载附近的活动商品信息
       that.getNearGrouba(that)
-    }
-    if (indexMode == "userShare") {
-      //#加载分享商品订单参团信息
-      that.getShareGrouba(that, groubTrace, orderTrace)
+    } else if (indexMode == "userLogin") {
+      //#登陆页面，无需加载任何数据
+      util.log("#登陆页面，无需加载任何数据")
     }
 
 
@@ -374,7 +414,7 @@ Page({
       longitude: util.getCache(util.cacheKey.userinfo, "longitude"),
     }, resp => {
       if (util.parseResp(that, resp)) {
-        
+
         for (var i in resp.data) {
           resp.data[i]['goodsImgView'] = util.apiHost + "/images/" + resp.data[i].goodsImg
         }

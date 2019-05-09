@@ -1,5 +1,5 @@
 <!-- 开团商品展示 -->
-<view wx:if='{{shareGoods}}' class='goods-list {{editIndex==index?"goods-list-error":""}}' bindtap='toQrCode'>
+<view wx:if='{{1}}' class='goods-list {{editIndex==index?"goods-list-error":""}}' bindtap='toQrCode'>
   <view wx:if="{{shareGoods.groubaIsnew}}" class='goods-list-new'>新</view>
   <view wx:if="{{false}}" class='goods-list-done'>成团</view>
   <!-- 活动商品-左侧 -->

@@ -52,7 +52,6 @@
   border: none;
   line-height: 40rpx;
   box-sizing: content-box;
-
   width: 100%;
   position: block;
 }
@@ -510,3 +509,43 @@
   width: 80rpx;
   height: 80rpx;
 }
+
+.login-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 300rpx;
+  box-sizing: border-box;
+}
+
+.login-container image {
+  margin-bottom: 60rpx;
+  display: flex;
+  width: 200rpx;
+  height: 200rpx;
+  border-radius: 100rpx;
+  box-sizing: border-box;
+  box-shadow: 0rpx 0rpx 100px #ff6700;
+}
+
+.login-container view {
+  margin-bottom: 60rpx;
+  display: flex;
+  font-size: 30rpx;
+  box-sizing: border-box;
+  color: grey;
+}
+
+.login-container button {
+  width: 500rpx;
+  height: 80rpx;
+  line-height: 80rpx;
+  background-color: #ff6700;
+  color: rgba(255, 255, 255, 1);
+  align-items: center;
+  font-family: Microsoft Yahei;
+  box-shadow: 0rpx 0rpx 200px #ff6700;
+}
+
