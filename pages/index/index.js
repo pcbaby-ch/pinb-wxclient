@@ -2,60 +2,15 @@
 //获取应用实例
 var app = getApp()
 let util = require("../../utils/util.js")
-var QRCode = require('../../utils/weapp-qrcode.js')
 
-const defaultOrder = {
-  refUserImg: 'wx_head2.jpg',
-}
-const defalutProduct = {
-  groubaTrace: '',
-  refGroubTrace: '',
-  refUserWxUnionid: '',
-  groubaSize: 0,
-  groubaMaxCount: 8,
-  goodsName: '',
-  goodsImg: '',
-  goodsPrice: '',
-  groubaDiscountAmount: '',
-  groubaIsnew: 1,
-  groubaExpiredTime: '',
-  groubaActiveMinute: '60',
-}
 Page({
   data: {
     searchAddress: util.getCache(util.cacheKey.userinfo, "address"),
     searchText: util.getCache("searchText"),
     indexMode: 'userNear',
 
-    //店铺-基础信息
-    groub: {
-      groubTrace: "",
-      refUserWxUnionid: "",
-      groubName: "",
-      groubImg: "",
-      groubPhone: "",
-      groubAddress: "",
-      isOpen: "",
-    },
-    //店铺-商品信息
-    productList: [defalutProduct, defalutProduct, defalutProduct],
-    editIndex: 0, //当前编辑项
-    editItem: '', //当前编辑项 index-type
 
-  },
-  /** 页面跳转 ############################################# */
-  goMyShop() {
-    wx.navigateTo({
-      url: '/pages/myShop/myShop',
-    })
-  },
 
-  arraySetTest(productList) {
-    util.log("#productList（变更前）:" + JSON.stringify(productList) + "#00:" + JSON.stringify(productList[0]));
-    productList[0]['goodsName'] = "goodsNameA";
-    productList[1]['goodsName'] = "goodsNameB";
-    //productList[5]['goodsName'] = "goodsNameC";
-    util.log("#productList（变更后）:" + JSON.stringify(productList))
   },
 
   //事件处理函数
@@ -98,93 +53,6 @@ Page({
     }
 
   },
-  /** 右下角编辑 */
-  ch_edit() {
-    let isEdit = this.data.isEdit
-    let productList = this.data.productList
-    this.setData({
-      isEdit: !isEdit,
-      editItem: ''
-    })
-    util.log("#isEdit:" + isEdit + "#productList.length:" + productList.length)
-    if (!isEdit) {
-      if (productList && productList.length < 3) {
-        util.log("#如果编辑模式下，商品数组不是3，则补齐,#productList:" + JSON.stringify(productList))
-        let productListLength = productList.length
-        for (var i = 0; i < 3 - productListLength; i++) {
-          productList.push(defalutProduct)
-        }
-        this.setData({
-          productList
-        })
-      }
-    }
-  },
-  save() {
-    let that = this
-    let groub = this.data.groub;
-    util.log("#店铺信息" + JSON.stringify(groub))
-    let productList = this.data.productList;
-    // util.log("#商品信息" + JSON.stringify(productList))
-    //填写信息，缓存
-    util.putCache(util.cacheKey.groubInfo, null, groub)
-    util.setCache(util.cacheKey.goodsList, productList)
-    //#参数完整性校验
-    if (!this.checkParams(groub, productList)) {
-      return
-    }
-    //#提交服务器
-    util.reqPost(util.apiHost + "/groupBar/add", {
-      groub: groub,
-      goodsList: productList,
-    }, function success(data) {
-      if (data.retCode != '10000') { //#提交失败
-        wx.removeStorageSync(util.cacheKey.isOpen)
-        util.softTips(that, data.retMsg, 3)
-      } else { //#提交成功
-        util.putCache(util.cacheKey.isOpen, null, true)
-        that.setData({
-          isEdit: false,
-        })
-      }
-    }, function fail() {
-
-    })
-
-    //#
-  },
-
-  add() {
-    let productList = this.data.productList;
-    productList.push(defalutProduct)
-    this.setData({
-      productList
-    })
-  },
-  set_num(e) {
-    util.log("#下拉数字选择:" + JSON.stringify(e.detail))
-    let Index = e.target.dataset.index,
-      V = e.detail.value;
-    let productList = this.data.productList;
-    productList[Index].groubaSize = V;
-    this.setData({
-      productList,
-      editItem: ''
-    })
-  },
-  switchChange(e) {
-    let Index = e.target.dataset.index,
-      V = e.detail.value;
-    let productList = this.data.productList;
-    productList[Index].groubaIsnew = V;
-    this.setData({
-      productList,
-      editItem: ''
-    })
-  },
-  getPhoneNumber(e) {
-    util.log("#获取手机号:" + JSON.stringify(res))
-  },
 
   getLocation() {
     let that = this
@@ -198,9 +66,7 @@ Page({
         that.setData({
           searchAddress: res.name,
         })
-
-        //util.log("#请求后台服务，解析encryptedData")
-
+        that.onLoad()
       },
       fail() {
         that.setData({
@@ -213,101 +79,6 @@ Page({
     })
 
   },
-
-  /** 店铺-图片获取 *********************************/
-  upImg() {
-    if (!this.data.isEdit) {
-      return
-    }
-    let This = this;
-    let groub = this.data.groub;
-    var imageMd5 = "'文件md5缺省值'";
-    wx.chooseImage({
-      count: 1,
-      sizeType: ['original'],
-      sourceType: ['album', 'camera'],
-      success(resImage) {
-        util.imageUpload(resImage, This, image => {
-          if (image) {
-            groub.groubImgView = resImage.tempFilePaths[0]
-            groub.groubImg = image
-            util.log("#groub:" + JSON.stringify(groub) + "，#resImage:" + JSON.stringify(resImage))
-            This.setData({
-              groub
-            })
-          }
-        })
-      }
-    })
-  },
-  /** 商品-图片获取 *********************************/
-  upImg2(e) {
-    const Index = e.target.dataset.index;
-    let This = this;
-    This.setData({
-      editIndex: Index,
-      editItem: ''
-    })
-    wx.chooseImage({
-      count: 1,
-      sizeType: ['original', 'compressed'],
-      sourceType: ['album', 'camera'],
-      success(resImage) {
-        util.imageUpload(resImage, This, image => {
-          if (image) {
-            let productList = This.data.productList;
-            productList[Index].goodsImgView = resImage.tempFilePaths[0]
-            productList[Index].goodsImg = image
-            This.setData({
-              productList,
-            })
-          }
-        })
-
-      }
-    })
-  },
-
-  checkParams(groub, goods) {
-    // if (!groub.groubName) {
-    //   util.softTips(this, "店铺名称未选择")
-    //   return false
-    // }
-    if (!groub.groubImg) {
-      util.softTips(this, "店铺图片未选择")
-      return false
-    }
-    if (!groub.groubAddress) {
-      util.softTips(this, "店铺地址未选择")
-      return false
-    }
-    if (!groub.groubPhone) {
-      util.softTips(this, "店铺电话未填写")
-      return false
-    }
-    for (var i in goods) {
-      let g = goods[i]
-      util.log("#单个商品:" + g)
-      if (g.goodsImg) { //#选区商品图片的才校验，没选区的直接忽略废弃
-        if (!g.goodsName) {
-          util.softTips(this, "商品" + i + ",名称未填写")
-          return false
-        }
-        if (!g.goodsPrice) {
-          util.softTips(this, "商品" + i + ",原价未填写")
-          return false
-        }
-        if (!g.groubaDiscountAmount) {
-          util.softTips(this, "商品" + i + ",折扣金额未填写")
-          return false
-        }
-
-      }
-    }
-    util.softTips(this, "店铺信息,一个月最多更改6次", 3)
-    return true
-  },
-
 
   /**
    * Lifecycle function--Called when page load
@@ -341,15 +112,16 @@ Page({
     /** 根据页面加载规则，加载对于数据 ################################## */
     if (indexMode == "userShare") {
       //#加载指定商铺的基本信息+商品信息（如果是分享来源，则需要去除分享订单对应的商品）+ 分享活动商品（带订单信息）
-      that.getGroubInfo(that, groubTrace, orderTrace)
+      that.getGroubInfo(groubTrace, orderTrace)
     } else if (indexMode == "userNear") {
       //#提示未初始选择当前位置
       if (userinfoCache.latitude) {
         //已经初始选过当前位置-加载附近的活动商品信息
-        that.getNearGrouba(that)
+        util.pageInitData(that.getNearGrouba, 6)
+
       } else {
         util.log("#未初始选过当前位置")
-        util.softTips(that, "亲，请选择你的位置",6)
+        util.softTips(that, "亲，请选择你的位置", 6)
       }
 
 
@@ -357,7 +129,8 @@ Page({
 
   },
 
-  getGroubInfo(that, groubTrace, orderTrace) {
+  getGroubInfo(groubTrace, orderTrace) {
+    let that = this
     util.reqPost(util.apiHost + "/groupBar/selectOne", {
       refUserWxUnionid: groubTrace ? null : util.getCache(util.cacheKey.userinfo, "wxUnionid"),
       groubTrace: groubTrace,
@@ -374,52 +147,56 @@ Page({
           productList: resp.data.goodsList,
           shareGoods: resp.data.shareGoods,
         })
-        util.log("#店铺-数据加载-完成")
+        util.log("#店铺or分享活动商品-数据加载-完成")
       } else {
-        util.log("#店铺-数据加载-失败")
+        util.log("#店铺or分享活动商品-数据加载-失败")
       }
     })
   },
-  getNearGrouba(that, orderTrace) {
+
+  getNearGrouba(page_, rows_) {
+    let that = this
+    that.setData({
+      isLodding: true,
+    })
+    wx.showNavigationBarLoading()
     util.reqPost(util.apiHost + "/groubActivity/selectNearGrouba", {
       province: util.getCache(util.cacheKey.userinfo, "province"),
       city: util.getCache(util.cacheKey.userinfo, "city"),
       latitude: util.getCache(util.cacheKey.userinfo, "latitude"),
       longitude: util.getCache(util.cacheKey.userinfo, "longitude"),
+      page: page_,
+      rows: rows_,
     }, resp => {
-      if (util.parseResp(that, resp)) {
+      if (resp.retCode == '10000' && resp.rows.length > 0) {
+        for (var i in resp.rows) {
+          resp.rows[i]['goodsImgView'] = util.apiHost + "/images/" + resp.rows[i].goodsImg
+        }
+        let pageArrayContainer = []
+        pageArrayContainer[page_] = resp.rows
+        that.setData({
+          pageArrayContainer,
+          isLodding: false,
+        })
+        util.log("#附近活动订单-数据加载-完成")
+      } else {
+        util.softTips(that, "亲，当前位置附近暂无活动商品", 6)
+        util.log("#附近活动订单-数据加载-失败")
+        if (page_ > 1) {
+          that.setData({
+            isLodding: false,
+            isLoddingEnd: true,
+          })
+        }
+      }
+    })
+  },
 
-        for (var i in resp.data) {
-          resp.data[i]['goodsImgView'] = util.apiHost + "/images/" + resp.data[i].goodsImg
-        }
-        that.setData({
-          productList: resp.data,
-        })
-        util.log("#分享活动订单-数据加载-完成")
-      } else {
-        util.log("#分享活动订单-数据加载-失败")
-      }
-    })
+  scrollToBottom(e) {
+    util.log("#已滚到到底部:" + JSON.stringify(e))
+    util.pageMoreData(this.getNearGrouba)
   },
-  getShareOrder(that) {
-    util.reqPost(util.apiHost + "/groupBar/selectShareOrder", {
-      latitude: util.getCache(util.cacheKey.userinfo, "latitude"),
-      longitude: util.getCache(util.cacheKey.userinfo, "longitude"),
-    }, resp => {
-      if (util.parseResp(that, resp)) {
-        resp.data.groubInfo.groubImgView = util.apiHost + "/images/" + resp.data.groubInfo.groubImg
-        for (var i in resp.data.goodsList) {
-          resp.data.goodsList[i]['goodsImgView'] = util.apiHost + "/images/" + resp.data.goodsList[i].goodsImg
-        }
-        that.setData({
-          productList: resp.data.goodsList,
-        })
-        util.log("#附近活动商品-数据加载-完成")
-      } else {
-        util.log("#附近活动商品-数据加载-失败")
-      }
-    })
-  },
+
 
   /**
    * Lifecycle function--Called when page is initially rendered

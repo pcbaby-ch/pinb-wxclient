@@ -265,7 +265,6 @@ function log(logText) {
     //本地环境，打印日志
     console.log(logText + " >>" + formatTime(new Date()))
   }
-
 }
 /** 针对不同host服务，采用不同的签名、加密机制，包装处理请求报文 */
 function reqBodyWrap(url, reqBody) {
@@ -313,6 +312,29 @@ function heavyTips(tile_, text_) {
     content: text_,
   })
 }
+/** 统一分页 - 加载初始页面数据 args{业务加载数据方法,每页行数(缺省10)}*/
+function pageInitData(loadMethod, pageRows) {
+  let methodName = loadMethod.getName()
+  let pageCacheKey = "page_" + methodName
+  log("#当前分页业务方法为:" + methodName)
+  putCache(pageCacheKey, 'page', 1)
+  putCache(pageCacheKey, 'rows', pageRows || 10)
+  loadMethod(1, pageRows || 10)
+}
+
+/** 统一分页 -加载下一页数据 args{业务加载数据方法}*/
+function pageMoreData(loadMethod) {
+  let methodName = loadMethod.getName()
+  let pageCacheKey = "page_" + methodName
+  log("#当前分页业务方法为:" + methodName)
+  let page = getCache(pageCacheKey, 'page') + 1
+  let rows = getCache(pageCacheKey, 'rows')
+  putCache(pageCacheKey, 'page', page)
+  loadMethod(page, rows)
+}
+Function.prototype.getName = function() {
+  return this.name || this.toString().match(/function\s*([^(]*)\(/)[1]
+}
 //统一业务封装 ###########################################################
 
 
@@ -344,8 +366,8 @@ module.exports = {
   putCache: putCache,
 
   log: log,
-
-
+  pageInitData: pageInitData,
+  pageMoreData: pageMoreData,
 
   softTips: softTips,
   heavyTips: heavyTips,

@@ -1,11 +1,9 @@
 <!-- <template name="shopFoot"> -->
-<view class='head-foot'>
-  <view class='head-foot'>
-    <image src='../img/phone.png'></image>
-    <view catchtap='catchtap' data-type='groub.groubPhone' data-index='' class='antScale' style='margin-top:-20rpx' wx:if='{{editItem!="-groub.groubPhone"}}'>{{groub.groubPhone||'点我填写客服热线'+indexMode}}</view>
-    <input maxlength='11' type="number" class="antEdit" style='width:220rpx;box-sizing: border-box;margin-top:5rpx' bindblur='bindinput' data-type='groubPhone' value='{{groub.groubPhone}}' wx:if='{{editItem=="-groub.groubPhone"}}' focus='{{editItem=="-groub.groubPhone"}}'
-    />
-  </view>
-
+<view class='page-foot-container' wx:if='{{isLodding}}'>
+  <image src='../img/loading.png'></image>
+  <view catchtap='catchtap'>正在加载中...</view>
+</view>
+<view class='page-foot-container' wx:if='{{isLoddingEnd}}'>
+  <view catchtap='catchtap'>---- 更多内容,敬请期待 ----</view>
 </view>
 <!-- </template> -->

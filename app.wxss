@@ -509,3 +509,22 @@
   width: 80rpx;
   height: 80rpx;
 }
+
+/* 分页滚动加载样式 */
+
+.page-foot-container {
+  display: flex;
+  justify-content: center;
+  padding-top: 10rpx;
+  padding-bottom: 20rpx;
+}
+
+.page-foot-container image {
+  /* display: flex; */
+  width: 38rpx;
+  height: 38rpx;
+}
+
+.page-foot-container view {
+  font-size: 28rpx;
+}
