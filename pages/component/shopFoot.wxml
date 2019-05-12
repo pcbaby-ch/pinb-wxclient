@@ -2,8 +2,8 @@
 <view class='head-foot'>
   <view  class='head-foot' style='width:230rpx;'>
     <image src='../img/phone.png'></image>
-    <view catchtap='catchtap' data-type='groub.groubPhone'  data-index=''  style='margin-top:-20rpx' wx:if='{{editItem!="-groub.groubPhone"}}'>{{groub.groubPhone||'点我填写客服热线'}}</view>
-  <input maxlength='11' type="number" class="antEdit" style='width:220rpx;box-sizing: border-box;margin-top:5rpx' bindblur='bindinput' data-type='groubPhone' value='{{groub.groubPhone}}' wx:if='{{editItem=="-groub.groubPhone"}}' focus='{{editItem=="-groub.groubPhone"}}' />
+    <view catchtap='catchtap' data-type='groub.groubPhone'  data-index=''  style='' wx:if='{{editItem!="-groub.groubPhone"}}'>{{groub.groubPhone||'点我填写客服热线'}}</view>
+  <input maxlength='11' type="number" class="antEdit" style='width:185rpx;' bindblur='bindinput' data-type='groubPhone' value='{{groub.groubPhone}}' wx:if='{{editItem=="-groub.groubPhone"}}' focus='{{editItem=="-groub.groubPhone"}}' />
   </view>
 
 <button open-type="getUserInfo" bindgetuserinfo='getLocation' class='buttonBlock' style='margin:0;'>
