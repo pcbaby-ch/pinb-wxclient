@@ -9,9 +9,9 @@
       </view>
     </button>
 
-    <view class='head-scan' bindtap='scanPayCode'>
-      <image src='../img/scan1.png'></image>
-      <view>扫码</view>
+    <view class='head-img' bindtap='scanPayCode'>
+      <image src='{{avatarUrl}}'></image>
+      <!-- <view>扫码</view> -->
     </view>
   </view>
 

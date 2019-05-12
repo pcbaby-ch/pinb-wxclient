@@ -20,8 +20,6 @@ const formatNumber = n => {
 //全局-网络请求工具类 ###########################################################
 /** 带json请求报文体的post网络请求 */
 function reqPost(url, params, success, fail) {
-  //添加请求公参
-  params[cacheKey.userinfo] = getCache(cacheKey.userinfo)
   requestLoading(url, params, "", success, fail)
 }
 /** 不带任何请求报文体的get网络请求 */
@@ -109,7 +107,7 @@ function requestLoading(url, params, message, successCallback, failCallback) {
 /** 图片上传 (resImage是chooseImage组件的资源)
  * return {图片文件名称}}}
  */
-function imageUpload(resImage, This, callBack) {
+function imageUpload(resImage, that, callBack) {
   //#计算文件md5
   let imageMd5 = "'图片md5缺省值'"
   wx.getFileSystemManager().readFile({
@@ -138,7 +136,7 @@ function imageUpload(resImage, This, callBack) {
         },
         success(res) {
           //#图片上传失败，
-          respParse(res.data, This)
+          parseResp(that, res.data)
           //log("#图片上传完成,#res" + JSON.stringify(res) + "#image:" + res.data.data)
           callBack(JSON.parse(res.data).data)
         }
@@ -312,29 +310,62 @@ function heavyTips(tile_, text_) {
     content: text_,
   })
 }
-/** 统一分页 - 加载初始页面数据 args{业务加载数据方法,每页行数(缺省10)}*/
-function pageInitData(loadMethod, pageRows) {
-  let methodName = loadMethod.getName()
+/** 统一分页 - 加载初始页面数据 args{页面this,业务加载数据方法,每页行数(缺省10)}*/
+function pageInitData(that, loadMethod, pageRows) {
+  let methodName = loadMethod.getName() + ''
+  methodName = methodName.substring(methodName.indexOf(' ') + 1, methodName.length)
+  that.setData({
+    isLoadding: true,
+    isLoadEnd: false,
+  })
   let pageCacheKey = "page_" + methodName
-  log("#当前分页业务方法为:" + methodName)
   putCache(pageCacheKey, 'page', 1)
   putCache(pageCacheKey, 'rows', pageRows || 10)
+  log("#当前分页业务为:" + pageCacheKey + "#当前页:1")
   loadMethod(1, pageRows || 10)
 }
 
-/** 统一分页 -加载下一页数据 args{业务加载数据方法}*/
-function pageMoreData(loadMethod) {
-  let methodName = loadMethod.getName()
+/** 统一分页 -加载下一页数据 args{页面this,业务加载数据方法}*/
+function pageMoreData(that, loadMethod) {
+  that.setData({
+    isLoadding: true,
+  })
+  let methodName = loadMethod.getName() + ''
+  methodName = methodName.substring(methodName.indexOf(' ') + 1, methodName.length)
   let pageCacheKey = "page_" + methodName
-  log("#当前分页业务方法为:" + methodName)
   let page = getCache(pageCacheKey, 'page') + 1
   let rows = getCache(pageCacheKey, 'rows')
   putCache(pageCacheKey, 'page', page)
+  log("#当前分页业务为:" + pageCacheKey + "#当前页:" + page)
   loadMethod(page, rows)
 }
+/** 获取传入方法的方法名称 */
 Function.prototype.getName = function() {
   return this.name || this.toString().match(/function\s*([^(]*)\(/)[1]
 }
+/** 获取2个经纬度之间的直线距离 args{lat1,lng1,lat2,lng2} return{距离}}*/
+function getDistance(lat1, lng1, lat2, lng2) {
+  lat1 = lat1 || 0;
+  lng1 = lng1 || 0;
+  lat2 = lat2 || 0;
+  lng2 = lng2 || 0;
+
+  var rad1 = lat1 * Math.PI / 180.0;
+  var rad2 = lat2 * Math.PI / 180.0;
+  var a = rad1 - rad2;
+  var b = lng1 * Math.PI / 180.0 - lng2 * Math.PI / 180.0;
+  var r = 6378137;
+  var distance = r * 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a / 2), 2) + Math.cos(rad1) * Math.cos(rad2) * Math.pow(Math.sin(b / 2), 2)));
+  log("#lat1:" + lat1 + "lng1:" + lng1 + "lat2:" + lat2 + "lng2:" + lng2 + "#计算距离为:" + distance + "#" + distance / 1000.0)
+  if (distance / 1000.0 >= 1) {
+    log("#计算距离为-千米:" + (distance / 1000.0).toFixed(1) + 'km')
+    return (distance / 1000.0).toFixed(1) + 'km'
+  } else {
+    log("#计算距离为-米:" + distance.toFixed(0) + 'm')
+    return distance.toFixed(0) + 'm'
+  }
+}
+
 //统一业务封装 ###########################################################
 
 
@@ -342,7 +373,7 @@ Function.prototype.getName = function() {
 
 
 //全局-常量、变量 ###########################################################
-const apiHost = "http://127.0.0.1:9660/pinb-service" //https://apitest.pinb.vip/pinb-service
+const apiHost = "http://127.0.0.1:9660/pinb-service" //https://apitest.pinb.vip/pinb-service http://127.0.0.1:9660/pinb-service
 
 const cacheKey = {
   userinfo: 'userinfo',
@@ -368,6 +399,7 @@ module.exports = {
   log: log,
   pageInitData: pageInitData,
   pageMoreData: pageMoreData,
+  getDistance: getDistance,
 
   softTips: softTips,
   heavyTips: heavyTips,

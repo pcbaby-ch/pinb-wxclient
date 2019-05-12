@@ -1,11 +1,7 @@
-<!-- <view class='top'>
-  <image src='../img/shop_logo01.jpg' class='bgImg'></image>
-  <view class='top-tag'>
-    <view class='top-tag-i'>老用户开团</view>
-    <view class='top-tag-i'>分享用户拼团</view>
-    <view class='top-tag-i'>人满成团</view>
-  </view>
-</view> -->
+<view class='head-img' bindtap='scanPayCode'>
+      <image src='{{avatarUrl}}'></image>
+      <!-- <view>扫码</view> -->
+    </view>
 <!-- 登陆页面# ##########################  -->
 <include src="../component/login.wxml" wx:if="{{pageMode=='userLogin'}}" />
 

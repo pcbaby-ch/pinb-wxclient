@@ -41,6 +41,16 @@ Page({
     editItem: '', //当前编辑项 index-type
 
   },
+  /** 页面跳转 ##################################*/
+  goIndex() {
+    util.log("#跳转到主页")
+    wx.navigateBack({
+      delta: 1,
+    })
+    wx.navigateTo({
+      url: '/pages/index/index',
+    })
+  },
 
   arraySetTest(productList) {
     util.log("#productList（变更前）:" + JSON.stringify(productList) + "#00:" + JSON.stringify(productList[0]));
@@ -53,8 +63,8 @@ Page({
   //事件处理函数
   catchtap(e) {
     util.log("#事件捕捉:" + JSON.stringify(e))
-    var productList = this.data.productList
-    // this.arraySetTest(productList)
+    var pageArray = this.data.pageArray
+    // this.arraySetTest(pageArray)
 
     let Index = e.target.dataset.index;
     this.setData({
@@ -70,10 +80,10 @@ Page({
     this.change(Index, e.target.dataset.type, V)
   },
   change(index, type, value) {
-    var productList = this.data.productList;
+    var pageArray = this.data.pageArray;
     var groub = this.data.groub;
 
-    if (!productList[index]) {
+    if (!pageArray[index]) {
       util.log("#店铺-基础信息,#index:" + index + "#type:" + type + "#value:" + value);
       groub[type] = value;
       this.setData({
@@ -81,54 +91,43 @@ Page({
       })
       util.log(JSON.stringify(groub));
     } else {
-      productList[index][type] = value;
-      util.log("#店铺-商品信息,#index:" + index + "#type:" + type + "#value:" + value + "#productList:" + JSON.stringify(productList));
+      pageArray[index][type] = value;
+      util.log("#店铺-商品信息,#index:" + index + "#type:" + type + "#value:" + value + "#pageArray:" + JSON.stringify(pageArray));
       this.setData({
-        productList
+        pageArray
       })
-      // util.log(JSON.stringify(productList))
+      // util.log(JSON.stringify(pageArray))
     }
 
   },
   /** 右下角编辑 */
   ch_edit() {
     let isEdit = this.data.isEdit
-    let productList = this.data.productList
+    let pageArray = this.data.pageArray
     this.setData({
       isEdit: !isEdit,
       editItem: ''
     })
-    util.log("#isEdit:" + isEdit + "#productList.length:" + productList.length)
-    if (!isEdit) {
-      if (productList && productList.length < 3) {
-        util.log("#如果编辑模式下，商品数组不是3，则补齐,#productList:" + JSON.stringify(productList))
-        let productListLength = productList.length
-        for (var i = 0; i < 3 - productListLength; i++) {
-          productList.push(defalutProduct)
-        }
-        this.setData({
-          productList
-        })
-      }
-    }
+    util.log("#isEdit:" + isEdit + "#pageArray.length:" + pageArray.length)
   },
   save() {
     let that = this
     let groub = this.data.groub;
     util.log("#店铺信息" + JSON.stringify(groub))
-    let productList = this.data.productList;
-    // util.log("#商品信息" + JSON.stringify(productList))
+    let pageArray = this.data.pageArray;
+    // util.log("#商品信息" + JSON.stringify(pageArray))
     //填写信息，缓存
     util.putCache(util.cacheKey.groubInfo, null, groub)
-    util.setCache(util.cacheKey.goodsList, productList)
+    util.setCache(util.cacheKey.goodsList, pageArray)
     //#参数完整性校验
-    if (!this.checkParams(groub, productList)) {
+    if (!this.checkParams(groub, pageArray)) {
       return
     }
     //#提交服务器
     util.reqPost(util.apiHost + "/groupBar/add", {
       groub: groub,
-      goodsList: productList,
+      goodsList: pageArray,
+      userinfo: util.getCache(util.cacheKey.userinfo),
     }, function success(data) {
       if (data.retCode != '10000') { //#提交失败
         wx.removeStorageSync(util.cacheKey.isOpen)
@@ -147,30 +146,30 @@ Page({
   },
 
   add() {
-    let productList = this.data.productList;
-    productList.push(defalutProduct)
+    let pageArray = this.data.pageArray;
+    pageArray.push(defalutProduct)
     this.setData({
-      productList
+      pageArray
     })
   },
   set_num(e) {
     util.log("#下拉数字选择:" + JSON.stringify(e.detail))
     let Index = e.target.dataset.index,
       V = e.detail.value;
-    let productList = this.data.productList;
-    productList[Index].groubaSize = V;
+    let pageArray = this.data.pageArray;
+    pageArray[Index].groubaSize = V;
     this.setData({
-      productList,
+      pageArray,
       editItem: ''
     })
   },
   switchChange(e) {
     let Index = e.target.dataset.index,
       V = e.detail.value;
-    let productList = this.data.productList;
-    productList[Index].groubaIsnew = V;
+    let pageArray = this.data.pageArray;
+    pageArray[Index].groubaIsnew = V;
     this.setData({
-      productList,
+      pageArray,
       editItem: ''
     })
   },
@@ -179,67 +178,44 @@ Page({
   },
 
   getLocation(res) {
-    let that = this;
-    util.log(util.apiHost + "#获取用户地址:" + JSON.stringify(res))
-    //** 集中用户授权，方便后续接口调用体验 */
-    if (wx.canIUse('button.open-type.getUserInfo')) {
-      util.log("#button模式授权成功，并获取用户信息" + JSON.stringify(res.detail.userInfo))
-      util.putCache(util.cacheKey.userinfo, null, res.detail.userInfo)
-      util.putCache(util.cacheKey.userinfo, "encryptedData", res.detail.encryptedData)
-      util.putCache(util.cacheKey.userinfo, "iv", res.detail.iv)
-      util.log("#userinfo:" + JSON.stringify(util.getCache(util.cacheKey.userinfo)))
-      util.softTips(that, JSON.stringify(util.getCache(util.cacheKey.userinfo)),8)
-    }
-    // else {
-    //   util.log("#(旧)自动弹出模式授权，并获取用户信息")
-    //   wx.getSetting({
-    //     success(res) {
-    //       if (!res.authSetting['scope.userInfo']) {
-    //         wx.authorize({
-    //           scope: 'scope.userInfo',
-    //           success() {
-    //             util.log("#(旧)自动弹出模式授权-成功-开始获取用户信息");
-    //             wx.getUserInfo({
-    //               success: res => {
-    //                 util.putCache(util.cacheKey.userinfo, null, res.userInfo)
-    //                 util.log("#userinfo:" + JSON.stringify(util.getCache(util.cacheKey.userinfo)))
-    //               }
-    //             })
-    //           }
-    //         })
-    //       }
-    //     }
-    //   })
-    // }
+    let that = this
+    wx.getSetting({
+      success(res) {
+        if (!res.authSetting['scope.userLocation']) {
+          wx.authorize({
+            scope: 'scope.userLocation',
+            success() {
+              util.log("#自动弹出模式授权-成功");
+              that.chooseLoc()
+            }
+          })
+        } else {
+          util.log("#已经授权-直接获取地址")
+          that.chooseLoc()
+        }
+      }
+    })
+  },
 
-    let groub = this.data.groub;
+  chooseLoc() {
+    let that = this
     wx.chooseLocation({
       success(res) {
         util.log("#地址选择成功:" + JSON.stringify(res))
+        let groub = that.data.groub
         groub.groubAddress = res.address;
-        util.putCache(util.cacheKey.userinfo, "address", res.address)
-        util.putCache(util.cacheKey.userinfo, "latitude", res.latitude)
-        util.putCache(util.cacheKey.userinfo, "longitude", res.longitude)
-        util.log("#userinfo:" + JSON.stringify(util.getCache(util.cacheKey.userinfo)))
+        groub.latitude = res.latitude;
+        groub.longitude = res.longitude;
+        util.log("#groub:" + JSON.stringify(groub))
         that.setData({
-          groub
+          groub,
         })
-        //util.log("#请求后台服务，解析encryptedData")
-
       },
       fail() {
-        that.setData({
-          usToast: {
-            text: '地址获取失败',
-            time: 3
-          }
-        })
+        util.softTips(that, "地址获取失败")
       }
     })
-
   },
-
-
   /** 店铺-图片获取 *********************************/
   upImg() {
     if (!this.data.isEdit) {
@@ -281,11 +257,11 @@ Page({
       success(resImage) {
         util.imageUpload(resImage, This, image => {
           if (image) {
-            let productList = This.data.productList;
-            productList[Index].goodsImgView = resImage.tempFilePaths[0]
-            productList[Index].goodsImg = image
+            let pageArray = This.data.pageArray;
+            pageArray[Index].goodsImgView = resImage.tempFilePaths[0]
+            pageArray[Index].goodsImg = image
             This.setData({
-              productList,
+              pageArray,
             })
           }
         })
@@ -314,21 +290,25 @@ Page({
     for (var i in goods) {
       let g = goods[i]
       util.log("#单个商品:" + g)
-      if (g.goodsImg) { //#选区商品图片的才校验，没选区的直接忽略废弃
-        if (!g.goodsName) {
-          util.softTips(this, "商品" + i + ",名称未填写")
-          return false
-        }
-        if (!g.goodsPrice) {
-          util.softTips(this, "商品" + i + ",原价未填写")
-          return false
-        }
-        if (!g.groubaDiscountAmount) {
-          util.softTips(this, "商品" + i + ",折扣金额未填写")
-          return false
-        }
-
+      // if (g.goodsImg) { //#选区商品图片的才校验，没选区的直接忽略废弃
+      if (!g.goodsImgView) {
+        util.softTips(this, "商品" + i + 1 + ",图片未选取")
+        return false
       }
+      if (!g.goodsName) {
+        util.softTips(this, "商品" + i + 1 + ",名称未填写")
+        return false
+      }
+      if (!g.goodsPrice) {
+        util.softTips(this, "商品" + i + 1 + ",原价未填写")
+        return false
+      }
+      if (!g.groubaDiscountAmount) {
+        util.softTips(this, "商品" + i + 1 + ",折扣金额未填写")
+        return false
+      }
+
+      // }
     }
     util.softTips(this, "店铺信息,一个月最多更改6次", 3)
     return true
@@ -341,15 +321,18 @@ Page({
   onLoad: function(pageRes) {
     wx.showNavigationBarLoading()
     util.log("#页面传参:" + JSON.stringify(pageRes))
-    let isOpen = pageRes.isOpen
+    let isOpen = JSON.parse(pageRes.isOpen)
     let groubTrace = pageRes.groubTrace
     let groubaTrace = pageRes.groubaTrace
     let orderTrace = pageRes.orderTrace
     let that = this
 
+    that.setData({
+      isEdit: isOpen,
+    })
     //#加载指定商铺的基本信息+商品信息
-    that.getGroubInfo(that, groubTrace)
-    //#加载分享商品订单参团信息
+    that.getGroubInfo(that, groubTrace, orderTrace)
+    let pageArray = that.data.pageArray
 
 
 
@@ -357,24 +340,43 @@ Page({
 
   },
 
-  getGroubInfo(that, groubTrace) {
+  getGroubInfo(that, groubTrace, orderTrace) {
     util.reqPost(util.apiHost + "/groupBar/selectOne", {
       refUserWxUnionid: groubTrace ? null : util.getCache(util.cacheKey.userinfo, "wxUnionid"),
-      groubTrace: groubTrace
+      groubTrace: groubTrace,
+      orderTrace: orderTrace,
     }, resp => {
       if (util.parseResp(that, resp)) {
         resp.data.groubInfo.groubImgView = util.apiHost + "/images/" + resp.data.groubInfo.groubImg
+        let curLatitude = util.getCache(util.cacheKey.userinfo, 'latitude')
+        let curLongitude = util.getCache(util.cacheKey.userinfo, 'longitude')
         for (var i in resp.data.goodsList) {
-          resp.data.goodsList[i]['goodsImgView'] = util.apiHost + "/images/" + resp.data.goodsList[i].goodsImg
+          let item = resp.data.goodsList[i]
+          resp.data.goodsList[i]['goodsImgView'] = util.apiHost + "/images/" + item.goodsImg
+          resp.data.goodsList[i]['distance'] = util.getDistance(curLatitude, curLongitude, item.latitude, item.longitude)
         }
         that.setData({
           groub: resp.data.groubInfo,
-          productList: resp.data.goodsList,
+          pageArray: resp.data.goodsList,
         })
         util.log("#店铺数据加载完成")
       } else {
         util.log("#店铺数据加载失败")
+
       }
+      let pageArray = that.data.pageArray
+      if (that.data.isEdit) {}
+      if (pageArray && pageArray.length > 0) {
+        for (let i; i < 3 - pageArray.length; i++) {
+          pageArray.push(defalutProduct)
+        }
+      } else {
+        pageArray = [defalutProduct, defalutProduct, defalutProduct]
+        util.log("#初始化入驻店铺页面-数据：" + JSON.stringify(pageArray))
+      }
+      that.setData({
+        pageArray: that.data.productList,
+      })
     })
   },
 
@@ -463,16 +465,20 @@ Page({
   onShareAppMessage(e) {
     let that = this;
     let index = e.target.dataset.index
-    let productList = this.data.productList
-    let productList0 = productList[0]
-    productList[0] = productList[index]
-    productList[index] = productList0
+    let pageArray = this.data.pageArray
+    let pageArray0 = pageArray[0]
+    pageArray[0] = pageArray[index]
+    pageArray[index] = pageArray0
     this.setData({
-      productList,
+      pageArray,
     })
+    let titlePrefix = '开团立享优惠:'
+    if (pageArray[0].relationOrderTrace) {
+      titlePrefix = "参团立享优惠:"
+    }
     return {
-      title: '参团立享优惠' + util.getCache(util.cacheKey.isOpen), // 转发后 所显示的title
-      path: '/pages/index/index?groubaTrace=GA2019050600000004', // 相对的路径
+      title: titlePrefix + pageArray[0].groubaDiscountAmount + "元", // 转发后 所显示的title
+      path: '/pages/myShop/myShop?groubTrace=' + pageArray[0].refGroubTrace + '&groubaTrace=' + pageArray[0].groubaTrace + '&orderTrace=' + pageArray[0].relationOrderTrace + '&isOpen=false', // 相对的路径
       // imageUrl:'http://127.0.0.1:9660/pinb-service/images/15a9bdccdfc851450bd9ab802c631475.jpg',
       success: (res) => { // 成功后要做的事情
         util.log("#分享成功" + res.shareTickets[0])

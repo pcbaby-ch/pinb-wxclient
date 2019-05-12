@@ -8,9 +8,25 @@ Page({
     searchAddress: util.getCache(util.cacheKey.userinfo, "address"),
     searchText: util.getCache("searchText"),
     indexMode: 'userNear',
+    /** 附件的商品list页面-分页数据容器 */
+    pageArrayContainer: [],
+    repeat: 0,
 
+  },
+  /** 页面跳转 ##################################*/
+  goMyShop(res) {
+    util.log("#res:" + JSON.stringify(res))
+    let grouba = this.data.pageArray[res.target.dataset.index]
+    util.log("#touchedElement:" + JSON.stringify(grouba))
+    wx.navigateTo({
+      url: '/pages/myShop/myShop?groubTrace=' + grouba.refGroubTrace + '&groubaTrace=' + grouba.groubaTrace + '&orderTrace=' + '&isOpen=false'
+    })
+  },
 
-
+  goMyShopEdit() {
+    wx.navigateTo({
+      url: '/pages/myShop/myShop?isOpen=true',
+    })
   },
 
   //事件处理函数
@@ -56,6 +72,26 @@ Page({
 
   getLocation() {
     let that = this
+    wx.getSetting({
+      success(res) {
+        if (!res.authSetting['scope.userLocation']) {
+          wx.authorize({
+            scope: 'scope.userLocation',
+            success() {
+              util.log("#自动弹出模式授权-成功");
+              that.chooseLoc()
+            }
+          })
+        } else {
+          util.log("#已经授权-直接获取地址")
+          that.chooseLoc()
+        }
+      }
+    })
+  },
+
+  chooseLoc() {
+    let that = this
     wx.chooseLocation({
       success(res) {
         util.log("#地址选择成功:" + JSON.stringify(res))
@@ -65,6 +101,10 @@ Page({
         util.log("#userinfo:" + JSON.stringify(util.getCache(util.cacheKey.userinfo)))
         that.setData({
           searchAddress: res.name,
+        })
+        util.putCache("page_getNearGrouba", "page", 1) //重置分页为起始页
+        that.setData({
+          pageArrayContainer: [],
         })
         that.onLoad()
       },
@@ -77,62 +117,11 @@ Page({
         })
       }
     })
-
-  },
-
-  /**
-   * Lifecycle function--Called when page load
-   */
-  onLoad: function(pageRes) {
-    wx.showNavigationBarLoading()
-    util.log("#页面传参:" + JSON.stringify(pageRes))
-    let groubTrace = pageRes ? pageRes.groubTrace : null
-    let groubaTrace = pageRes ? pageRes.groubaTrace : null
-    let orderTrace = pageRes ? pageRes.orderTrace : null
-    let that = this
-    /** 根据首页加载模式加载数据 {userNear userShare userLogin} ############################### */
-    let isLoadData = true
-    let indexMode = "userNear"
-    let userinfoCache = util.getCache(util.cacheKey.userinfo)
-    if (userinfoCache && userinfoCache.city) {
-      util.log("#命中缓存-授权过用户信息")
-      if (groubaTrace && orderTrace) {
-        indexMode = "userShare"
-      }
-    } else {
-      util.log("#无缓存-未授权过用户信息")
-      wx.navigateTo({
-        url: '/pages/login/login',
-      })
-      return
-    }
-    that.setData({
-      indexMode,
-    })
-    /** 根据页面加载规则，加载对于数据 ################################## */
-    if (indexMode == "userShare") {
-      //#加载指定商铺的基本信息+商品信息（如果是分享来源，则需要去除分享订单对应的商品）+ 分享活动商品（带订单信息）
-      that.getGroubInfo(groubTrace, orderTrace)
-    } else if (indexMode == "userNear") {
-      //#提示未初始选择当前位置
-      if (userinfoCache.latitude) {
-        //已经初始选过当前位置-加载附近的活动商品信息
-        util.pageInitData(that.getNearGrouba, 6)
-
-      } else {
-        util.log("#未初始选过当前位置")
-        util.softTips(that, "亲，请选择你的位置", 6)
-      }
-
-
-    }
-
   },
 
   getGroubInfo(groubTrace, orderTrace) {
     let that = this
     util.reqPost(util.apiHost + "/groupBar/selectOne", {
-      refUserWxUnionid: groubTrace ? null : util.getCache(util.cacheKey.userinfo, "wxUnionid"),
       groubTrace: groubTrace,
       orderTrace: orderTrace,
       refUserWxUnionid: util.getCache(util.cacheKey.userinfo, 'wxUnionid')
@@ -169,49 +158,107 @@ Page({
       rows: rows_,
     }, resp => {
       if (resp.retCode == '10000' && resp.rows.length > 0) {
+        let curLatitude = util.getCache(util.cacheKey.userinfo, 'latitude')
+        let curLongitude = util.getCache(util.cacheKey.userinfo, 'longitude')
         for (var i in resp.rows) {
-          resp.rows[i]['goodsImgView'] = util.apiHost + "/images/" + resp.rows[i].goodsImg
+          let item = resp.rows[i]
+          resp.rows[i]['goodsImgView'] = util.apiHost + "/images/" + item.goodsImg
+          resp.rows[i]['distance'] = util.getDistance(curLatitude, curLongitude, item.latitude, item.longitude)
         }
-        let pageArrayContainer = []
-        pageArrayContainer[page_] = resp.rows
+        let pageArray = that.data.pageArray
+        if (page_ == 1) {
+          pageArray = [] //如果是首页，则清空分页数据容器
+          that.setData({
+            isLoadEnd: false,
+          })
+        }
+        pageArray = pageArray.concat(resp.rows)
+        util.log("#pageArray:" + JSON.stringify(pageArray))
         that.setData({
-          pageArrayContainer,
+          pageArray,
           isLodding: false,
         })
         util.log("#附近活动订单-数据加载-完成")
       } else {
-        util.softTips(that, "亲，当前位置附近暂无活动商品", 6)
         util.log("#附近活动订单-数据加载-失败")
         if (page_ > 1) {
           that.setData({
             isLodding: false,
-            isLoddingEnd: true,
+            isLoadEnd: true,
+          })
+        } else {
+          util.softTips(that, "亲，附近暂无活动商品", 6)
+          that.setData({
+            pageArray: [],
+            isLodding: false,
+            isLoadEnd: true,
           })
         }
       }
     })
   },
 
-  scrollToBottom(e) {
-    util.log("#已滚到到底部:" + JSON.stringify(e))
-    util.pageMoreData(this.getNearGrouba)
+  /**
+   * Lifecycle function--Called when page load
+   */
+  onLoad: function(pageRes) {
+    wx.showNavigationBarLoading()
   },
-
 
   /**
    * Lifecycle function--Called when page is initially rendered
    */
-  onReady: function() {
+  onReady: function(pageRes) {
     wx.hideNavigationBarLoading()
-    // 快速测试区
-
 
   },
 
   /**
    * Lifecycle function--Called when page show
    */
-  onShow: function() {
+  onShow: function(pageRes) {
+
+    util.log("#页面传参:" + JSON.stringify(pageRes))
+    let groubTrace = pageRes ? pageRes.groubTrace : null
+    let groubaTrace = pageRes ? pageRes.groubaTrace : null
+    let orderTrace = pageRes ? pageRes.orderTrace : null
+    let that = this
+    /** 根据首页加载模式加载数据 {userNear userShare userLogin} ############################### */
+    let isLoadData = true
+    let indexMode = "userNear"
+    let userinfoCache = util.getCache(util.cacheKey.userinfo)
+    if (userinfoCache && userinfoCache.city) {
+      util.log("#命中缓存-授权过用户信息")
+      if (groubaTrace && orderTrace) {
+        indexMode = "userShare"
+      }
+    } else {
+      util.log("#无缓存-未授权过用户信息")
+      wx.navigateTo({
+        url: '/pages/login/login',
+      })
+      return
+    }
+    that.setData({
+      indexMode,
+      avatarUrl: userinfoCache.avatarUrl,
+    })
+    /** 根据页面加载规则，加载对于数据 ################################## */
+    if (indexMode == "userShare") {
+      //#加载指定商铺的基本信息+商品信息（如果是分享来源，则需要去除分享订单对应的商品）+ 分享活动商品（带订单信息）
+      that.getGroubInfo(groubTrace, orderTrace)
+    } else if (indexMode == "userNear") {
+      //#提示未初始选择当前位置
+      if (userinfoCache.latitude) {
+        //已经初始选过当前位置-加载附近的活动商品信息
+        util.pageInitData(that, that.getNearGrouba, 6)
+      } else {
+        util.log("#未初始选过当前位置")
+        // util.softTips(that, "未选择地址，推荐TOP100", 3)
+        util.pageInitData(that, that.getNearGrouba, 6)
+      }
+    }
+
 
   },
 
@@ -233,15 +280,20 @@ Page({
    * Page event handler function--Called when user drop down
    */
   onPullDownRefresh: function() {
-
+    util.pageInitData(this, this.getNearGrouba, 6)
   },
 
   /**
    * Called when page reach bottom
    */
   onReachBottom: function() {
-
+    util.log("#已滚到到底部:" + JSON.stringify(this.data.isLoddingEnd))
+    if (!this.data.isLoadEnd) {
+      util.pageMoreData(this, this.getNearGrouba)
+    }
   },
+
+
 
   toQrCode: function() {
     //#生成二维码
@@ -266,43 +318,92 @@ Page({
       payContainerShow: false,
     })
   },
-  shareGrouba(e) {
-    let productList = this.data.productList
-    util.log("#商品活动分享:" + JSON.stringify(productList))
-    let index = e.target.dataset.index
-    let productList0 = productList[0]
-    productList[0] = productList[index]
-    productList[index] = productList0
-    this.setData({
-      productList,
-    })
+
+  onShareAppMessageA() {
+    util.log("#分享防止冒泡方法hack")
   },
+
   /**
    * Called when user click on the top right corner to share
    */
   onShareAppMessage(e) {
     let that = this;
     let index = e.target.dataset.index
-    let productList = this.data.productList
-    let productList0 = productList[0]
-    productList[0] = productList[index]
-    productList[index] = productList0
-    this.setData({
-      productList,
+    let pageArray = that.data.pageArray
+    let pageArray0 = pageArray[0]
+    let shareGrouba = pageArray[index]
+    util.log("#分享活动商品:" + JSON.stringify(shareGrouba))
+    pageArray[0] = shareGrouba
+    pageArray[index] = pageArray0
+    that.setData({
+      pageArray,
     })
+    util.log("#分享后，页面重新排序:" + JSON.stringify(that.data.pageArray))
+    let titlePrefix = '开团立享优惠:'
+    if (shareGrouba.relationOrderTrace) {
+      titlePrefix = "参团立享优惠:"
+      /** 参团下单 ############################################ */
+      that.orderJoin(shareGrouba.orderTrace, shareGrouba.refUserWxUnionid)
+    } else {
+      /** 开团下单 ############################################ */
+      that.orderOpen(shareGrouba.refGroubTrace, shareGrouba.groubaTrace, shareGrouba.groubaActiveMinute)
+    }
+    /** 生成分享 ############################################ */
     return {
-      title: '参团立享优惠' + util.getCache(util.cacheKey.isOpen), // 转发后 所显示的title
-      path: '/pages/index/index?groubaTrace=GA2019050600000004', // 相对的路径
+      title: titlePrefix + shareGrouba.groubaDiscountAmount + "元", // 转发后 所显示的title
+      path: '/pages/myShop/myShop?groubTrace=' + shareGrouba.refGroubTrace + '&groubaTrace=' + shareGrouba.groubaTrace + '&orderTrace=' + shareGrouba.relationOrderTrace + '&isOpen=false', // 相对的路径
       // imageUrl:'http://127.0.0.1:9660/pinb-service/images/15a9bdccdfc851450bd9ab802c631475.jpg',
       success: (res) => { // 成功后要做的事情
         util.log("#分享成功" + res.shareTickets[0])
 
+        wx.getShareInfo({
+          shareTicket: res.shareTickets[0],
+          success: (res) => {
+            that.setData({
+              isShow: true
+            })
+            util.log(that.setData.isShow)
+          },
+          fail: function(res) {
+            console.log(res)
+          },
+          complete: function(res) {
+            console.log(res)
+          }
+        })
       },
       fail: function(res) {
         // 分享失败
         util.log("#分享失败" + res)
       }
     }
+  },
+  /** 开团服务请求 */
+  orderOpen(refGroubTrace, refGroubaTrace, orderExpiredTime) {
+    util.reqPost(util.apiHost + "/groubaOrder/orderOpen", {
+      refGroubTrace: refGroubTrace,
+      refGroubaTrace: refGroubaTrace,
+      orderExpiredTime: orderExpiredTime,
+      refUserWxUnionid: util.getCache(util.cacheKey.userinfo, "wxUnionid"),
+      refUserImg: util.getCache(util.cacheKey.userinfo, "avatarUrl"),
+    }, resp => {
+      if (util.parseResp(this, resp)) {
+
+      }
+    })
+  },
+  /** 参团服务请求*/
+  orderJoin(orderTrace, refUserWxUnionid) {
+    util.reqPost(util.apiHost + "/groubaOrder/orderShare", {
+      orderTrace: orderTrace,
+      refUserWxUnionid: refUserWxUnionid,
+      shareUser: util.getCache(util.cacheKey.userinfo, "unionid"),
+      refUserImg: util.getCache(util.cacheKey.userinfo, "avatarUrl"),
+    }, resp => {
+      if (util.parseResp(this, resp)) {
+
+      }
+    })
   },
 
 })

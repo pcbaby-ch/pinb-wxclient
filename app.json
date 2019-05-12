@@ -10,6 +10,11 @@
     "navigationBarTitleText": "拼吧-店长",
     "navigationBarTextStyle": "black"
   },
+  "permission": {
+    "scope.userLocation": {
+      "desc": "你的位置,将用于找到你附近的拼团活动"
+    }
+  },
   "networkTimeout": {
     "request": 5000,
     "connectSocket": 5000,

@@ -14,19 +14,6 @@ Page({
    */
   onLoad: function(options) {
     wx.showNavigationBarLoading();
-    let userinfoCache = util.getCache(util.cacheKey.userinfo)
-    let pageMode = ""
-    if (userinfoCache && userinfoCache.city) {
-      util.log("#命中缓存-授权过用户信息")
-      pageMode = "myOrder"
-    } else {
-      util.log("#无缓存-未授权过用户信息")
-      wx.navigateTo({
-        url: '/pages/login/login',
-      })
-      return
-    }
-
   },
 
   scanPayCode: function() {
@@ -52,7 +39,26 @@ Page({
   /**
    * 生命周期函数--监听页面显示
    */
-  onShow: function() {
+  onShow: function (pageRes) {
+    util.log("#页面传参:" + JSON.stringify(pageRes))
+    let groubTrace = pageRes ? pageRes.groubTrace : null
+    let groubaTrace = pageRes ? pageRes.groubaTrace : null
+    let orderTrace = pageRes ? pageRes.orderTrace : null
+    let that = this
+    let userinfoCache = util.getCache(util.cacheKey.userinfo)
+    if (userinfoCache && userinfoCache.city) {
+      util.log("#命中缓存-授权过用户信息")
+    } else {
+      util.log("#无缓存-未授权过用户信息")
+      wx.navigateTo({
+        url: '/pages/login/login',
+      })
+      return
+    }
+    that.setData({
+      avatarUrl: userinfoCache.avatarUrl,
+    })
+
 
   },
 

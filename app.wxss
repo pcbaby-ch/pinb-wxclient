@@ -52,7 +52,7 @@
   border: none;
   line-height: 40rpx;
   box-sizing: content-box;
-  width: 100%;
+  /* width: 100%; */
   position: block;
 }
 
@@ -528,3 +528,21 @@
 .page-foot-container view {
   font-size: 28rpx;
 }
+
+/* 页面头部-右上角用户头像 */
+
+.head-img {
+  display: flex;
+  position: block;
+  justify-self: flex-end;
+  width: 80rpx;
+  
+  
+}
+
+.head-img image {
+  width: 69rpx;
+  height: 69rpx;
+  border-radius: 30rpx;
+}
+

@@ -26,7 +26,7 @@
 
 <view class='main'>
   <!-- 店铺-商品信息 #编辑页面# ############  -->
-  <view wx:for='{{productList}}' wx:key='{{index}}' class='productList'>
+  <view wx:for='{{pageArray}}' wx:key='idx' wx:for-index='index' class='productList'>
     <view wx:if='{{isEdit}}' class='goods-list {{isEdit?"opacityshow":""}} {{editIndex==index?"goods-list-error":""}}'>
       <!-- 活动商品-左侧 -->
       <view class='goods-list-left'>
@@ -87,7 +87,7 @@
   </view>
 
   <!-- 店铺-商品信息 #预览页面# ############  -->
-  <include wx:if='{{!isEdit}}' src="../component/listGoods.wxml" />
+  <include wx:if='{{!isEdit}}' src="../component/listNearGoods.wxml" />
 
   <!-- 店铺-电话、地址信息 -->
   <include src="../component/shopFoot.wxml" />
@@ -110,6 +110,10 @@
   <view class='fixed-list' catchtap='ch_edit'>
     <image src='{{isEdit?"../img/eye.png":"../img/edit-square.png"}}'></image>
     <view>{{isEdit?"预览":"编辑"}}</view>
+  </view>
+  <view class='fixed-list' bindtap='goIndex'>
+    <image src='../img/home.png'></image>
+    <view>主页</view>
   </view>
   <!-- <view class='fixed-list' catchtap='add'>
     <image src='../img/plus-square.png'></image>

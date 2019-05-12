@@ -25,7 +25,7 @@
 </view>
 <!-- 右下角悬浮菜单 -->
 <view class='fixed' wx:if="{{indexMode!='userLogin'}}">
-  <view class='fixed-list' bindtap='goMyShop'>
+  <view class='fixed-list' bindtap='goMyShopEdit'>
     <image src='{{isOpen?"../img/index.png":"../img/edit-square.png"}}'></image>
     <view>{{isOpen?"店铺":"入驻"}}</view>
   </view>

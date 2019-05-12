@@ -1,9 +1,0 @@
-<!-- 登陆页 -->
-<view class='login-container opacityshow'>
-  
-    <image src='../img/logo.jpg'></image>
-    <view>未登录</view>
-    <button open-type="getUserInfo" bindgetuserinfo='wxLogin' class='buttonBlock'>微信登陆</button>
-
-</view>
-<!-- </template> -->

@@ -1,6 +1,6 @@
 {
   "usingComponents": {
     "toast": "../component/toast/toast"
-  }
+  },
+  "enablePullDownRefresh": true
 }
-
