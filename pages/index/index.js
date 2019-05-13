@@ -210,7 +210,6 @@ Page({
    */
   onReady: function(pageRes) {
     wx.hideNavigationBarLoading()
-
   },
 
   /**
@@ -281,6 +280,7 @@ Page({
    */
   onPullDownRefresh: function() {
     util.pageInitData(this, this.getNearGrouba, 6)
+    wx.stopPullDownRefresh()
   },
 
   /**

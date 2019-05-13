@@ -34,6 +34,7 @@ Page({
    */
   onReady: function() {
     wx.hideNavigationBarLoading();
+    wx.stopPullDownRefresh()
   },
 
   /**
@@ -81,6 +82,7 @@ Page({
    */
   onPullDownRefresh: function() {
 
+    wx.stopPullDownRefresh()
   },
 
   /**

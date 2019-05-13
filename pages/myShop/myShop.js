@@ -362,21 +362,21 @@ Page({
         util.log("#店铺数据加载完成")
       } else {
         util.log("#店铺数据加载失败")
-
-      }
-      let pageArray = that.data.pageArray
-      if (that.data.isEdit) {}
-      if (pageArray && pageArray.length > 0) {
-        for (let i; i < 3 - pageArray.length; i++) {
-          pageArray.push(defalutProduct)
+        let pageArray = that.data.pageArray
+        if (that.data.isEdit) {}
+        if (pageArray && pageArray.length > 0) {
+          for (let i; i < 3 - pageArray.length; i++) {
+            pageArray.push(defalutProduct)
+          }
+        } else {
+          pageArray = [defalutProduct, defalutProduct, defalutProduct]
+          util.log("#初始化入驻店铺页面-数据：" + JSON.stringify(pageArray))
         }
-      } else {
-        pageArray = [defalutProduct, defalutProduct, defalutProduct]
-        util.log("#初始化入驻店铺页面-数据：" + JSON.stringify(pageArray))
+        that.setData({
+          pageArray: that.data.productList,
+        })
       }
-      that.setData({
-        pageArray: that.data.productList,
-      })
+
     })
   },
 
@@ -385,9 +385,6 @@ Page({
    */
   onReady: function() {
     wx.hideNavigationBarLoading()
-    // 快速测试区
-
-
   },
 
   /**
@@ -416,6 +413,7 @@ Page({
    */
   onPullDownRefresh: function() {
 
+    wx.stopPullDownRefresh()
   },
 
   /**

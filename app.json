@@ -5,10 +5,12 @@
     "pages/myOrder/myOrder"
   ],
   "window": {
-    "backgroundTextStyle": "light",
+    "backgroundTextStyle": "dark",
     "navigationBarBackgroundColor": "#fff",
     "navigationBarTitleText": "拼吧-店长",
-    "navigationBarTextStyle": "black"
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#fff",
+    "enablePullDownRefresh": true
   },
   "permission": {
     "scope.userLocation": {
@@ -38,4 +40,5 @@
       "selectedIconPath": "pages/img/orderB.png"
     }]
   }
+  
 }
