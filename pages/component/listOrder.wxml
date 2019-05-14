@@ -24,7 +24,7 @@
 
     </view>
     <!-- 参团立省？？元 -->
-    <button open-type='share' data-index='{{index}}' catchtap='onShareAppMessageA' hover-stop-propagation='true' class='buttonBlock main-list-share'>分享立省{{shareGoods.groubaDiscountAmount||'??'}}元</button>
+    <button open-type='share' data-index='{{index}}' catchtap='onShareAppMessageA' hover-stop-propagation='true' class='buttonBlock main-list-share'>分享立省{{item.groubaDiscountAmount||'??'}}元</button>
   </view>
 </view>
 <!-- <include src="shopFoot.wxml" /> -->

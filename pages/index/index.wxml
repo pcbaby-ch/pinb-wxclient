@@ -31,7 +31,7 @@
     <view data-type='groub.groubPhone' >{{groub.groubPhone}}</view>
   </view>
 
-<button class='buttonBlock' style='margin:0;'>
+<button class='buttonBlock' style='margin:0;margin-top: -6rpx;'>
   <view class='head-foot'>
     <image src='../img/location.png'></image>
     <view >{{groub.groubAddress}}</view>

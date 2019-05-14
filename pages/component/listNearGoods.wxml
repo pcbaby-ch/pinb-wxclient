@@ -31,9 +31,9 @@
         <view>{{[6,8,9][item.groubaSize]?[6,8,9][item.groubaSize]+'人团':'?人团'}}</view>
       </view>
       <!-- 距离800m -->
-      <view class='main-list-right-location'>
+      <view catchtap='getLocation' class='main-list-right-location'>
         <image class='goods-list-right-icon' src='../img/location.png'></image>
-        <view class='groubaSize-number'>{{item.distance}}</view>
+        <view>{{item.distance}}</view>
       </view>
       <button open-type='share' data-index='{{index}}' catchtap='onShareAppMessageA' hover-stop-propagation='true' class='buttonBlock main-list-share'>开团立省{{item.groubaDiscountAmount||'??'}}元</button>
 

@@ -125,11 +125,20 @@ Page({
       groubTrace: groubTrace,
       orderTrace: orderTrace,
       orderRelationUser: orderRelationUser,
+      refUserWxUnionid: util.getCache(util.cacheKey.userinfo, 'wxUnionid'),
     }, resp => {
       if (util.parseResp(that, resp)) {
+        let curLatitude = util.getCache(util.cacheKey.userinfo, 'latitude')
+        let curLongitude = util.getCache(util.cacheKey.userinfo, 'longitude')
         resp.data.groubInfo.groubImgView = util.apiHost + "/images/" + resp.data.groubInfo.groubImg
+        resp.data.shareGoods.goodsImgView = util.apiHost + "/images/" + resp.data.shareGoods.goodsImg
+        resp.data.shareGoods['distance'] = util.getDistance(curLatitude, curLongitude, resp.data.shareGoods.latitude, resp.data.shareGoods.longitude)
+        resp.data.shareGoods.userImgs = resp.data.shareGoods.userImgs.split(",")
+        resp.data.shareGoods.ordersStatus = resp.data.shareGoods.ordersStatus.split(",")
         for (var i in resp.data.goodsList) {
-          resp.data.goodsList[i]['goodsImgView'] = util.apiHost + "/images/" + resp.data.goodsList[i].goodsImg
+          let item = resp.data.goodsList[i]
+          resp.data.goodsList[i]['goodsImgView'] = util.apiHost + "/images/" + item.goodsImg
+          resp.data.goodsList[i]['distance'] = util.getDistance(curLatitude, curLongitude, item.latitude, item.longitude)
         }
         that.setData({
           groub: resp.data.groubInfo,
@@ -338,22 +347,26 @@ Page({
     let pageArray = that.data.pageArray
     let pageArray0 = pageArray[0]
     let shareGrouba = pageArray[index]
-    util.log("#分享活动商品:" + JSON.stringify(shareGrouba))
-    pageArray[0] = shareGrouba
-    pageArray[index] = pageArray0
-    that.setData({
-      pageArray,
-    })
-    util.log("#分享后，页面重新排序:" + JSON.stringify(that.data.pageArray))
     let titlePrefix = '开团立享优惠:'
-    if (shareGrouba.relationOrderTrace) {
+    if (!shareGrouba) {
       titlePrefix = "参团立享优惠:"
-      /** 参团下单 ############################################ */
-      that.orderJoin(shareGrouba.orderTrace, shareGrouba.refUserWxUnionid)
+      shareGrouba = that.data.shareGoods
+      if (shareGrouba.isJoined) {
+        /** 已参团-纯分享 ############################################ */
+      } else {
+        /** 参团下单 ############################################ */
+        that.orderJoin(shareGrouba.relationOrderTrace, shareGrouba.refUserWxUnionid)
+      }
     } else {
       /** 开团下单 ############################################ */
+      pageArray[index] = pageArray0
+      pageArray[0] = shareGrouba
+      that.setData({
+        pageArray,
+      })
       that.orderOpen(shareGrouba)
     }
+    util.log("#分享活动商品:" + JSON.stringify(shareGrouba))
     /** 生成分享 ############################################ */
     return {
       title: titlePrefix + shareGrouba.groubaDiscountAmount + "元", // 转发后 所显示的title
@@ -384,7 +397,7 @@ Page({
       }
     }
   },
-  /** 开团服务请求 */
+  /** 开团服务请求 args{shareGrouba:开团商品信息}*/
   orderOpen(shareGrouba) {
     util.reqPost(util.apiHost + "/groubaOrder/orderOpen", {
       refGroubTrace: shareGrouba.refGroubTrace,
@@ -403,12 +416,12 @@ Page({
       }
     })
   },
-  /** 参团服务请求*/
+  /** 参团服务请求 args{orderTrace:原团订单号,refUserWxUnionid:原团团长}*/
   orderJoin(orderTrace, refUserWxUnionid) {
-    util.reqPost(util.apiHost + "/groubaOrder/orderShare", {
+    util.reqPost(util.apiHost + "/groubaOrder/orderJoin", {
       orderTrace: orderTrace,
       refUserWxUnionid: refUserWxUnionid,
-      shareUser: util.getCache(util.cacheKey.userinfo, "unionid"),
+      shareUser: util.getCache(util.cacheKey.userinfo, "wxUnionid"),
       refUserImg: util.getCache(util.cacheKey.userinfo, "avatarUrl"),
     }, resp => {
       if (util.parseResp(this, resp)) {

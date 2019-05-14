@@ -1,8 +1,8 @@
 <!-- 首页-头部 -->
 <view class='index-head'>
   <view class='heat-line1'>
-    <button open-type="getUserInfo" bindgetuserinfo='getLocation' class='buttonBlock'>
-      <view class='head-location' bindtap='getLocation'>
+    <button catchtap='getLocation' class='buttonBlock'>
+      <view class='head-location'>
         <image src='../img/location3.png'></image>
         <view class='locatoion-text'>{{searchAddress||'请选择地址'}}</view>
         <!-- <view class="locatoion-text" style='font-size:38rpx;'>▽</view> -->

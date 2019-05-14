@@ -349,6 +349,9 @@ function getDistance(lat1, lng1, lat2, lng2) {
   lng1 = lng1 || 0;
   lat2 = lat2 || 0;
   lng2 = lng2 || 0;
+  if(lat1==0||lng1==0||lat2==0||lng2==0){
+    return '请选位置'
+  }
 
   var rad1 = lat1 * Math.PI / 180.0;
   var rad2 = lat2 * Math.PI / 180.0;
@@ -356,12 +359,12 @@ function getDistance(lat1, lng1, lat2, lng2) {
   var b = lng1 * Math.PI / 180.0 - lng2 * Math.PI / 180.0;
   var r = 6378137;
   var distance = r * 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a / 2), 2) + Math.cos(rad1) * Math.cos(rad2) * Math.pow(Math.sin(b / 2), 2)));
-  log("#lat1:" + lat1 + "lng1:" + lng1 + "lat2:" + lat2 + "lng2:" + lng2 + "#计算距离为:" + distance + "#" + distance / 1000.0)
+  // log("#lat1:" + lat1 + "lng1:" + lng1 + "lat2:" + lat2 + "lng2:" + lng2 + "#计算距离为:" + distance + "#" + distance / 1000.0)
   if (distance / 1000.0 >= 1) {
-    log("#计算距离为-千米:" + (distance / 1000.0).toFixed(1) + 'km')
+    // log("#计算距离为-千米:" + (distance / 1000.0).toFixed(1) + 'km')
     return (distance / 1000.0).toFixed(1) + 'km'
   } else {
-    log("#计算距离为-米:" + distance.toFixed(0) + 'm')
+    // log("#计算距离为-米:" + distance.toFixed(0) + 'm')
     return distance.toFixed(0) + 'm'
   }
 }
@@ -373,8 +376,8 @@ function getDistance(lat1, lng1, lat2, lng2) {
 
 
 //全局-常量、变量 ###########################################################
-const apiHost = "http://127.0.0.1:9660/pinb-service" 
-//https://apitest.pinb.vip/pinb-service 
+const apiHost = "https://apitest.pinb.vip/pinb-service" 
+//https://apitest.pinb.vip/pinb-service
 //http://127.0.0.1:9660/pinb-service
 
 const cacheKey = {
