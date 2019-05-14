@@ -14,9 +14,9 @@
       <!-- <view>扫码</view> -->
     </view>
   </view>
-
-  <view class='heat-line2 head-search'>
+  <!-- 搜索栏 -->
+  <!-- <view class='heat-line2 head-search'>
     <input maxlength='25' type="text" class="antEdit" style='' bindblur='bindinput' data-type='search' value='{{groub.search}}' focus='{{editItem=="-groub.search"}}' placeholder='输入商家、商品名称' placeholder-class='search-placeholder' />
-  </view>
+  </view> -->
 
 </view>

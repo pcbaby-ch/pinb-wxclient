@@ -1,5 +1,5 @@
 <!-- 开团商品展示 -->
-<view wx:if='{{3}}' class='goods-list {{editIndex==index?"goods-list-error":""}}' bindtap='toQrCode'>
+<view wx:if='{{shareGoods}}' class='goods-list {{editIndex==index?"goods-list-error":""}}' bindtap='toQrCode'>
   <view wx:if="{{shareGoods.groubaIsnew}}" class='goods-list-new'>新</view>
   <view wx:if="{{false}}" class='goods-list-done'>成团</view>
   <!-- 活动商品-左侧 -->
@@ -30,7 +30,8 @@
 
     <!-- 活动商品-用户头像 -->
     <view class='main-head-list' style='padding-bottom:10rpx;'>
-      <image wx:for='{{[6,8,9][2]}}' wx:key='{{index}}' class='' src='../img/wx_head2.jpg' mode='aspectFill'></image>
+     <image class="{{item2==6?'slt':''}}" wx:for="{{item.ordersStatus}}" wx:for-item="item2" wx:for-index="index2" wx:key="{{index2}}" src='{{item.userImgs[index2]}}' mode='aspectFill'></image>
+
     </view>
     <!-- 距离800m -->
     <view class='main-list-right-location'>

@@ -133,7 +133,7 @@ Page({
         }
         that.setData({
           groub: resp.data.groubInfo,
-          productList: resp.data.goodsList,
+          pageArray: resp.data.goodsList,
           shareGoods: resp.data.shareGoods,
         })
         util.log("#店铺or分享活动商品-数据加载-完成")
@@ -173,7 +173,7 @@ Page({
           })
         }
         pageArray = pageArray.concat(resp.rows)
-        util.log("#pageArray:" + JSON.stringify(pageArray))
+        // util.log("#pageArray:" + JSON.stringify(pageArray))
         that.setData({
           pageArray,
           isLodding: false,
@@ -216,7 +216,6 @@ Page({
    * Lifecycle function--Called when page show
    */
   onShow: function(pageRes) {
-
     util.log("#页面传参:" + JSON.stringify(pageRes))
     let groubTrace = pageRes ? pageRes.groubTrace : null
     let groubaTrace = pageRes ? pageRes.groubaTrace : null
@@ -346,12 +345,12 @@ Page({
       that.orderJoin(shareGrouba.orderTrace, shareGrouba.refUserWxUnionid)
     } else {
       /** 开团下单 ############################################ */
-      that.orderOpen(shareGrouba.refGroubTrace, shareGrouba.groubaTrace, shareGrouba.groubaActiveMinute)
+      that.orderOpen(shareGrouba)
     }
     /** 生成分享 ############################################ */
     return {
       title: titlePrefix + shareGrouba.groubaDiscountAmount + "元", // 转发后 所显示的title
-      path: '/pages/myShop/myShop?groubTrace=' + shareGrouba.refGroubTrace + '&groubaTrace=' + shareGrouba.groubaTrace + '&orderTrace=' + shareGrouba.relationOrderTrace + '&isOpen=false', // 相对的路径
+      path: '/pages/index/index?groubTrace=' + shareGrouba.refGroubTrace + '&groubaTrace=' + shareGrouba.groubaTrace + '&orderTrace=' + shareGrouba.relationOrderTrace + '&isOpen=false', // 相对的路径
       // imageUrl:'http://127.0.0.1:9660/pinb-service/images/15a9bdccdfc851450bd9ab802c631475.jpg',
       success: (res) => { // 成功后要做的事情
         util.log("#分享成功" + res.shareTickets[0])
@@ -379,16 +378,21 @@ Page({
     }
   },
   /** 开团服务请求 */
-  orderOpen(refGroubTrace, refGroubaTrace, orderExpiredTime) {
+  orderOpen(shareGrouba) {
     util.reqPost(util.apiHost + "/groubaOrder/orderOpen", {
-      refGroubTrace: refGroubTrace,
-      refGroubaTrace: refGroubaTrace,
-      orderExpiredTime: orderExpiredTime,
+      refGroubTrace: shareGrouba.refGroubTrace,
+      refGroubaTrace: shareGrouba.groubaTrace,
+      orderExpiredTime: shareGrouba.groubaActiveMinute,
       refUserWxUnionid: util.getCache(util.cacheKey.userinfo, "wxUnionid"),
       refUserImg: util.getCache(util.cacheKey.userinfo, "avatarUrl"),
+      goodsName: shareGrouba.goodsName,
+      goodsImg: shareGrouba.goodsImg,
+      goodsPrice: shareGrouba.goodsPrice,
+      groubaDiscountAmount: shareGrouba.groubaDiscountAmount,
+      groubaIsnew: shareGrouba.groubaIsnew,
     }, resp => {
       if (util.parseResp(this, resp)) {
-
+        // util.softTips(this, "开团成功", 6)
       }
     })
   },
