@@ -147,18 +147,54 @@ Page({
     }
   },
 
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage: function() {
-
+  onShareAppMessageA() {
+    util.log("#分享防止冒泡方法hack")
   },
 
-  onNetworkStatusChange: (function(res) {
-    if (res.isConnected) {
+  /**
+   * Called when user click on the top right corner to share
+   */
+  onShareAppMessage(e) {
+    let that = this;
+    let index = e.target.dataset.index
+    let pageArray = that.data.pageArray
+    let pageArray0 = pageArray[0]
+    let shareGrouba = pageArray[index]
+    pageArray[0] = shareGrouba
+    pageArray[index] = pageArray0
+    that.setData({
+      pageArray,
+    })
+    util.log("#分享活动商品:" + JSON.stringify(shareGrouba))
+    /** 生成分享 ############################################ */
+    return {
+      title: '参团立省' + shareGrouba.groubaDiscountAmount + "元", // 转发后 所显示的title
+      path: '/pages/index/index?groubTrace=' + shareGrouba.refGroubTrace + '&groubaTrace=' + shareGrouba.refGroubaTrace + '&orderTrace=' + shareGrouba.orderTrace + '&isOpen=false', // 相对的路径
+      // imageUrl:'http://127.0.0.1:9660/pinb-service/images/15a9bdccdfc851450bd9ab802c631475.jpg',
+      success: (res) => { // 成功后要做的事情
+        util.log("#分享成功" + res.shareTickets[0])
 
-    } else {
-      util.softTips("网络连接异常，请检查网络后重试!")
+        wx.getShareInfo({
+          shareTicket: res.shareTickets[0],
+          success: (res) => {
+            that.setData({
+              isShow: true
+            })
+            util.log(that.setData.isShow)
+          },
+          fail: function(res) {
+            console.log(res)
+          },
+          complete: function(res) {
+            console.log(res)
+          }
+        })
+      },
+      fail: function(res) {
+        // 分享失败
+        util.log("#分享失败" + res)
+      }
     }
-  }),
+  },
+
 })

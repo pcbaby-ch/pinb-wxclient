@@ -2,6 +2,7 @@
 <view class='order-list' wx:for="{{pageArray}}" wx:for-item="item" wx:for-index="index" wx:key="{{index}}">
   <view wx:if="{{item.groubaIsnew}}" class='goods-list-new'>新</view>
   <view wx:if="{{false}}" class='goods-list-done'>成团</view>
+  <!-- 订单-左侧 -->
   <view class='goods-list-left'>
     <view class='goods-list-price' wx:if="{{isOpen}}">
       <text class='yuanjia'>￥{{item.goodsPrice}}</text>
@@ -10,20 +11,20 @@
     <image class='goodsImg' mode='aspectFill' src='{{item.goodsImgView}}'></image>
 
   </view>
+  <!-- 订单-右侧 -->
   <view class='goods-list-right'>
-    <!-- <view class='main-list-right-top'>
-        <image src='../img/team.png'></image>
-        <view class='main-list-num'>99人团</view>
-        <view class='main-list-share'>分享</view>
-      </view> -->
+    <!-- 60分后结束 -->
     <view class='main-list-endTime' style='padding-bottom:10rpx;'>
       <image class='goods-list-right-icon' src='../img/time-circle2.png' mode='aspectFill'></image>
       <view>{{''+item.orderExpiredTime+''}}</view>
     </view>
+    <!-- 订单-用户头像 -->
     <view class='main-head-list'>
       <image class="{{item2==6?'slt':''}}" wx:for="{{item.ordersStatus}}" wx:for-item="item2" wx:for-index="index2" wx:key="{{index2}}" src='{{item.userImgs[index2]}}' mode='aspectFill'></image>
 
     </view>
+    <!-- 参团立省？？元 -->
+    <button open-type='share' data-index='{{index}}' catchtap='onShareAppMessageA' hover-stop-propagation='true' class='buttonBlock main-list-share'>分享立省{{shareGoods.groubaDiscountAmount||'??'}}元</button>
   </view>
 </view>
 <!-- <include src="shopFoot.wxml" /> -->

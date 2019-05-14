@@ -119,12 +119,12 @@ Page({
     })
   },
 
-  getGroubInfo(groubTrace, orderTrace) {
+  getGroubInfo(groubTrace, orderTrace, orderRelationUser) {
     let that = this
-    util.reqPost(util.apiHost + "/groupBar/selectOne", {
+    util.reqPost(util.apiHost + "/groupBar/selectOneShare", {
       groubTrace: groubTrace,
       orderTrace: orderTrace,
-      refUserWxUnionid: util.getCache(util.cacheKey.userinfo, 'wxUnionid')
+      orderRelationUser: orderRelationUser,
     }, resp => {
       if (util.parseResp(that, resp)) {
         resp.data.groubInfo.groubImgView = util.apiHost + "/images/" + resp.data.groubInfo.groubImg
@@ -217,9 +217,10 @@ Page({
    */
   onShow: function(pageRes) {
     util.log("#页面传参:" + JSON.stringify(pageRes))
-    let groubTrace = pageRes ? pageRes.groubTrace : null
-    let groubaTrace = pageRes ? pageRes.groubaTrace : null
-    let orderTrace = pageRes ? pageRes.orderTrace : null
+    let refGroubTrace = pageRes ? pageRes.refGroubTrace : 'G2019050300000002'
+    let refGroubaTrace = pageRes ? pageRes.refGroubaTrace : 'GA2019050600000006'
+    let orderTrace = pageRes ? pageRes.orderTrace : 'GO2019051400000003'
+    let orderRelationUser = pageRes ? pageRes.refUserWxUnionid : 'oQTUs5LMkoGhKQ1N9Oq1kM5pN48o'
     let that = this
     /** 根据首页加载模式加载数据 {userNear userShare userLogin} ############################### */
     let isLoadData = true
@@ -227,7 +228,7 @@ Page({
     let userinfoCache = util.getCache(util.cacheKey.userinfo)
     if (userinfoCache && userinfoCache.city) {
       util.log("#命中缓存-授权过用户信息")
-      if (groubaTrace && orderTrace) {
+      if (refGroubaTrace && orderTrace) {
         indexMode = "userShare"
       }
     } else {
@@ -244,7 +245,7 @@ Page({
     /** 根据页面加载规则，加载对于数据 ################################## */
     if (indexMode == "userShare") {
       //#加载指定商铺的基本信息+商品信息（如果是分享来源，则需要去除分享订单对应的商品）+ 分享活动商品（带订单信息）
-      that.getGroubInfo(groubTrace, orderTrace)
+      that.getGroubInfo(refGroubTrace, orderTrace, orderRelationUser)
     } else if (indexMode == "userNear") {
       //#提示未初始选择当前位置
       if (userinfoCache.latitude) {
@@ -278,7 +279,11 @@ Page({
    * Page event handler function--Called when user drop down
    */
   onPullDownRefresh: function() {
-    util.pageInitData(this, this.getNearGrouba, 6)
+    if (this.data.indexMode == 'userNear') {
+      util.pageInitData(this, this.getNearGrouba, 6)
+    } else {
+      wx.stopPullDownRefresh()
+    }
     wx.stopPullDownRefresh()
   },
 
@@ -286,9 +291,11 @@ Page({
    * Called when page reach bottom
    */
   onReachBottom: function() {
-    util.log("#已滚到到底部:" + JSON.stringify(this.data.isLoddingEnd))
-    if (!this.data.isLoadEnd) {
+    if (!this.data.isLoadEnd && this.data.indexMode == 'userNear') {
+      util.log("#已滚到到底部-翻页:" + JSON.stringify(this.data.isLoddingEnd))
       util.pageMoreData(this, this.getNearGrouba)
+    } else {
+      util.log("#已滚到到底部-不翻页:" + JSON.stringify(this.data.isLoddingEnd))
     }
   },
 

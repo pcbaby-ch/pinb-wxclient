@@ -23,6 +23,21 @@
     <image class='pay-close' src='../img/close-circle.png' bindtap='closePay'></image>
   </view>
 </view>
+
+<!-- 店铺-电话、地址信息 -->
+<view class='head-foot' style="margin-top:-50rpx;padding-bottom:20rpx">
+  <view  class='head-foot' style='width:230rpx;'>
+    <image src='../img/phone.png'></image>
+    <view data-type='groub.groubPhone' >{{groub.groubPhone}}</view>
+  </view>
+
+<button class='buttonBlock' style='margin:0;'>
+  <view class='head-foot'>
+    <image src='../img/location.png'></image>
+    <view >{{groub.groubAddress}}</view>
+    </view>
+  </button>
+</view>
 <!-- 右下角悬浮菜单 -->
 <view class='fixed' wx:if="{{indexMode!='userLogin'}}">
   <view class='fixed-list' bindtap='goMyShopEdit'>
