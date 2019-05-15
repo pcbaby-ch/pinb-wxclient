@@ -1,4 +1,5 @@
 let util = require("../../utils/util.js")
+var QRCode = require('../../utils/weapp-qrcode.js')
 
 Page({
 
@@ -7,13 +8,6 @@ Page({
    */
   data: {
 
-  },
-
-  /**
-   * 生命周期函数--监听页面加载
-   */
-  onLoad: function(options) {
-    wx.showNavigationBarLoading();
   },
 
   scanPayCode: function() {
@@ -25,7 +19,43 @@ Page({
         wx.setNavigationBarTitle({
           title: res.result,
         })
+        //请求：消费处理服务接口
+        util.reqPost(util.apiHost + "/groubaOrder/orderConsume", {
+          orderTrace: res.result.split("|")[1],
+          refUserWxUnionid: util.getCache(util.cacheKey.userinfo, 'wxUnionid'),
+          refGroubTrace: res.result.split("|")[0],
+        }, resp => {
+          if (util.parseResp(that, resp)){
+            
+          }
+        })
       }
+    })
+  },
+
+  toQrCode: function(res) {
+    util.log("#res:" + JSON.stringify(res))
+    let order = this.data.pageArray[res.target.dataset.index]
+    //#生成二维码
+    var qrcode = new QRCode('canvas', {
+      // usingIn: this,
+      text: 'G2019050300000002|GO2019051400000006',
+
+      colorDark: "#000000",
+      colorLight: "#ffffff",
+      correctLevel: QRCode.CorrectLevel.H,
+    });
+
+    // qrcode.makeCode('GO2019051400000006')
+
+    this.setData({
+      payContainerShow: true,
+    })
+  },
+
+  closePay: function() {
+    this.setData({
+      payContainerShow: false,
     })
   },
 
@@ -40,7 +70,7 @@ Page({
       page: page_,
       rows: rows_,
     }, resp => {
-      if (util.parseResp(that, resp)) {
+      if (util.parseResp(that, resp) && resp.data.rows.length > 0) {
         for (var i in resp.data.rows) {
           resp.data.rows[i]['goodsImgView'] = util.apiHost + "/images/" + resp.data.rows[i].goodsImg
           resp.data.rows[i].userImgs = resp.data.rows[i].userImgs.split(",")
@@ -78,7 +108,35 @@ Page({
       }
     })
   },
+  /**
+   * 生命周期函数--监听页面加载
+   */
+  onLoad: function(pageRes) {
+    wx.showNavigationBarLoading()
+    util.log("#页面传参:" + JSON.stringify(pageRes))
+    let that = this
+    let userinfoCache = util.getCache(util.cacheKey.userinfo)
+    if (userinfoCache && userinfoCache.nickName) {
+      util.log("#命中缓存-授权过用户信息")
+    } else {
+      util.log("#无缓存-未授权过用户信息")
+      wx.navigateTo({
+        url: '/pages/login/login',
+      })
+      return
+    }
+    //#加载统计数据
 
+    that.setData({
+      isOpen: util.getCache(util.cacheKey.userinfo, "isOpenGroub") == '1' ? true : false,
+      avatarUrl: userinfoCache.avatarUrl,
+    })
+    //#加载订单数据
+    util.pageInitData(that, that.getMyOrders, 6);
+
+
+
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
@@ -91,27 +149,6 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow: function(pageRes) {
-    util.log("#页面传参:" + JSON.stringify(pageRes))
-    let that = this
-    let userinfoCache = util.getCache(util.cacheKey.userinfo)
-    if (userinfoCache && userinfoCache.city) {
-      util.log("#命中缓存-授权过用户信息")
-    } else {
-      util.log("#无缓存-未授权过用户信息")
-      wx.navigateTo({
-        url: '/pages/login/login',
-      })
-      return
-    }
-    //#加载统计数据
-
-    that.setData({
-      avatarUrl: userinfoCache.avatarUrl,
-    })
-    //#加载订单数据
-    util.pageInitData(that, that.getMyOrders, 6);
-
-
 
   },
 

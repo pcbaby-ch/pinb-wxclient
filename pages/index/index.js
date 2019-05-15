@@ -17,6 +17,9 @@ Page({
   goMyShop(res) {
     util.log("#res:" + JSON.stringify(res))
     let grouba = this.data.pageArray[res.target.dataset.index]
+    if (!grouba) {
+      grouba = this.data.shareGoods
+    }
     util.log("#touchedElement:" + JSON.stringify(grouba))
     wx.navigateTo({
       url: '/pages/myShop/myShop?groubTrace=' + grouba.refGroubTrace + '&groubaTrace=' + grouba.groubaTrace + '&orderTrace=' + '&isOpen=false'
@@ -235,7 +238,7 @@ Page({
     let isLoadData = true
     let indexMode = "userNear"
     let userinfoCache = util.getCache(util.cacheKey.userinfo)
-    if (userinfoCache && userinfoCache.city) {
+    if (userinfoCache && userinfoCache.nickName) {
       util.log("#命中缓存-授权过用户信息")
       if (refGroubaTrace && orderTrace) {
         indexMode = "userShare"
@@ -249,6 +252,7 @@ Page({
     }
     that.setData({
       indexMode,
+      isOpen:util.getCache(util.cacheKey.userinfo,"isOpenGroub")=='1'?true:false,
       avatarUrl: userinfoCache.avatarUrl,
     })
     /** 根据页面加载规则，加载对于数据 ################################## */
@@ -288,11 +292,12 @@ Page({
    * Page event handler function--Called when user drop down
    */
   onPullDownRefresh: function() {
-    if (this.data.indexMode == 'userNear') {
-      util.pageInitData(this, this.getNearGrouba, 6)
-    } else {
-      wx.stopPullDownRefresh()
-    }
+    // if (this.data.indexMode == 'userNear') {
+    //   util.pageInitData(this, this.getNearGrouba, 6)
+    // } else {
+    //   wx.stopPullDownRefresh()
+    // }
+    this.onShow()
     wx.stopPullDownRefresh()
   },
 
@@ -306,32 +311,6 @@ Page({
     } else {
       util.log("#已滚到到底部-不翻页:" + JSON.stringify(this.data.isLoddingEnd))
     }
-  },
-
-
-
-  toQrCode: function() {
-    //#生成二维码
-    var qrcode = new QRCode('canvas', {
-      // usingIn: this,
-      text: "orderNumber" + util.formatTime(new Date()),
-
-      colorDark: "#000000",
-      colorLight: "#ffffff",
-      correctLevel: QRCode.CorrectLevel.H,
-    });
-
-    qrcode.makeCode("orderNumber" + util.formatTime(new Date()))
-
-    this.setData({
-      payContainerShow: true,
-    })
-  },
-
-  closePay: function() {
-    this.setData({
-      payContainerShow: false,
-    })
   },
 
   onShareAppMessageA() {

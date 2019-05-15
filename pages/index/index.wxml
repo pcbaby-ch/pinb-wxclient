@@ -15,29 +15,6 @@
   <include src="../component/indexFoot.wxml" />
 </view>
 
-<!-- 消费二维码 -->
-<view class='pay-container' wx:if="{{payContainerShow}}">
-  <view class='pay'>
-    <canvas class='canvas' canvas-id='canvas'></canvas>
-    <view class='pay-type'>-- 付款方式 --</view>
-    <image class='pay-close' src='../img/close-circle.png' bindtap='closePay'></image>
-  </view>
-</view>
-
-<!-- 店铺-电话、地址信息 -->
-<view class='head-foot' style="margin-top:-50rpx;padding-bottom:20rpx">
-  <view  class='head-foot' style='width:230rpx;'>
-    <image src='../img/phone.png'></image>
-    <view data-type='groub.groubPhone' >{{groub.groubPhone}}</view>
-  </view>
-
-<button class='buttonBlock' style='margin:0;margin-top: -6rpx;'>
-  <view class='head-foot'>
-    <image src='../img/location.png'></image>
-    <view >{{groub.groubAddress}}</view>
-    </view>
-  </button>
-</view>
 <!-- 右下角悬浮菜单 -->
 <view class='fixed' wx:if="{{indexMode!='userLogin'}}">
   <view class='fixed-list' bindtap='goMyShopEdit'>
@@ -50,6 +27,19 @@
     </view> -->
 
 </view>
+<!-- 店铺-电话、地址信息 -->
+<view class='page-foot-container' style="margin-top:-30rpx;padding-bottom:20rpx;justify-content:left;">
+  <view class='head-foot' style='width:230rpx;'>
+    <image src='../img/phone.png'></image>
+    <view data-type='groub.groubPhone'>{{groub.groubPhone}}</view>
+  </view>
 
+  <button class='buttonBlock' style='margin:0;'>
+    <view class='head-foot'>
+      <image src='../img/location.png'></image>
+      <view>{{groub.groubAddress}}</view>
+    </view>
+  </button>
+</view>
 
 <toast usToast='{{usToast}}'></toast>

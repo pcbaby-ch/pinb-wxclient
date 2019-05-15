@@ -1,9 +1,9 @@
 <!-- 订单展示 -->
-<view class='order-list' wx:for="{{pageArray}}" wx:for-item="item" wx:for-index="index" wx:key="{{index}}">
+<view class='order-list' wx:for="{{pageArray}}" wx:for-item="item" wx:for-index="index" wx:key="orderTrace" data-index='{{index}}'>
   <view wx:if="{{item.groubaIsnew}}" class='goods-list-new'>新</view>
   <view wx:if="{{false}}" class='goods-list-done'>成团</view>
   <!-- 订单-左侧 -->
-  <view class='goods-list-left'>
+  <view class='goods-list-left' data-index='{{index}}' catchtap='toQrCode'>
     <view class='goods-list-price' wx:if="{{isOpen}}">
       <text class='yuanjia'>￥{{item.goodsPrice}}</text>
       <text class='zhekou'>￥{{item.goodsPrice-item.groubaDiscountAmount}}</text>
@@ -12,7 +12,7 @@
 
   </view>
   <!-- 订单-右侧 -->
-  <view class='goods-list-right'>
+  <view class='goods-list-right' data-index='{{index}}' catchtap='toQrCode'>
     <!-- 60分后结束 -->
     <view class='main-list-endTime' style='padding-bottom:10rpx;'>
       <image class='goods-list-right-icon' src='../img/time-circle2.png' mode='aspectFill'></image>
@@ -24,7 +24,7 @@
 
     </view>
     <!-- 参团立省？？元 -->
-    <button open-type='share' data-index='{{index}}' catchtap='onShareAppMessageA' hover-stop-propagation='true' class='buttonBlock main-list-share'>分享立省{{item.groubaDiscountAmount||'??'}}元</button>
+    <button open-type='share' data-index='{{index}}' catchtap='onShareAppMessageA' hover-stop-propagation='true' class='buttonBlock main-list-share' style="width:120rpx;">分享</button>
   </view>
 </view>
 <!-- <include src="shopFoot.wxml" /> -->

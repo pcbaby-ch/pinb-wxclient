@@ -22,10 +22,19 @@
 
 </view>
 <!-- 分页加载提示 -->
-<view class='page-foot-container'>
+<view class='page-foot-container' wx:if='{{!isLoadEnd}}'>
   <image src='../img/loading.png' wx:if='{{isLodding}}'></image>
   <view catchtap='catchtap' wx:if='{{isLodding}}'>正在加载中...</view>
 </view>
 <view class='page-foot-container' wx:if='{{isLoadEnd}}'>
   <view catchtap='catchtap'>---- 更多内容,敬请期待 ----</view>
+</view>
+
+<!-- 消费二维码 -->
+<view class='pay-container' wx:if="{{payContainerShow}}">
+  <view class='pay'>
+    <canvas class='canvas' canvas-id='canvas'></canvas>
+    <view class='pay-type'>-- 付款方式 --</view>
+    <image class='pay-close' src='../img/close-circle.png' bindtap='closePay'></image>
+  </view>
 </view>

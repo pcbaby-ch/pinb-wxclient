@@ -146,7 +146,7 @@
 }
 
 .main {
-  padding: 20rpx 8rpx 28rpx;
+  padding: 20rpx 8rpx 18rpx 8rpx;
 }
 
 .main input {
