@@ -12,7 +12,7 @@ const defalutProduct = {
   refGroubTrace: '',
   refUserWxUnionid: '',
   groubaSize: 0,
-  groubaMaxCount: 8,
+  groubaMaxCount: 68,
   goodsName: '',
   goodsImg: '',
   goodsPrice: '',

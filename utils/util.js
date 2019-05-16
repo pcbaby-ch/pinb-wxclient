@@ -376,7 +376,7 @@ function getDistance(lat1, lng1, lat2, lng2) {
 
 
 //全局-常量、变量 ###########################################################
-const apiHost = "https://apitest.pinb.vip/pinb-service" 
+const apiHost = "http://127.0.0.1:9660/pinb-service" 
 //https://apitest.pinb.vip/pinb-service
 //http://127.0.0.1:9660/pinb-service
 

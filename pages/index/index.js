@@ -252,7 +252,7 @@ Page({
     }
     that.setData({
       indexMode,
-      isOpen:util.getCache(util.cacheKey.userinfo,"isOpenGroub")=='1'?true:false,
+      isOpen: util.getCache(util.cacheKey.userinfo, "isOpenGroub") == '1' ? true : false,
       avatarUrl: userinfoCache.avatarUrl,
     })
     /** 根据页面加载规则，加载对于数据 ################################## */
@@ -313,8 +313,34 @@ Page({
     }
   },
 
-  onShareAppMessageA() {
+  onShareAppMessageA(e) {
     util.log("#分享防止冒泡方法hack")
+    let that = this;
+    let index = e.target.dataset.index
+    let pageArray = that.data.pageArray
+    let pageArray0 = pageArray[0]
+    let shareGrouba = pageArray[index]
+    if (!shareGrouba) {
+      shareGrouba = that.data.shareGoods
+      if (shareGrouba.isJoined) {
+        /** 已参团-纯分享 ############################################ */
+        util.log("#已参团-纯分享")
+      } else {
+        /** 参团下单 ############################################ */
+        util.log("#参团下单")
+        that.orderJoin(shareGrouba.relationOrderTrace, shareGrouba.refUserWxUnionid)
+      }
+    } else {
+      /** 开团下单 ############################################ */
+      pageArray[index] = pageArray0
+      pageArray[0] = shareGrouba
+      that.setData({
+        pageArray,
+      })
+      util.log("#开团下单")
+      that.orderOpen(shareGrouba)
+    }
+    util.log("#拼团活动商品:" + JSON.stringify(shareGrouba))
   },
 
   /**
