@@ -122,12 +122,12 @@ Page({
     })
   },
 
-  getGroubInfo(groubTrace, orderTrace, orderRelationUser) {
+  getGroubInfo(groubTrace, orderTrace, orderLeader) {
     let that = this
     util.reqPost(util.apiHost + "/groupBar/selectOneShare", {
       groubTrace: groubTrace,
       orderTrace: orderTrace,
-      orderRelationUser: orderRelationUser,
+      orderLeader: orderLeader,
       refUserWxUnionid: util.getCache(util.cacheKey.userinfo, 'wxUnionid'),
     }, resp => {
       if (util.parseResp(that, resp)) {
@@ -232,7 +232,7 @@ Page({
     let refGroubTrace = pageRes ? pageRes.refGroubTrace : 'G2019050300000002'
     let refGroubaTrace = pageRes ? pageRes.refGroubaTrace : 'GA2019050600000006'
     let orderTrace = pageRes ? pageRes.orderTrace : 'GO2019051400000003'
-    let orderRelationUser = pageRes ? pageRes.refUserWxUnionid : 'oQTUs5LMkoGhKQ1N9Oq1kM5pN48o'
+    let orderLeader = pageRes ? pageRes.refUserWxUnionid : 'oQTUs5LMkoGhKQ1N9Oq1kM5pN48o'
     let that = this
     /** 根据首页加载模式加载数据 {userNear userShare userLogin} ############################### */
     let isLoadData = true
@@ -258,7 +258,7 @@ Page({
     /** 根据页面加载规则，加载对于数据 ################################## */
     if (indexMode == "userShare") {
       //#加载指定商铺的基本信息+商品信息（如果是分享来源，则需要去除分享订单对应的商品）+ 分享活动商品（带订单信息）
-      that.getGroubInfo(refGroubTrace, orderTrace, orderRelationUser)
+      that.getGroubInfo(refGroubTrace, orderTrace, orderLeader)
     } else if (indexMode == "userNear") {
       //#提示未初始选择当前位置
       if (userinfoCache.latitude) {
@@ -328,7 +328,7 @@ Page({
       } else {
         /** 参团下单 ############################################ */
         util.log("#参团下单")
-        that.orderJoin(shareGrouba.relationOrderTrace, shareGrouba.refUserWxUnionid)
+        that.orderJoin(shareGrouba.relationOrderTrace, shareGrouba.leader)
       }
     } else {
       /** 开团下单 ############################################ */
@@ -349,27 +349,11 @@ Page({
   onShareAppMessage(e) {
     let that = this;
     let index = e.target.dataset.index
-    let pageArray = that.data.pageArray
-    let pageArray0 = pageArray[0]
-    let shareGrouba = pageArray[index]
+    let shareGrouba = that.data.pageArray[index]
     let titlePrefix = '开团立享优惠:'
     if (!shareGrouba) {
       titlePrefix = "参团立享优惠:"
       shareGrouba = that.data.shareGoods
-      if (shareGrouba.isJoined) {
-        /** 已参团-纯分享 ############################################ */
-      } else {
-        /** 参团下单 ############################################ */
-        that.orderJoin(shareGrouba.relationOrderTrace, shareGrouba.refUserWxUnionid)
-      }
-    } else {
-      /** 开团下单 ############################################ */
-      pageArray[index] = pageArray0
-      pageArray[0] = shareGrouba
-      that.setData({
-        pageArray,
-      })
-      that.orderOpen(shareGrouba)
     }
     util.log("#分享活动商品:" + JSON.stringify(shareGrouba))
     /** 生成分享 ############################################ */
@@ -377,27 +361,10 @@ Page({
       title: titlePrefix + shareGrouba.groubaDiscountAmount + "元", // 转发后 所显示的title
       path: '/pages/index/index?groubTrace=' + shareGrouba.refGroubTrace + '&groubaTrace=' + shareGrouba.groubaTrace + '&orderTrace=' + shareGrouba.relationOrderTrace + '&isOpen=false', // 相对的路径
       // imageUrl:'http://127.0.0.1:9660/pinb-service/images/15a9bdccdfc851450bd9ab802c631475.jpg',
-      success: (res) => { // 成功后要做的事情
+      success: (res) => {
         util.log("#分享成功" + res.shareTickets[0])
-
-        wx.getShareInfo({
-          shareTicket: res.shareTickets[0],
-          success: (res) => {
-            that.setData({
-              isShow: true
-            })
-            util.log(that.setData.isShow)
-          },
-          fail: function(res) {
-            console.log(res)
-          },
-          complete: function(res) {
-            console.log(res)
-          }
-        })
       },
       fail: function(res) {
-        // 分享失败
         util.log("#分享失败" + res)
       }
     }
