@@ -349,7 +349,7 @@ function getDistance(lat1, lng1, lat2, lng2) {
   lng1 = lng1 || 0;
   lat2 = lat2 || 0;
   lng2 = lng2 || 0;
-  if(lat1==0||lng1==0||lat2==0||lng2==0){
+  if (lat1 == 0 || lng1 == 0 || lat2 == 0 || lng2 == 0) {
     return '请选位置'
   }
 
@@ -376,7 +376,7 @@ function getDistance(lat1, lng1, lat2, lng2) {
 
 
 //全局-常量、变量 ###########################################################
-const apiHost = "http://127.0.0.1:9660/pinb-service" 
+const apiHost = "https://apitest.pinb.vip/pinb-service"
 //https://apitest.pinb.vip/pinb-service
 //http://127.0.0.1:9660/pinb-service
 
@@ -386,6 +386,7 @@ const cacheKey = {
   groubaTrace: 'groubaTrace',
   groubInfo: "groubInfo",
   goodsList: 'goodsList',
+  toPageParams: 'toPageParams'
 }
 
 

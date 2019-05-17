@@ -25,8 +25,8 @@ Page({
           refUserWxUnionid: util.getCache(util.cacheKey.userinfo, 'wxUnionid'),
           refGroubTrace: res.result.split("|")[0],
         }, resp => {
-          if (util.parseResp(that, resp)){
-            
+          if (util.parseResp(that, resp)) {
+
           }
         })
       }
@@ -196,17 +196,17 @@ Page({
     let index = e.target.dataset.index
     let pageArray = that.data.pageArray
     let pageArray0 = pageArray[0]
-    let shareGrouba = pageArray[index]
-    pageArray[0] = shareGrouba
+    let tapGrouba = pageArray[index]
+    pageArray[0] = tapGrouba
     pageArray[index] = pageArray0
     that.setData({
       pageArray,
     })
-    util.log("#分享活动商品:" + JSON.stringify(shareGrouba))
+    util.log("#分享活动商品:" + JSON.stringify(tapGrouba))
     /** 生成分享 ############################################ */
     return {
-      title: '参团立省' + shareGrouba.groubaDiscountAmount + "元", // 转发后 所显示的title
-      path: '/pages/index/index?groubTrace=' + shareGrouba.refGroubTrace + '&groubaTrace=' + shareGrouba.refGroubaTrace + '&orderTrace=' + shareGrouba.orderTrace + '&isOpen=false', // 相对的路径
+      title: '参团立省' + tapGrouba.groubaDiscountAmount + "元", // 转发后 所显示的title
+      path: '/pages/index/index?groubTrace=' + tapGrouba.refGroubTrace + '&orderTrace=' + tapGrouba.shareOrder + '&orderLeader=' + tapGrouba.shareLeader + '&isOpen=false', // 相对的路径
       // imageUrl:'http://127.0.0.1:9660/pinb-service/images/15a9bdccdfc851450bd9ab802c631475.jpg',
       success: (res) => { // 成功后要做的事情
         util.log("#分享成功" + res.shareTickets[0])

@@ -1,7 +1,6 @@
 <!-- 开团商品展示 -->
 <view wx:if='{{shareGoods}}' class='goods-list {{editIndex==index?"goods-list-error":""}}' catchtap='goMyShop2'>
-  <view wx:if="{{shareGoods.groubaIsnew}}" class='goods-list-new'>新</view>
-  <view wx:if="{{false}}" class='goods-list-done'>成团</view>
+  <view class='goods-list-new'>{{[6,8,9][shareGoods.groubaSize]==shareGoods.ordersStatus.length?'成团':(shareGoods.groubaIsnew?'新':'')}}</view>
   <!-- 活动商品-左侧 -->
   <view class='goods-list-left'>
     <image class='goodsImg' src='{{shareGoods.goodsImgView}}' data-index='{{index}}' mode='aspectFill'></image>
@@ -27,11 +26,9 @@
         <view data-type='endTime' data-index='{{index}}'>{{shareGoods.groubaActiveMinute?(shareGoods.groubaActiveMinute?shareGoods.groubaActiveMinute+'分':'')+'后结束':''}}</view>
       </view>
     </view>
-
     <!-- 活动商品-用户头像 -->
     <view class='main-head-list' style='padding-bottom:10rpx;'>
       <image class="{{item2==6?'slt':''}}" wx:for="{{shareGoods.ordersStatus}}" wx:for-item="item2" wx:for-index="index2" wx:key="{{index2}}" src='{{shareGoods.userImgs[index2]}}' mode='aspectFill'></image>
-
     </view>
     <!-- 距离800m -->
     <view catchtap='getLocation' class='main-list-right-location'>

@@ -2,15 +2,13 @@
 <!-- <scroll-view scroll-y="true" scroll-into-view="{{toView}}" scroll-with-animation="true" bindscrolltolower="scrollToBottom" class='opacityshow'> -->
 <!-- <view wx:for='{{pageArrayContainer}}' wx:for-item="pageArray" wx:for-index="pageArrayIndex" wx:key="index"> -->
 <view wx:for='{{pageArray}}' wx:for-item="item" wx:key="groubaTrace" wx:for-index="index">
-  <view class='goods-list-active {{editIndex==index?"goods-list-error":""}}' catchtap='goMyShop2'>
-    <view wx:if="{{item.groubaIsnew}}" class='goods-list-new'>新</view>
-    <view wx:if="{{false}}" class='goods-list-done'>成团</view>
+  <!-- 无头像布局 ######################################## -->
+  <view class='goods-list-active}}' wx:if="{{!item.userImgs}}" catchtap='goMyShop2'>
+    <!-- <view wx:if="{{item.groubaIsnew}}" class='goods-list-new'></view> -->
+    <view class='goods-list-new'>{{[6,8,9][shareGoods.groubaSize]==shareGoods.ordersStatus.length?'成团':(item.groubaIsnew?'新':'')}}</view>
     <!-- 活动商品-左侧 -->
     <view style='width:50%;position: relative;border-right: 2rpx solid #eee;' class='goods-list-left'>
-
       <image class='goodsImg' style="height: 100%" src='{{item.goodsImgView}}' data-index='{{index}}' mode='aspectFill'></image>
-
-
     </view>
     <!-- 活动商品-右侧 -->
     <view class='goods-list-right'>
@@ -36,12 +34,51 @@
         <view>{{item.distance}}</view>
       </view>
       <button open-type='' data-index='{{index}}' catchtap='onShareAppMessageA' hover-stop-propagation='true' class='buttonBlock main-list-share'>开团立省{{item.groubaDiscountAmount||'??'}}元</button>
-
-
-
     </view>
   </view>
 
+  <!-- 有头像布局 ######################################## -->
+  <!-- 开团商品展示 -->
+  <view wx:if="{{item.userImgs}}" class='goods-list {{editIndex==index?"goods-list-error":""}}' catchtap='goMyShop2'>
+    <view class='goods-list-new'>{{[6,8,9][shareGoods.groubaSize]==shareGoods.ordersStatus.length?'成团':(item.groubaIsnew?'新':'')}}</view>
+    <!-- 活动商品-左侧 -->
+    <view class='goods-list-left'>
+      <image class='goodsImg' src='{{item.goodsImgView}}' data-index='{{index}}' mode='aspectFill'></image>
+      <view class='goodsName'>
+        <view data-type='name' data-index='{{index}}' class='{{item.goodsName?"":""}}' wx:if='{{editItem!=index+"-goodsName"}}'>{{item.goodsName}}
+          <text class='yuanjia'>￥{{item.goodsPrice||'??'}}</text>
+        </view>
+      </view>
+    </view>
+    <!-- 活动商品-右侧 -->
+    <view class='goods-list-right'>
+      <!-- 6人团 -->
+      <view class='main-list-right-groubaSize' style='padding-bottom:10rpx'>
+        <image class='goods-list-right-icon' src='../img/team.png'></image>
+        <view style='padding-left:0rpx;;padding-right:16rpx;'>
+          <view data-index='{{index}}' style='padding-left:0rpx;'>
+            {{[6,8,9][item.groubaSize]?[6,8,9][item.groubaSize]+'':'?'}}
+          </view>
+        </view>
+        <!-- 60分后结束 -->
+        <view class='main-list-endTime {{item.endTimeH || item.endTimeM || editItem==index+"-endTime"?"":""}}'>
+          <image class='goods-list-right-icon' src='../img/time-circle2.png' data-type='endTime' data-index='{{index}}'></image>
+          <view data-type='endTime' data-index='{{index}}'>{{item.groubaActiveMinute?(item.groubaActiveMinute?item.groubaActiveMinute+'分':'')+'后结束':''}}</view>
+        </view>
+      </view>
+      <!-- 活动商品-用户头像 -->
+      <view class='main-head-list' style='padding-bottom:10rpx;'>
+        <image class="{{item2==6?'slt':''}}" wx:for="{{item.ordersStatus}}" wx:for-item="item2" wx:for-index="index2" wx:key="{{index2}}" src='{{item.userImgs[index2]}}' mode='aspectFill'></image>
+      </view>
+      <!-- 距离800m -->
+      <view catchtap='getLocation' class='main-list-right-location'>
+        <image class='goods-list-right-icon' src='../img/location.png'></image>
+        <view>{{item.distance}}</view>
+      </view>
+      <!-- 参团立省？？元 -->
+      <button open-type="{{item.isJoined?'share':''}}" data-index='{{index}}' catchtap='onShareAppMessageA' hover-stop-propagation='true' class='buttonBlock main-list-share'>{{item.isJoined?'分享':('参团立省'+item.groubaDiscountAmount+'元')}}</button>
+    </view>
+  </view>
 </view>
 <!-- </view> -->
 <!-- </scroll-view> -->

@@ -134,14 +134,20 @@ Page({
         let curLatitude = util.getCache(util.cacheKey.userinfo, 'latitude')
         let curLongitude = util.getCache(util.cacheKey.userinfo, 'longitude')
         resp.data.groubInfo.groubImgView = util.apiHost + "/images/" + resp.data.groubInfo.groubImg
-        resp.data.shareGoods.goodsImgView = util.apiHost + "/images/" + resp.data.shareGoods.goodsImg
-        resp.data.shareGoods['distance'] = util.getDistance(curLatitude, curLongitude, resp.data.shareGoods.latitude, resp.data.shareGoods.longitude)
-        resp.data.shareGoods.userImgs = resp.data.shareGoods.userImgs.split(",")
-        resp.data.shareGoods.ordersStatus = resp.data.shareGoods.ordersStatus.split(",")
+        if (resp.data.shareGoods) { //如果存在分享商品
+          resp.data.shareGoods.goodsImgView = util.apiHost + "/images/" + resp.data.shareGoods.goodsImg
+          resp.data.shareGoods['distance'] = util.getDistance(curLatitude, curLongitude, resp.data.shareGoods.latitude, resp.data.shareGoods.longitude)
+          resp.data.shareGoods.userImgs = resp.data.shareGoods.userImgs.split(",")
+          resp.data.shareGoods.ordersStatus = resp.data.shareGoods.ordersStatus.split(",")
+        }
         for (var i in resp.data.goodsList) {
           let item = resp.data.goodsList[i]
           resp.data.goodsList[i]['goodsImgView'] = util.apiHost + "/images/" + item.goodsImg
           resp.data.goodsList[i]['distance'] = util.getDistance(curLatitude, curLongitude, item.latitude, item.longitude)
+          if (item.userImgs) { //如果存在订单头像信息
+            resp.data.goodsList[i].userImgs = item.userImgs.split(",")
+            resp.data.goodsList[i].ordersStatus = item.ordersStatus.split(",")
+          }
         }
         that.setData({
           groub: resp.data.groubInfo,
@@ -215,6 +221,8 @@ Page({
    */
   onLoad: function(pageRes) {
     wx.showNavigationBarLoading()
+    util.log("#页面传参onLoad:" + JSON.stringify(pageRes))
+    util.putCache(util.cacheKey.toPageParams, null, pageRes)
   },
 
   /**
@@ -227,12 +235,13 @@ Page({
   /**
    * Lifecycle function--Called when page show
    */
-  onShow: function(pageRes) {
-    util.log("#页面传参:" + JSON.stringify(pageRes))
-    let refGroubTrace = pageRes ? pageRes.refGroubTrace : 'G2019050300000002'
-    let refGroubaTrace = pageRes ? pageRes.refGroubaTrace : 'GA2019050600000006'
-    let orderTrace = pageRes ? pageRes.orderTrace : 'GO2019051400000003'
-    let orderLeader = pageRes ? pageRes.refUserWxUnionid : 'oQTUs5LMkoGhKQ1N9Oq1kM5pN48o'
+  onShow: function() {
+    let pageRes = util.getCache(util.cacheKey.toPageParams)
+    wx.removeStorage(util.cacheKey.toPageParams+"")
+    util.log("#页面传参onShow:" + JSON.stringify(pageRes))
+    let groubTrace = pageRes.groubTrace
+    let orderTrace = pageRes.orderTrace
+    let orderLeader = pageRes.orderLeader
     let that = this
     /** 根据首页加载模式加载数据 {userNear userShare userLogin} ############################### */
     let isLoadData = true
@@ -240,7 +249,7 @@ Page({
     let userinfoCache = util.getCache(util.cacheKey.userinfo)
     if (userinfoCache && userinfoCache.nickName) {
       util.log("#命中缓存-授权过用户信息")
-      if (refGroubaTrace && orderTrace) {
+      if (orderTrace && orderTrace) {
         indexMode = "userShare"
       }
     } else {
@@ -258,7 +267,7 @@ Page({
     /** 根据页面加载规则，加载对于数据 ################################## */
     if (indexMode == "userShare") {
       //#加载指定商铺的基本信息+商品信息（如果是分享来源，则需要去除分享订单对应的商品）+ 分享活动商品（带订单信息）
-      that.getGroubInfo(refGroubTrace, orderTrace, orderLeader)
+      that.getGroubInfo(groubTrace, orderTrace, orderLeader)
     } else if (indexMode == "userNear") {
       //#提示未初始选择当前位置
       if (userinfoCache.latitude) {
@@ -319,28 +328,29 @@ Page({
     let index = e.target.dataset.index
     let pageArray = that.data.pageArray
     let pageArray0 = pageArray[0]
-    let shareGrouba = pageArray[index]
-    if (!shareGrouba) {
-      shareGrouba = that.data.shareGoods
-      if (shareGrouba.isJoined) {
-        /** 已参团-纯分享 ############################################ */
+    let tapGrouba = pageArray[index]
+    if (!tapGrouba) {
+      tapGrouba = that.data.shareGoods
+      if (tapGrouba.isJoined) {
         util.log("#已参团-纯分享")
       } else {
-        /** 参团下单 ############################################ */
-        util.log("#参团下单")
-        that.orderJoin(shareGrouba.relationOrderTrace, shareGrouba.leader)
+        util.log("#参团下单,#商品:" + JSON.stringify(tapGrouba))
+        that.orderJoin(tapGrouba.shareOrder, tapGrouba.shareLeader)
       }
     } else {
-      /** 开团下单 ############################################ */
-      pageArray[index] = pageArray0
-      pageArray[0] = shareGrouba
-      that.setData({
-        pageArray,
-      })
-      util.log("#开团下单")
-      that.orderOpen(shareGrouba)
+      if (tapGrouba.isJoined) {
+        util.log("#已参团-纯分享")
+        pageArray[index] = pageArray0
+        pageArray[0] = tapGrouba
+        that.setData({
+          pageArray,
+        })
+      } else {
+        util.log("#开团下单")
+        that.orderOpen(tapGrouba)
+      }
     }
-    util.log("#拼团活动商品:" + JSON.stringify(shareGrouba))
+    // util.log("#拼团活动商品:" + JSON.stringify(tapGrouba))
   },
 
   /**
@@ -349,17 +359,17 @@ Page({
   onShareAppMessage(e) {
     let that = this;
     let index = e.target.dataset.index
-    let shareGrouba = that.data.pageArray[index]
+    let tapGrouba = that.data.pageArray[index]
     let titlePrefix = '开团立享优惠:'
-    if (!shareGrouba) {
+    if (!tapGrouba) {
       titlePrefix = "参团立享优惠:"
-      shareGrouba = that.data.shareGoods
+      tapGrouba = that.data.shareGoods
     }
-    util.log("#分享活动商品:" + JSON.stringify(shareGrouba))
+    util.log("#分享活动商品:" + JSON.stringify(tapGrouba))
     /** 生成分享 ############################################ */
     return {
-      title: titlePrefix + shareGrouba.groubaDiscountAmount + "元", // 转发后 所显示的title
-      path: '/pages/index/index?groubTrace=' + shareGrouba.refGroubTrace + '&groubaTrace=' + shareGrouba.groubaTrace + '&orderTrace=' + shareGrouba.relationOrderTrace + '&isOpen=false', // 相对的路径
+      title: titlePrefix + tapGrouba.groubaDiscountAmount + "元", // 转发后 所显示的title
+      path: '/pages/index/index?groubTrace=' + tapGrouba.refGroubTrace + '&orderTrace=' + tapGrouba.shareOrder + '&orderLeader=' + tapGrouba.shareLeader + '&isOpen=false', // 相对的路径
       // imageUrl:'http://127.0.0.1:9660/pinb-service/images/15a9bdccdfc851450bd9ab802c631475.jpg',
       success: (res) => {
         util.log("#分享成功" + res.shareTickets[0])
@@ -369,35 +379,37 @@ Page({
       }
     }
   },
-  /** 开团服务请求 args{shareGrouba:开团商品信息}*/
-  orderOpen(shareGrouba) {
+  /** 开团服务请求 args{tapGrouba:开团商品信息}*/
+  orderOpen(tapGrouba) {
     util.reqPost(util.apiHost + "/groubaOrder/orderOpen", {
-      refGroubTrace: shareGrouba.refGroubTrace,
-      refGroubaTrace: shareGrouba.groubaTrace,
-      orderExpiredTime: shareGrouba.groubaActiveMinute,
+      refGroubTrace: tapGrouba.refGroubTrace,
+      refGroubaTrace: tapGrouba.groubaTrace,
+      orderExpiredTime: tapGrouba.groubaActiveMinute,
       refUserWxUnionid: util.getCache(util.cacheKey.userinfo, "wxUnionid"),
       refUserImg: util.getCache(util.cacheKey.userinfo, "avatarUrl"),
-      goodsName: shareGrouba.goodsName,
-      goodsImg: shareGrouba.goodsImg,
-      goodsPrice: shareGrouba.goodsPrice,
-      groubaDiscountAmount: shareGrouba.groubaDiscountAmount,
-      groubaIsnew: shareGrouba.groubaIsnew,
+      goodsName: tapGrouba.goodsName,
+      goodsImg: tapGrouba.goodsImg,
+      goodsPrice: tapGrouba.goodsPrice,
+      groubaDiscountAmount: tapGrouba.groubaDiscountAmount,
+      groubaIsnew: tapGrouba.groubaIsnew,
     }, resp => {
       if (util.parseResp(this, resp)) {
-        // util.softTips(this, "开团成功", 6)
+        // util.softTips(this, "开团成功")
+        this.onShow()
       }
     })
   },
   /** 参团服务请求 args{orderTrace:原团订单号,refUserWxUnionid:原团团长}*/
-  orderJoin(orderTrace, refUserWxUnionid) {
+  orderJoin(orderTrace, orderLeader) {
     util.reqPost(util.apiHost + "/groubaOrder/orderJoin", {
       orderTrace: orderTrace,
-      refUserWxUnionid: refUserWxUnionid,
-      shareUser: util.getCache(util.cacheKey.userinfo, "wxUnionid"),
+      leader: orderLeader,
+      refUserWxUnionid: util.getCache(util.cacheKey.userinfo, "wxUnionid"),
       refUserImg: util.getCache(util.cacheKey.userinfo, "avatarUrl"),
     }, resp => {
       if (util.parseResp(this, resp)) {
-
+        // util.softTips(this, "参团成功")
+        this.onShow()
       }
     })
   },

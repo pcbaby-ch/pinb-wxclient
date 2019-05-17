@@ -226,9 +226,9 @@
   position: absolute;
   top: 0px;
   left: 0px;
-  width: 50rpx;
-  height: 46rpx;
-  line-height: 46rpx;
+  padding: 0 16rpx 0 6rpx;
+  /* width: 50rpx; *//* height: 46rpx; */
+  line-height: 40rpx;
   border-radius: 0px 0px 100rpx 0px;
   background-color: rgba(139, 195, 74, 1);
   color: rgba(255, 255, 255, 1);
@@ -236,24 +236,6 @@
   text-align: center;
   box-shadow: 0px 0px 0px 0px rgba(255, 255, 255, 1);
   font-family: Arial;
-  z-index: 2;
-}
-
-.goods-list-done {
-  position: absolute;
-  bottom: 0px;
-  right: 0px;
-  width: 70rpx;
-  height: 44rpx;
-  line-height: 44rpx;
-  border-radius: 100rpx 0px 0px;
-  background-color: rgba(139, 195, 74, 1);
-  color: rgba(255, 255, 255, 1);
-  font-size: 25rpx;
-  text-align: right;
-  padding-right: 8rpx;
-  font-family: Arial;
-  box-sizing: border-box;
   z-index: 2;
 }
 
@@ -407,14 +389,13 @@
 }
 
 .head-foot {
-  
   width: 100%;
   display: flex;
   position: block;
 }
 
 .head-foot image {
-  padding-left:6rpx;
+  padding-left: 6rpx;
   width: 40rpx;
   height: 40rpx;
   vertical-align: middle;
@@ -538,8 +519,6 @@
   position: block;
   justify-self: flex-end;
   width: 80rpx;
-  
-  
 }
 
 .head-img image {
@@ -547,5 +526,3 @@
   height: 69rpx;
   border-radius: 30rpx;
 }
-
-
