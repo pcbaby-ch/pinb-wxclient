@@ -5,7 +5,7 @@
   <!-- 无头像布局 ######################################## -->
   <view class='goods-list-active}}' wx:if="{{!item.userImgs}}" catchtap='goMyShop2'>
     <!-- <view wx:if="{{item.groubaIsnew}}" class='goods-list-new'></view> -->
-    <view class='goods-list-new'>{{[6,8,9][shareGoods.groubaSize]==shareGoods.ordersStatus.length?'成团':(item.groubaIsnew?'新':'')}}</view>
+    <view class='goods-list-new'>{{([6,8,9][item.groubaSize])==item.ordersStatus.length?'成团':(item.groubaIsnew?'新':'')}}</view>
     <!-- 活动商品-左侧 -->
     <view style='width:50%;position: relative;border-right: 2rpx solid #eee;' class='goods-list-left'>
       <image class='goodsImg' style="height: 100%" src='{{item.goodsImgView}}' data-index='{{index}}' mode='aspectFill'></image>
@@ -40,7 +40,7 @@
   <!-- 有头像布局 ######################################## -->
   <!-- 开团商品展示 -->
   <view wx:if="{{item.userImgs}}" class='goods-list {{editIndex==index?"goods-list-error":""}}' catchtap='goMyShop2'>
-    <view class='goods-list-new'>{{[6,8,9][shareGoods.groubaSize]==shareGoods.ordersStatus.length?'成团':(item.groubaIsnew?'新':'')}}</view>
+    <view class='goods-list-new'>{{([6,8,9][item.groubaSize])==item.ordersStatus.length?'成团':(item.groubaIsnew?'新':'')}}</view>
     <!-- 活动商品-左侧 -->
     <view class='goods-list-left'>
       <image class='goodsImg' src='{{item.goodsImgView}}' data-index='{{index}}' mode='aspectFill'></image>
