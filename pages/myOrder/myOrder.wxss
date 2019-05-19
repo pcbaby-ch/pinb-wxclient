@@ -1,1 +1,39 @@
+/** 支付浮窗样式 ***********************************/
+
+.pay-container {
+  position: fixed;
+  height: 100%;
+  top: 300rpx;
+  text-align: center;
+  z-index: 668;
+}
+
+.pay {
+  background-color: rgba(227, 224, 224, 1);
+  text-align: center;
+  border: 2rpx solid rgba(187, 187, 187, 1);
+  border-radius: 20rpx;
+}
+
+.pay canvas {
+  display: inline-block;
+  width: 600rpx;
+  height: 600rpx;
+  z-index: 666;
+}
+
+.pay-type {
+  height: 40rpx;
+  margin: 16rpx 0;
+  line-height: 40rpx;
+  color: rgba(16, 16, 16, 1);
+  font-size: 28rpx;
+  text-align: center;
+  font-family: PingFangSC-regular;
+}
+
+.pay-close {
+  width: 80rpx;
+  height: 80rpx;
+}
 

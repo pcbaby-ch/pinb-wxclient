@@ -4,7 +4,7 @@
     <button catchtap='getLocation' class='buttonBlock'>
       <view class='head-location'>
         <image src='../img/location3.png'></image>
-        <view class='locatoion-text'>{{searchAddress||'请选择地址'}}</view>
+        <view class='locatoion-text'>{{searchAddress||'请选择位置'}}</view>
         <!-- <view class="locatoion-text" style='font-size:38rpx;'>▽</view> -->
       </view>
     </button>
@@ -15,8 +15,8 @@
     </view>
   </view>
   <!-- 搜索栏 -->
-  <!-- <view class='heat-line2 head-search'>
+  <view class='heat-line2 head-search'>
     <input maxlength='25' type="text" class="antEdit" style='' bindblur='bindinput' data-type='search' value='{{groub.search}}' focus='{{editItem=="-groub.search"}}' placeholder='输入商家、商品名称' placeholder-class='search-placeholder' />
-  </view> -->
+  </view>
 
 </view>

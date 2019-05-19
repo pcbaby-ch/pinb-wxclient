@@ -17,6 +17,26 @@ const formatNumber = n => {
   n = n.toString()
   return n[1] ? n : '0' + n
 }
+/** 计算结束时间和当前时间的剩余时间差 return{？时？分？秒} */
+function getRemainTime(endTime_) {
+  let endTime = new Date(endTime_).getTime()
+  let nowTime = new Date().getTime()
+  log("#endTime:" + endTime + "#nowTime:" + nowTime)
+  let time = (endTime - nowTime) / 1000;
+  if (nowTime - endTime >= 0) {
+    return '00时00分00秒'
+  }
+  // 获取天、时、分、秒
+  let day = timeFormat(parseInt(time / (60 * 60 * 24)));
+  let hou = timeFormat(parseInt(time / (60 * 60)));
+  let min = timeFormat(parseInt(time % (60 * 60) % 3600 / 60));
+  let sec = timeFormat(parseInt(time % (60 * 60) % 3600 % 60));
+  return hou + '时' + min + '分' + sec + '秒'
+}
+
+function timeFormat(t) {
+  return t < 10 ? '0' + t : t
+}
 //全局-网络请求工具类 ###########################################################
 /** 带json请求报文体的post网络请求 */
 function reqPost(url, params, success, fail) {
@@ -145,9 +165,10 @@ function imageUpload(resImage, that, callBack) {
   })
 }
 //全局-缓存操作工具类 ###########################################################
-
+const cacheVersionsuffix = '20190518'
 /** 提取缓存or缓存对象属性值(同步) */
 function getCache(key_, prop) {
+  key_ = key_ + cacheVersionsuffix //解决客户端版本迭代，旧版本脏缓存问题
   let cache = wx.getStorageSync(key_)
   if (prop && Object.prototype.toString.call(prop) === '[object String]') {
     if (Object.prototype.toString.call(cache) === '[object Object]') {
@@ -163,6 +184,7 @@ function getCache(key_, prop) {
 }
 /** 提取缓存or缓存对象属性值(异步) */
 function getCacheAsyn(key_, prop) {
+  key_ = key_ + cacheVersionsuffix //解决客户端版本迭代，旧版本脏缓存问题
   let cache = wx.getStorageSync(key_)
   if (prop && Object.prototype.toString.call(prop) === '[object String]') {
     if (Object.prototype.toString.call(cache) === '[object Object]') {
@@ -177,11 +199,13 @@ function getCacheAsyn(key_, prop) {
 }
 /** 直接缓存，已有同key缓存直接覆盖 */
 function setCache(key_, value) {
+  key_ = key_ + cacheVersionsuffix //解决客户端版本迭代，旧版本脏缓存问题
   wx.setStorageSync(key_, value);
   // log("#缓存完成,#key:" + key_ + ",#value:" + value)
 }
 
 function setCacheAsyn(key_, value) {
+  key_ = key_ + cacheVersionsuffix //解决客户端版本迭代，旧版本脏缓存问题
   wx.setStorage(key_, value);
   // log("#缓存完成,#key:" + key_ + ",#value:" + value)
 }
@@ -381,6 +405,8 @@ const apiHost = "https://apitest.pinb.vip/pinb-service"
 //http://127.0.0.1:9660/pinb-service
 
 const cacheKey = {
+  cacheTimeout: 'cacheTimeout',
+
   userinfo: 'userinfo',
   isOpen: "isOpen",
   groubaTrace: 'groubaTrace',
@@ -393,6 +419,7 @@ const cacheKey = {
 
 module.exports = {
   formatTime: formatTime,
+  getRemainTime: getRemainTime,
   reqPost: reqPost,
   reqGet: reqGet,
   parseResp: parseResp,

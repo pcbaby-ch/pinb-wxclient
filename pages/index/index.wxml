@@ -28,7 +28,7 @@
 
 </view>
 <!-- 店铺-电话、地址信息 -->
-<view class='page-foot-container' style="margin-top:-30rpx;padding-bottom:20rpx;justify-content:left;">
+<view class='page-foot-container' style="margin-top:-30rpx;padding-bottom:20rpx;justify-content:left;" wx:if='{{indexMode=="userShare"}}'>
   <view class='head-foot' style='width:230rpx;'>
     <image src='../img/phone.png'></image>
     <view data-type='groub.groubPhone'>{{groub.groubPhone}}</view>

@@ -147,6 +147,7 @@ Page({
           if (item.userImgs) { //如果存在订单头像信息
             resp.data.goodsList[i].userImgs = item.userImgs.split(",")
             resp.data.goodsList[i].ordersStatus = item.ordersStatus.split(",")
+            resp.data.goodsList[i].orderExpiredTime = util.getRemainTime(item.orderExpiredTime)
           }
         }
         that.setData({
@@ -159,6 +160,18 @@ Page({
         util.log("#店铺or分享活动商品-数据加载-失败")
       }
     })
+  },
+
+  countDown() {
+    util.log("#getRemainTime：" + util.getRemainTime('2019/05/19 19:00:51.0'))
+    // let pageArray = this.data.pageArray
+    // for (let item in pageArray) {
+    //   item.orderExpiredTime = util.getRemainTime(item.orderExpiredTime)
+    // }
+    // this.setData({
+    //   pageArray
+    // })
+    // setTimeout(this.countDown, 1000)
   },
 
   getNearGrouba(page_, rows_) {
@@ -205,7 +218,7 @@ Page({
             isLoadEnd: true,
           })
         } else {
-          util.softTips(that, "亲，附近暂无活动商品", 6)
+          util.softTips(that, "亲，附近暂无活动商品，请变更位置", 6)
           that.setData({
             pageArray: [],
             isLodding: false,
@@ -237,8 +250,8 @@ Page({
    */
   onShow: function() {
     let pageRes = util.getCache(util.cacheKey.toPageParams)
-    wx.removeStorage(util.cacheKey.toPageParams+"")
     util.log("#页面传参onShow:" + JSON.stringify(pageRes))
+    util.log("#getRemainTime：" + util.getRemainTime('2019/05/19 19:00:51.0'))
     let groubTrace = pageRes.groubTrace
     let orderTrace = pageRes.orderTrace
     let orderLeader = pageRes.orderLeader
@@ -249,11 +262,17 @@ Page({
     let userinfoCache = util.getCache(util.cacheKey.userinfo)
     if (userinfoCache && userinfoCache.nickName) {
       util.log("#命中缓存-授权过用户信息")
-      if (orderTrace && orderTrace) {
+      if (groubTrace || orderTrace) {
         indexMode = "userShare"
       }
     } else {
-      util.log("#无缓存-未授权过用户信息")
+      util.log("#无缓存-未授权过用户信息,#reLoginTime:" + JSON.stringify(util.getCache("reLoginTime")) + "#now:" + Date.parse(new Date()) / 1000)
+      if (util.getCache("reLoginTime") && Date.parse(new Date()) / 1000 < util.getCache("reLoginTime")) {
+        util.log("#3秒内只能登录一次" + util.formatTime(new Date()))
+        wx.hideNavigationBarLoading()
+        return
+      }
+      util.putCache("reLoginTime", null, Date.parse(new Date()) / 1000 + 3)
       wx.navigateTo({
         url: '/pages/login/login',
       })
@@ -268,6 +287,7 @@ Page({
     if (indexMode == "userShare") {
       //#加载指定商铺的基本信息+商品信息（如果是分享来源，则需要去除分享订单对应的商品）+ 分享活动商品（带订单信息）
       that.getGroubInfo(groubTrace, orderTrace, orderLeader)
+      this.countDown()
     } else if (indexMode == "userNear") {
       //#提示未初始选择当前位置
       if (userinfoCache.latitude) {
@@ -279,7 +299,6 @@ Page({
         util.pageInitData(that, that.getNearGrouba, 6)
       }
     }
-
 
   },
 

@@ -4,6 +4,8 @@ App({
     onLaunch: function() {
 
       /** 快速 测试区 */
+      util.log("#getRemainTime：" + util.getRemainTime('2019/05/19 19:00:51.0'))
+      // util.log("#(新)button模式授权失败，#now:" + Date.parse(new Date()) + "#now+3s:" + Date.parse(new Date())/1000+3)
       // wx.removeStorageSync("testCache")
       // //wx.setStorageSync("testCache", "data")
       // util.putCache("testCache", "session_key", "session_key-dfsd")
@@ -31,6 +33,8 @@ App({
           },
         })
       }
+
+
     },
 
     globalData: {

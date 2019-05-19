@@ -20,7 +20,7 @@
       <view class='main-list-endTime {{item.endTimeH || item.endTimeM || editItem==index+"-endTime"?"":""}}'>
         <image class='goods-list-right-icon' src='../img/time-circle2.png' data-type='endTime' data-index='{{index}}'></image>
         <view data-type='endTime' data-index='{{index}}'>
-          {{item.groubaActiveMinute?(item.groubaActiveMinute?item.groubaActiveMinute+'分':'')+'后结束':'??拼团时长??'}}
+          {{item.groubaActiveMinute?item.groubaActiveMinute+'分 拼团时长':'??拼团时长??'}}
         </view>
       </view>
       <!-- 6人团 -->
@@ -63,7 +63,7 @@
         <!-- 60分后结束 -->
         <view class='main-list-endTime {{item.endTimeH || item.endTimeM || editItem==index+"-endTime"?"":""}}'>
           <image class='goods-list-right-icon' src='../img/time-circle2.png' data-type='endTime' data-index='{{index}}'></image>
-          <view data-type='endTime' data-index='{{index}}'>{{item.groubaActiveMinute?(item.groubaActiveMinute?item.groubaActiveMinute+'分':'')+'后结束':''}}</view>
+          <view data-type='endTime' data-index='{{index}}'>{{item.orderExpiredTime}}</view>
         </view>
       </view>
       <!-- 活动商品-用户头像 -->

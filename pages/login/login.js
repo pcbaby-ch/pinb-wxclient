@@ -29,7 +29,7 @@ Page({
       wx.login({
         success: resLogin => {
           util.log("#登陆code:" + JSON.stringify(resLogin))
-          
+
           // 发送 res.code 到后台换取 openId, sessionKey, unionId
           util.reqPost(util.apiHost + "/user/wxLogin", {
             "appid": "wx71de1973104f41cf",
@@ -77,13 +77,18 @@ Page({
   wxLogin(res) {
     let that = this
     if (wx.canIUse('button.open-type.getUserInfo')) {
-      util.log("#(新)button模式授权成功，并获取用户信息" + JSON.stringify(res.detail.userInfo))
-      util.putCache(util.cacheKey.userinfo, null, res.detail.userInfo)
-      // util.putCache(util.cacheKey.userinfo, "encryptedData", res.detail.encryptedData)
-      // util.putCache(util.cacheKey.userinfo, "iv", res.detail.iv)
-      util.log("#userinfo:" + JSON.stringify(util.getCache(util.cacheKey.userinfo)))
-      /** 服务端登陆+静默注册 */
-      that.getUserinfo2Login()
+      if (res.detail.userInfo) {
+        util.log("#(新)button模式授权成功，并获取用户信息" + JSON.stringify(res.detail.userInfo))
+        util.putCache(util.cacheKey.userinfo, null, res.detail.userInfo)
+        // util.putCache(util.cacheKey.userinfo, "encryptedData", res.detail.encryptedData)
+        // util.putCache(util.cacheKey.userinfo, "iv", res.detail.iv)
+        util.log("#userinfo:" + JSON.stringify(util.getCache(util.cacheKey.userinfo)))
+        /** 服务端登陆+静默注册 */
+        that.getUserinfo2Login()
+      } else {
+        util.putCache("reLoginTime", null, Date.parse(new Date()) / 1000 + 3)
+        util.log("#(新)button模式授权失败，#reLoginTime:" + util.getCache("reLoginTime") + "#now+3s:" + Date.parse(new Date()) / 1000 + 3)
+      }
     } else {
       util.log("#(旧)自动弹出模式授权，并获取用户信息")
       wx.getSetting({

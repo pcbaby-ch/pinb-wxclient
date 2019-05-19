@@ -1,8 +1,7 @@
 {
   "pages": [
-    "pages/index/index",
-    "pages/login/login",
-    "pages/myOrder/myOrder"
+    "pages/myOrder/myOrder",
+    "pages/index/index"
   ],
   "window": {
     "backgroundTextStyle": "dark",

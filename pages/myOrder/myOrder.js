@@ -35,18 +35,16 @@ Page({
 
   toQrCode: function(res) {
     util.log("#res:" + JSON.stringify(res))
-    let order = this.data.pageArray[res.target.dataset.index]
+    let order = this.data.pageArray[res.currentTarget.dataset.index]
+    util.log("#消费活动商品:" + JSON.stringify(order))
     //#生成二维码
     var qrcode = new QRCode('canvas', {
       // usingIn: this,
-      text: 'G2019050300000002|GO2019051400000006',
-
+      text: order.refGroubTrace + '|' + order.orderTrace,
       colorDark: "#000000",
       colorLight: "#ffffff",
       correctLevel: QRCode.CorrectLevel.H,
     });
-
-    // qrcode.makeCode('GO2019051400000006')
 
     this.setData({
       payContainerShow: true,
@@ -54,8 +52,9 @@ Page({
   },
 
   closePay: function() {
+
     this.setData({
-      payContainerShow: false,
+      payContainerShow: 'none',
     })
   },
 
@@ -120,6 +119,12 @@ Page({
       util.log("#命中缓存-授权过用户信息")
     } else {
       util.log("#无缓存-未授权过用户信息")
+      if (util.getCache("reLoginTime") && Date.parse(new Date()) / 1000 < util.getCache("reLoginTime")) {
+        util.log("#3秒内只能登录一次" + util.formatTime(new Date()))
+        wx.hideNavigationBarLoading()
+        return
+      }
+      util.putCache("reLoginTime", null, Date.parse(new Date()) / 1000 + 3)
       wx.navigateTo({
         url: '/pages/login/login',
       })
