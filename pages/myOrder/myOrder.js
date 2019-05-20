@@ -48,6 +48,7 @@ Page({
 
     this.setData({
       payContainerShow: true,
+      shadeCoverShow: true,
     })
   },
 
@@ -55,6 +56,7 @@ Page({
 
     this.setData({
       payContainerShow: 'none',
+      shadeCoverShow: 'none',
     })
   },
 

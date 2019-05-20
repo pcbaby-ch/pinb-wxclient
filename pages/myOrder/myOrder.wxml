@@ -34,7 +34,9 @@
 <view class='pay-container' style='display:{{payContainerShow||"none"}}'>
   <view class='pay'>
     <canvas class='canvas' canvas-id='canvas'></canvas>
-    <view class='pay-type'>-- 付款方式 --</view>
+    <view class='pay-type'>-- 扫码消费 --</view>
     <image class='pay-close' src='../img/close-circle.png' bindtap='closePay'></image>
   </view>
 </view>
+<!-- 遮罩层 -->
+<view class='shadeCover' style='display:{{shadeCoverShow||"none"}}'></view>

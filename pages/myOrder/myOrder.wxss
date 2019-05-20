@@ -1,30 +1,38 @@
 /** 支付浮窗样式 ***********************************/
 
 .pay-container {
+  display: flex;
+  direction: column;
+  justify-content: center;
+  z-index: 999;
   position: fixed;
+  width: 100%;
   height: 100%;
-  top: 300rpx;
-  text-align: center;
-  z-index: 668;
+  top: 0;
+  /* background-color: grey; */
 }
 
 .pay {
+  padding-top: 30rpx;
+  align-self: center;
+  height: 50%;
+  width: 560rpx;
   background-color: rgba(227, 224, 224, 1);
   text-align: center;
-  border: 2rpx solid rgba(187, 187, 187, 1);
+  border: 2rpx solid #bbbbbb;
   border-radius: 20rpx;
+  opacity: 1;
 }
 
 .pay canvas {
+  align-self: center;
   display: inline-block;
-  width: 600rpx;
-  height: 600rpx;
-  z-index: 666;
+  width: 500rpx;
+  height: 500rpx;
 }
 
 .pay-type {
-  height: 40rpx;
-  margin: 16rpx 0;
+  padding-bottom: 80rpx;
   line-height: 40rpx;
   color: rgba(16, 16, 16, 1);
   font-size: 28rpx;
