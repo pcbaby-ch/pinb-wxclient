@@ -127,18 +127,39 @@ function requestLoading(url, params, message, successCallback, failCallback) {
 /** 图片上传 (resImage是chooseImage组件的资源)
  * return {图片文件名称}}}
  */
-function imageUpload(resImage, that, callBack) {
-  //#计算文件md5
+function imageUpload(resImage, that, callBack, compressRate) {
+  // log("#图片准备上传,#res" + JSON.stringify(resImage));
+  // #01图片压缩
+  if (resImage.tempFiles[0].size > 1024 * 1024 / 10) {
+    log("#图片大于1M，开始压缩,#defaultCompressRate:60,#currentRate:" + compressRate)
+    putCache("compressRate", null, compressRate)
+    wx.compressImage({
+      src: resImage.tempFiles[0].path, // 图片路径
+      quality: compressRate || 60, // 压缩质量
+      success: resCompressImg => {
+        fileUpload(resCompressImg.tempFilePath, that, callBack, resImage)
+      },
+      fail() {
+        log("#图片压缩失败")
+      }
+    })
+  } else {
+    log("#图片小于1M，不压缩，原图上传")
+    fileUpload(resImage.tempFiles[0].path, that, callBack)
+  }
+
+}
+/** 计算文件md5并上传 */
+function fileUpload(resImgPath, that, callBack, resImage) {
   let imageMd5 = "'图片md5缺省值'"
   wx.getFileSystemManager().readFile({
-    filePath: resImage.tempFilePaths[0], //选择图片返回的相对路径
+    filePath: resImgPath, //选择图片返回的相对路径
     // encoding: 'binary', //编码格式
     success: res => {
-      //成功的回调
       var spark = new md5.ArrayBuffer();
       spark.append(res.data);
       imageMd5 = spark.end(false);
-      //log("#图片准备上传,#resImage" + JSON.stringify(resImage) + "#res" + JSON.stringify(res));
+
       wx.getNetworkType({
         success: function(res) {
           // log("#网络连接情况:" + JSON.stringify(res))
@@ -149,16 +170,32 @@ function imageUpload(resImage, that, callBack) {
       })
       wx.uploadFile({
         url: apiHost + '/fileUpload',
-        filePath: resImage.tempFilePaths[0],
+        filePath: resImgPath,
         name: 'file',
         formData: {
           fileMd5: imageMd5
         },
         success(res) {
-          //#图片上传失败，
-          parseResp(that, res.data)
-          //log("#图片上传完成,#res" + JSON.stringify(res) + "#image:" + res.data.data)
-          callBack(JSON.parse(res.data).data)
+          let data
+          try {
+            data = JSON.parse(res.data)
+          } catch {
+            data = null
+          }
+          if (data && data.retCode != '10000') {
+            let compressRate = getCache("compressRate")
+            if (compressRate && compressRate >= 1) {
+              compressRate = (compressRate / 10).toFixed / 1
+              log("#图片上传失败,开始重试,#compressRate:" + compressRate)
+              imageUpload(resImage, that, callBack, compressRate)
+            } else {
+              log("#图片上传失败,重试超限，最终放弃" + "#resUpload:" + JSON.stringify(res))
+              return
+            }
+          } else {
+            log("#图片上传完成,#res" + JSON.stringify(res))
+            callBack(JSON.parse(res.data).data)
+          }
         }
       })
     }
