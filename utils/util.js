@@ -128,10 +128,11 @@ function requestLoading(url, params, message, successCallback, failCallback) {
  * return {图片文件名称}}}
  */
 function imageUpload(resImage, that, callBack, compressRate) {
-  // log("#图片准备上传,#res" + JSON.stringify(resImage));
-  // #01图片压缩
+  log("#图片准备上传,#res" + JSON.stringify(resImage));
+  //#01图片压缩
   if (resImage.tempFiles[0].size > 1024 * 1024 / 10) {
-    log("#图片大于1M，开始压缩,#defaultCompressRate:60,#currentRate:" + compressRate)
+    compressRate = compressRate || 60
+    log("# 图片大于1M， 开始压缩, #defaultCompressRate: 60, #currentRate: " + compressRate)
     putCache("compressRate", null, compressRate)
     wx.compressImage({
       src: resImage.tempFiles[0].path, // 图片路径
@@ -179,22 +180,23 @@ function fileUpload(resImgPath, that, callBack, resImage) {
           let data
           try {
             data = JSON.parse(res.data)
-          } catch {
+          } catch (error) {
             data = null
           }
-          if (data && data.retCode != '10000') {
+          if (!data || data.retCode != '10000') {
             let compressRate = getCache("compressRate")
+            log("#图片上传失败,开始重试,#compressRate:" + compressRate)
             if (compressRate && compressRate >= 1) {
-              compressRate = (compressRate / 10).toFixed / 1
+              compressRate = (compressRate / 2)
               log("#图片上传失败,开始重试,#compressRate:" + compressRate)
               imageUpload(resImage, that, callBack, compressRate)
             } else {
-              log("#图片上传失败,重试超限，最终放弃" + "#resUpload:" + JSON.stringify(res))
+              log("#图片上传失败,重试超限，最终放弃" + "#resUpload:" + data)
               return
             }
           } else {
-            log("#图片上传完成,#res" + JSON.stringify(res))
-            callBack(JSON.parse(res.data).data)
+            log("#图片上传完成,#res" + JSON.stringify(data))
+            callBack(data.data)
           }
         }
       })
