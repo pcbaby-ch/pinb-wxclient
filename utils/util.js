@@ -1,4 +1,8 @@
 var md5 = require('md5.js')
+var QQMapWX = require('qqmap-wx-jssdk.min.js')
+var wxmap = new QQMapWX({
+  key: 'R26BZ-U6AKX-ED54W-TYQ2N-RY5OO-HIB2S'
+})
 
 //全局-时间工具类 ###########################################################
 /** 时间工具类 */
@@ -431,6 +435,24 @@ function getDistance(lat1, lng1, lat2, lng2) {
     return distance.toFixed(0) + 'm'
   }
 }
+/** 获取经纬度所在省市 */
+function getCity(latitude, longitude) {
+  wxmap.reverseGeocoder({
+    location: {
+      latitude: latitude,
+      longitude: longitude
+    },
+    success: res => {
+      log("#省市解析成功:" + JSON.stringify(res))
+      putCache(cacheKey.userinfo, 'province', res.result.ad_info.province)
+      putCache(cacheKey.userinfo, 'city', res.result.ad_info.city)
+    },
+    fail: res => {
+      log("#省市解析失败:" + JSON.stringify(res))
+    }
+  })
+}
+
 
 //统一业务封装 ###########################################################
 
@@ -475,6 +497,7 @@ module.exports = {
 
   softTips: softTips,
   heavyTips: heavyTips,
+  getCity: getCity,
 
   /** api服务host地址 https://apitest.pinb.vip/pinb-service */
   apiHost: apiHost,

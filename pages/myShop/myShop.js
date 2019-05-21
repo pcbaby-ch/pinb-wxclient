@@ -206,6 +206,9 @@ Page({
         groub.groubAddress = res.address;
         groub.latitude = res.latitude;
         groub.longitude = res.longitude;
+        util.getCity(res.latitude, res.longitude)
+        groub.province = util.getCache(util.cacheKey.userinfo,'province')
+        groub.city = util.getCache(util.cacheKey.userinfo, 'city')
         util.log("#groub:" + JSON.stringify(groub))
         that.setData({
           groub,
