@@ -455,7 +455,94 @@ function getCity(latitude, longitude) {
 
 
 //统一业务封装 ###########################################################
+/** 开团/参团/分享button */
+function onShareAppMessageA(that,e) {
+  log("#分享防止冒泡方法hack")
+  let index = e.target.dataset.index
+  let pageArray = that.data.pageArray
+  let pageArray0 = pageArray[0]
+  let tapGrouba = pageArray[index]
+  if (!tapGrouba) {
+    tapGrouba = that.data.shareGoods
+    if (tapGrouba.isJoined) {
+      log("#已参团-纯分享")
+    } else {
+      log("#参团下单,#商品:" + JSON.stringify(tapGrouba))
+      orderJoin(that,tapGrouba.shareOrder, tapGrouba.shareLeader)
+    }
+  } else {
+    if (tapGrouba.isJoined) {
+      log("#已参团-纯分享")
+      pageArray[index] = pageArray0
+      pageArray[0] = tapGrouba
+      that.setData({
+        pageArray,
+      })
+    } else {
+      log("#开团下单")
+      orderOpen(that,tapGrouba)
+    }
+  }
+  // log("#拼团活动商品:" + JSON.stringify(tapGrouba))
+}
 
+/** 分享功能 */
+function onShareAppMessage(that,e) {
+  let index = e.target.dataset.index
+  let tapGrouba = that.data.pageArray[index]
+  let titlePrefix = '开团立享优惠:'
+  if (!tapGrouba) {
+    titlePrefix = "参团立享优惠:"
+    tapGrouba = that.data.shareGoods
+  }
+  log("#分享活动商品:" + JSON.stringify(tapGrouba))
+  /** 生成分享 ############################################ */
+  return {
+    title: titlePrefix + tapGrouba.groubaDiscountAmount + "元", // 转发后 所显示的title
+    path: '/pages/index/index?groubTrace=' + tapGrouba.refGroubTrace + '&orderTrace=' + tapGrouba.shareOrder + '&orderLeader=' + tapGrouba.shareLeader + '&isOpen=false', // 相对的路径
+    // imageUrl:'http://127.0.0.1:9660/pinb-service/images/15a9bdccdfc851450bd9ab802c631475.jpg',
+    success: (res) => {
+      log("#分享成功" + res.shareTickets[0])
+    },
+    fail: function(res) {
+      log("#分享失败" + res)
+    }
+  }
+}
+/** 开团服务请求 args{tapGrouba:开团商品信息}*/
+function orderOpen(that,tapGrouba) {
+  reqPost(apiHost + "/groubaOrder/orderOpen", {
+    refGroubTrace: tapGrouba.refGroubTrace,
+    refGroubaTrace: tapGrouba.groubaTrace,
+    orderExpiredTime: tapGrouba.groubaActiveMinute,
+    refUserWxUnionid: getCache(cacheKey.userinfo, "wxUnionid"),
+    refUserImg: getCache(cacheKey.userinfo, "avatarUrl"),
+    goodsName: tapGrouba.goodsName,
+    goodsImg: tapGrouba.goodsImg,
+    goodsPrice: tapGrouba.goodsPrice,
+    groubaDiscountAmount: tapGrouba.groubaDiscountAmount,
+    groubaIsnew: tapGrouba.groubaIsnew,
+  }, resp => {
+    if (parseResp(that, resp)) {
+      // softTips(this, "开团成功")
+      that.onShow()
+    }
+  })
+}
+/** 参团服务请求 args{orderTrace:原团订单号,refUserWxUnionid:原团团长}*/
+function orderJoin(that,orderTrace, orderLeader) {
+  reqPost(apiHost + "/groubaOrder/orderJoin", {
+    orderTrace: orderTrace,
+    leader: orderLeader,
+    refUserWxUnionid: getCache(cacheKey.userinfo, "wxUnionid"),
+    refUserImg: getCache(cacheKey.userinfo, "avatarUrl"),
+  }, resp => {
+    if (parseResp(that, resp)) {
+      // softTips(this, "参团成功")
+      that.onShow()
+    }
+  })
+}
 
 
 
@@ -498,6 +585,11 @@ module.exports = {
   softTips: softTips,
   heavyTips: heavyTips,
   getCity: getCity,
+
+  onShareAppMessageA: onShareAppMessageA,
+  onShareAppMessage: onShareAppMessage,
+  orderOpen: orderOpen,
+  orderJoin: orderJoin,
 
   /** api服务host地址 https://apitest.pinb.vip/pinb-service */
   apiHost: apiHost,

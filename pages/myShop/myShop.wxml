@@ -87,7 +87,7 @@
   </view>
 
   <!-- 店铺-商品信息 #预览页面# ############  -->
-  <include wx:if='{{!isEdit}}' src="../component/listNearGoods.wxml" />
+  <include wx:if='{{!isEdit}}' src="../component/listShopGoods.wxml" />
 
   <!-- 店铺-电话、地址信息 -->
   <include src="../component/shopFoot.wxml" />

@@ -21,9 +21,13 @@ Page({
       grouba = this.data.shareGoods
     }
     util.log("#touchedElement:" + JSON.stringify(grouba))
-    wx.navigateTo({
-      url: '/pages/myShop/myShop?groubTrace=' + grouba.refGroubTrace + '&groubaTrace=' + grouba.groubaTrace + '&orderTrace=' + '&isOpen=false'
-    })
+    util.putCache(util.cacheKey.toPageParams, 'groubTrace', grouba.refGroubTrace)
+    util.putCache(util.cacheKey.toPageParams, 'groubaTrace', grouba.groubaTrace)
+    util.putCache(util.cacheKey.toPageParams, 'isOpen', false)
+    this.onShow()
+    // wx.navigateTo({
+    //   url: '/pages/myShop/myShop?groubTrace=' + grouba.refGroubTrace + '&groubaTrace=' + grouba.groubaTrace + '&orderTrace=' + '&isOpen=false'
+    // })
   },
 
   goMyShopEdit() {
@@ -251,10 +255,11 @@ Page({
   onShow: function() {
     let pageRes = util.getCache(util.cacheKey.toPageParams)
     util.log("#页面传参onShow:" + JSON.stringify(pageRes))
+    // util.setCache(util.cacheKey.toPageParams, null)
     util.log("#getRemainTime：" + util.getRemainTime('2019/05/19 19:00:51.0'))
-    let groubTrace = pageRes.groubTrace
-    let orderTrace = pageRes.orderTrace
-    let orderLeader = pageRes.orderLeader
+    let groubTrace = pageRes ? pageRes.groubTrace : null
+    let orderTrace = pageRes ? pageRes.orderTrace : null
+    let orderLeader = pageRes ? pageRes.orderLeader : null
     let that = this
     /** 根据首页加载模式加载数据 {userNear userShare userLogin} ############################### */
     let isLoadData = true

@@ -1,4 +1,3 @@
-//index.js
 //获取应用实例
 var app = getApp()
 let util = require("../../utils/util.js")
@@ -324,29 +323,15 @@ Page({
   onLoad: function(pageRes) {
     wx.showNavigationBarLoading()
     util.log("#页面传参:" + JSON.stringify(pageRes))
-    let isOpen = JSON.parse(pageRes.isOpen)
-    let groubTrace = pageRes.groubTrace
-    let groubaTrace = pageRes.groubaTrace
-    let orderTrace = pageRes.orderTrace
-    let that = this
-
-    that.setData({
-      isEdit: isOpen,
-    })
-    //#加载指定商铺的基本信息+商品信息
-    that.getGroubInfo(that, groubTrace, orderTrace)
-   
-
-
-
-
+    util.putCache(util.cacheKey.toPageParams, null, pageRes)
   },
 
   getGroubInfo(that, groubTrace, orderTrace) {
-    util.reqPost(util.apiHost + "/groupBar/selectOne", {
-      refUserWxUnionid: groubTrace ? null : util.getCache(util.cacheKey.userinfo, "wxUnionid"),
+    util.reqPost(util.apiHost + "/groupBar/selectOneShare", {
       groubTrace: groubTrace,
       orderTrace: orderTrace,
+      // orderLeader: orderLeader,
+      refUserWxUnionid: util.getCache(util.cacheKey.userinfo, 'wxUnionid'),
     }, resp => {
       if (util.parseResp(that, resp)) {
         resp.data.groubInfo.groubImgView = util.apiHost + "/images/" + resp.data.groubInfo.groubImg
@@ -389,6 +374,19 @@ Page({
    * Lifecycle function--Called when page show
    */
   onShow: function() {
+    let pageRes = util.getCache(util.cacheKey.toPageParams)
+    util.setCache(util.cacheKey.toPageParams, null)
+    let isOpen = JSON.parse(pageRes.isOpen)
+    let groubTrace = pageRes.groubTrace
+    let groubaTrace = pageRes.groubaTrace
+    let orderTrace = pageRes.orderTrace
+    let that = this
+
+    that.setData({
+      isEdit: isOpen,
+    })
+    //#加载指定商铺的基本信息+商品信息
+    that.getGroubInfo(that, groubTrace, orderTrace)
 
   },
 
@@ -410,7 +408,7 @@ Page({
    * Page event handler function--Called when user drop down
    */
   onPullDownRefresh: function() {
-
+    this.onShow()
     wx.stopPullDownRefresh()
   },
 
@@ -455,50 +453,13 @@ Page({
       productList,
     })
   },
+  onShareAppMessageA(e) {
+    util.onShareAppMessageA(this, e)
+  },
   /**
    * Called when user click on the top right corner to share
    */
   onShareAppMessage(e) {
-    let that = this;
-    let index = e.target.dataset.index
-    let pageArray = this.data.pageArray
-    let pageArray0 = pageArray[0]
-    pageArray[0] = pageArray[index]
-    pageArray[index] = pageArray0
-    this.setData({
-      pageArray,
-    })
-    let titlePrefix = '开团立享优惠:'
-    if (pageArray[0].relationOrderTrace) {
-      titlePrefix = "参团立享优惠:"
-    }
-    return {
-      title: titlePrefix + pageArray[0].groubaDiscountAmount + "元", // 转发后 所显示的title
-      path: '/pages/myShop/myShop?groubTrace=' + pageArray[0].refGroubTrace + '&groubaTrace=' + pageArray[0].groubaTrace + '&orderTrace=' + pageArray[0].relationOrderTrace + '&isOpen=false', // 相对的路径
-      // imageUrl:'http://127.0.0.1:9660/pinb-service/images/15a9bdccdfc851450bd9ab802c631475.jpg',
-      success: (res) => { // 成功后要做的事情
-        util.log("#分享成功" + res.shareTickets[0])
-
-        wx.getShareInfo({
-          shareTicket: res.shareTickets[0],
-          success: (res) => {
-            that.setData({
-              isShow: true
-            })
-            util.log(that.setData.isShow)
-          },
-          fail: function(res) {
-            console.log(res)
-          },
-          complete: function(res) {
-            console.log(res)
-          }
-        })
-      },
-      fail: function(res) {
-        // 分享失败
-        util.log("#分享失败" + res)
-      }
-    }
+    util.onShareAppMessage(this, e)
   }
 })
