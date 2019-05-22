@@ -106,7 +106,7 @@ Page({
     let pageArray = this.data.pageArray
     this.setData({
       isEdit: !isEdit,
-      editItem: ''
+      editItem: '',
     })
     util.log("#isEdit:" + isEdit + "#pageArray.length:" + pageArray.length)
   },
@@ -207,7 +207,7 @@ Page({
         groub.latitude = res.latitude;
         groub.longitude = res.longitude;
         util.getCity(res.latitude, res.longitude)
-        groub.province = util.getCache(util.cacheKey.userinfo,'province')
+        groub.province = util.getCache(util.cacheKey.userinfo, 'province')
         groub.city = util.getCache(util.cacheKey.userinfo, 'city')
         util.log("#groub:" + JSON.stringify(groub))
         that.setData({
@@ -335,8 +335,7 @@ Page({
     })
     //#加载指定商铺的基本信息+商品信息
     that.getGroubInfo(that, groubTrace, orderTrace)
-    let pageArray = that.data.pageArray
-
+   
 
 
 
@@ -358,23 +357,19 @@ Page({
           resp.data.goodsList[i]['goodsImgView'] = util.apiHost + "/images/" + item.goodsImg
           resp.data.goodsList[i]['distance'] = util.getDistance(curLatitude, curLongitude, item.latitude, item.longitude)
         }
+        let pageArray = resp.data.goodsList
+        if (pageArray && pageArray.length > 0) {
+          for (let i = 0; i < 3 - pageArray.length; i++) {
+            pageArray.push(defalutProduct)
+          }
+        }
         that.setData({
           groub: resp.data.groubInfo,
-          pageArray: resp.data.goodsList,
+          pageArray: pageArray,
         })
         util.log("#店铺数据加载完成")
       } else {
         util.log("#店铺数据加载失败")
-        let pageArray = that.data.pageArray
-        if (that.data.isEdit) {}
-        if (pageArray && pageArray.length > 0) {
-          for (let i; i < 3 - pageArray.length; i++) {
-            pageArray.push(defalutProduct)
-          }
-        } else {
-          pageArray = [defalutProduct, defalutProduct, defalutProduct]
-          util.log("#初始化入驻店铺页面-数据：" + JSON.stringify(pageArray))
-        }
         that.setData({
           pageArray: that.data.productList,
         })

@@ -3,7 +3,7 @@
   <view  class='head-foot' style='width:230rpx;'>
     <image src='../img/phone.png'></image>
     <view catchtap='catchtap' data-type='groub.groubPhone'  data-index=''  style='' wx:if='{{editItem!="-groub.groubPhone"}}'>{{groub.groubPhone||'点我填写客服热线'}}</view>
-  <input maxlength='11' type="number" class="antEdit" style='width:185rpx;' bindblur='bindinput' data-type='groubPhone' value='{{groub.groubPhone}}' wx:if='{{editItem=="-groub.groubPhone"}}' focus='{{editItem=="-groub.groubPhone"}}' />
+  <input maxlength='11' type="number" class="antEdit" style='width:175rpx;' bindblur='bindinput' data-type='groubPhone' value='{{groub.groubPhone}}' wx:if='{{editItem=="-groub.groubPhone"}}' focus='{{editItem=="-groub.groubPhone"}}' />
   </view>
 
 <button catchtap='getLocation' class='buttonBlock' style='margin:0;'>
