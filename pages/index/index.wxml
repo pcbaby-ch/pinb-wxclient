@@ -25,6 +25,10 @@
       <image src='../img/plus-square.png'></image>
       <view>增加</view>
     </view> -->
+  <view class='fixed-list' bindtap='goIndex' wx:if="{{indexMode=='userShare'}}">
+    <image src='../img/home.png'></image>
+    <view>主页</view>
+  </view>
 
 </view>
 <!-- 店铺-电话、地址信息 -->

@@ -436,7 +436,7 @@ function getDistance(lat1, lng1, lat2, lng2) {
   }
 }
 /** 获取经纬度所在省市 */
-function getCity(latitude, longitude) {
+function getCity(latitude, longitude, key) {
   wxmap.reverseGeocoder({
     location: {
       latitude: latitude,
@@ -444,8 +444,10 @@ function getCity(latitude, longitude) {
     },
     success: res => {
       log("#省市解析成功:" + JSON.stringify(res))
-      putCache(cacheKey.userinfo, 'province', res.result.ad_info.province)
-      putCache(cacheKey.userinfo, 'city', res.result.ad_info.city)
+      putCache(key, 'latitude', latitude)
+      putCache(key, 'longitude', longitude)
+      putCache(key, 'province', res.result.ad_info.province)
+      putCache(key, 'city', res.result.ad_info.city)
     },
     fail: res => {
       log("#省市解析失败:" + JSON.stringify(res))
@@ -456,7 +458,7 @@ function getCity(latitude, longitude) {
 
 //统一业务封装 ###########################################################
 /** 开团/参团/分享button */
-function onShareAppMessageA(that,e) {
+function onShareAppMessageA(that, e) {
   log("#分享防止冒泡方法hack")
   let index = e.target.dataset.index
   let pageArray = that.data.pageArray
@@ -468,7 +470,7 @@ function onShareAppMessageA(that,e) {
       log("#已参团-纯分享")
     } else {
       log("#参团下单,#商品:" + JSON.stringify(tapGrouba))
-      orderJoin(that,tapGrouba.shareOrder, tapGrouba.shareLeader)
+      orderJoin(that, tapGrouba.shareOrder, tapGrouba.shareLeader)
     }
   } else {
     if (tapGrouba.isJoined) {
@@ -480,14 +482,14 @@ function onShareAppMessageA(that,e) {
       })
     } else {
       log("#开团下单")
-      orderOpen(that,tapGrouba)
+      orderOpen(that, tapGrouba)
     }
   }
   // log("#拼团活动商品:" + JSON.stringify(tapGrouba))
 }
 
 /** 分享功能 */
-function onShareAppMessage(that,e) {
+function onShareAppMessage(that, e) {
   let index = e.target.dataset.index
   let tapGrouba = that.data.pageArray[index]
   let titlePrefix = '开团立享优惠:'
@@ -499,7 +501,7 @@ function onShareAppMessage(that,e) {
   /** 生成分享 ############################################ */
   return {
     title: titlePrefix + tapGrouba.groubaDiscountAmount + "元", // 转发后 所显示的title
-    path: '/pages/index/index?groubTrace=' + tapGrouba.refGroubTrace + '&orderTrace=' + tapGrouba.shareOrder + '&orderLeader=' + tapGrouba.shareLeader + '&isOpen=false', // 相对的路径
+    path: '/pages/index/index?groubTrace=' + tapGrouba.refGroubTrace + '&orderTrace=' + tapGrouba.shareOrder + '&orderLeader=' + tapGrouba.shareLeader, // 相对的路径
     // imageUrl:'http://127.0.0.1:9660/pinb-service/images/15a9bdccdfc851450bd9ab802c631475.jpg',
     success: (res) => {
       log("#分享成功" + res.shareTickets[0])
@@ -510,7 +512,7 @@ function onShareAppMessage(that,e) {
   }
 }
 /** 开团服务请求 args{tapGrouba:开团商品信息}*/
-function orderOpen(that,tapGrouba) {
+function orderOpen(that, tapGrouba) {
   reqPost(apiHost + "/groubaOrder/orderOpen", {
     refGroubTrace: tapGrouba.refGroubTrace,
     refGroubaTrace: tapGrouba.groubaTrace,
@@ -530,7 +532,7 @@ function orderOpen(that,tapGrouba) {
   })
 }
 /** 参团服务请求 args{orderTrace:原团订单号,refUserWxUnionid:原团团长}*/
-function orderJoin(that,orderTrace, orderLeader) {
+function orderJoin(that, orderTrace, orderLeader) {
   reqPost(apiHost + "/groubaOrder/orderJoin", {
     orderTrace: orderTrace,
     leader: orderLeader,
@@ -543,7 +545,60 @@ function orderJoin(that,orderTrace, orderLeader) {
     }
   })
 }
+/** 获取店铺基本信息+商品信息+分享订单头像信息 */
+function getGroubInfo(that, groubTrace, orderTrace, orderLeader) {
+  reqPost(apiHost + "/groupBar/selectOneShare", {
+    groubTrace: groubTrace,
+    orderTrace: orderTrace,
+    orderLeader: orderLeader,
+    refUserWxUnionid: getCache(cacheKey.userinfo, 'wxUnionid'),
+  }, resp => {
+    if (parseResp(that, resp)) {
+      let curLatitude = getCache(cacheKey.userinfo, 'latitude')
+      let curLongitude = getCache(cacheKey.userinfo, 'longitude')
+      resp.data.groubInfo.groubImgView = apiHost + "/images/" + resp.data.groubInfo.groubImg
+      if (resp.data.shareGoods) { //如果存在分享商品
+        resp.data.shareGoods.goodsImgView = apiHost + "/images/" + resp.data.shareGoods.goodsImg
+        resp.data.shareGoods['distance'] = getDistance(curLatitude, curLongitude, resp.data.shareGoods.latitude, resp.data.shareGoods.longitude)
+        resp.data.shareGoods.userImgs = resp.data.shareGoods.userImgs.split(",")
+        resp.data.shareGoods.ordersStatus = resp.data.shareGoods.ordersStatus.split(",")
+      }
+      for (var i in resp.data.goodsList) {
+        let item = resp.data.goodsList[i]
+        resp.data.goodsList[i]['goodsImgView'] = apiHost + "/images/" + item.goodsImg
+        resp.data.goodsList[i]['distance'] = getDistance(curLatitude, curLongitude, item.latitude, item.longitude)
+        if (item.userImgs) { //如果存在订单头像信息
+          resp.data.goodsList[i].userImgs = item.userImgs.split(",")
+          resp.data.goodsList[i].ordersStatus = item.ordersStatus.split(",")
+        }
+      }
+      that.setData({
+        groub: resp.data.groubInfo,
+        pageArray: resp.data.goodsList,
+        shareGoods: resp.data.shareGoods,
+      })
+      countDown(that, resp.data.goodsList)
+      log("#店铺or分享活动商品-数据加载-完成")
+    } else {
+      log("#店铺or分享活动商品-数据加载-失败")
+    }
+  })
+}
 
+/** 倒计时 */
+function countDown(that, pageArray) {
+  for (let i in pageArray) {
+    let item = pageArray[i]
+    if (item.orderExpiredTime) {
+      log("#countDown-pageArray[i]:" + JSON.stringify(item))
+      item.orderExpiredTimeRemain = getRemainTime(item.orderExpiredTime)
+    }
+  }
+  that.setData({
+    pageArray
+  })
+  // setTimeout(countDown(that, pageArray), 1000)
+}
 
 
 
@@ -560,7 +615,6 @@ const cacheKey = {
   groubaTrace: 'groubaTrace',
   groubInfo: "groubInfo",
   goodsList: 'goodsList',
-  toPageParams: 'toPageParams'
 }
 
 
@@ -590,6 +644,7 @@ module.exports = {
   onShareAppMessage: onShareAppMessage,
   orderOpen: orderOpen,
   orderJoin: orderJoin,
+  getGroubInfo: getGroubInfo,
 
   /** api服务host地址 https://apitest.pinb.vip/pinb-service */
   apiHost: apiHost,

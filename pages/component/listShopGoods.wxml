@@ -1,6 +1,6 @@
 <view wx:for='{{pageArray}}' wx:for-item="item" wx:key="groubaTrace" wx:for-index="index">
   <!-- 无头像布局 ######################################## -->
-  <view class='goods-list-active}}' wx:if="{{!item.userImgs}}" catchtap='goMyShop'>
+  <view class='goods-list-active}}' wx:if="{{!item.userImgs}}">
     <!-- <view wx:if="{{item.groubaIsnew}}" class='goods-list-new'></view> -->
     <view class='goods-list-new'>{{([6,8,9][item.groubaSize])==item.ordersStatus.length?'成团':(item.groubaIsnew?'新':'')}}</view>
     <!-- 活动商品-左侧 -->
@@ -36,7 +36,7 @@
 
   <!-- 有头像布局 ######################################## -->
   <!-- 开团商品展示 -->
-  <view wx:if="{{item.userImgs}}" class='goods-list {{editIndex==index?"goods-list-error":""}}' catchtap='goMyShop2'>
+  <view wx:if="{{item.userImgs}}" class='goods-list {{editIndex==index?"goods-list-error":""}}'>
     <view class='goods-list-new'>{{([6,8,9][item.groubaSize])==item.ordersStatus.length?'成团':(item.groubaIsnew?'新':'')}}</view>
     <!-- 活动商品-左侧 -->
     <view class='goods-list-left'>
@@ -60,7 +60,7 @@
         <!-- 60分后结束 -->
         <view class='main-list-endTime {{item.endTimeH || item.endTimeM || editItem==index+"-endTime"?"":""}}'>
           <image class='goods-list-right-icon' src='../img/time-circle2.png' data-type='endTime' data-index='{{index}}'></image>
-          <view data-type='endTime' data-index='{{index}}'>{{item.orderExpiredTime}}</view>
+          <view data-type='endTime' data-index='{{index}}'>{{item.orderExpiredTimeRemain}}</view>
         </view>
       </view>
       <!-- 活动商品-用户头像 -->

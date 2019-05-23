@@ -1,0 +1,108 @@
+<!-- 店铺-head信息 #编辑页面# ############ -->
+<view wx:if='{{isEdit}}' class='top {{isEdit?"opacityshow":""}}' bindtap='upImg'>
+  <view catchtap='catchtap' data-type='groub.groubName' data-index='' class='{{groub.groubName?"top-groubName":" top-groubName"}}' style='margin-top:-20rpx' wx:if='{{editItem!="-groub.groubName"}}'>{{groub.groubName||'点此填写商铺名称'}}</view>
+  <input maxlength='12' class="antEdit" style='width:98%;box-sizing: border-box;margin-top:5rpx' bindblur='bindinput' data-type='groubName' value='{{groub.groubName}}' wx:if='{{editItem=="-groub.groubName"}}' focus='{{editItem=="-groub.groubName"}}' />
+  <image wx:if='{{groub.groubImg}}' src='{{groub.groubImgView}}' class='bgImg' mode='aspectFill'></image>
+  <view wx:if='{{groub.groubImg}}' class='top-tag'>
+    <view class='top-tag-i'>老用户开团</view>
+    <view class='top-tag-i'>分享用户拼团</view>
+    <view class='top-tag-i'>人满成团</view>
+  </view>
+
+
+
+  <view wx:if='{{!groub.groubImg}}' class='top-main'>
+    <view class='antScale'>
+      <image class='upImg' src='../img/upImg.png'></image>
+      上传店铺图片
+      <view class='antScale' style='font-size:10px;'>“店铺实拍图、活动海报图皆可</view>
+      <view class='antScale' style='font-size:10px;'>如采用相机拍照，建议横向拍摄”</view>
+    </view>
+  </view>
+
+</view>
+<!-- 店铺-head信息 #预览页面# ############ -->
+<include wx:if='{{!isEdit}}' src="../component/shopHead.wxml" />
+
+<view class='main'>
+  <!-- 店铺-商品信息 #编辑页面# ############  -->
+  <view wx:for='{{pageArray}}' wx:key='idx' wx:for-index='index' class='productList'>
+    <view wx:if='{{isEdit}}' class='goods-list {{isEdit?"opacityshow":""}} {{editIndex==index?"goods-list-error":""}}'>
+      <!-- 活动商品-左侧 -->
+      <view class='goods-list-left'>
+        <view class='goods-list-price'>
+          <input maxlength='4' type='number' class='antEdit' style='width:90rpx;' bindblur='bindinput' data-type='goodsPrice' data-index='{{index}}' value='{{item.goodsPrice}}' wx:if='{{editItem==index+"-goodsPrice"}}' focus='{{editItem==index+"-goodsPrice"}}'
+            placeholder="请输入" />
+          <view catchtap='catchtap' data-type='goodsPrice' data-index='{{index}}' wx:if='{{editItem!=index+"-goodsPrice"}}' class='{{item.goodsPrice?"":"antScale"}}'>{{item.goodsPrice?"原:"+item.goodsPrice:"配置原价"}}</view>
+          <view> & </view>
+          <input maxlength='4' type='number' class='antEdit' style='width:90rpx;' bindblur='bindinput' data-type='groubaDiscountAmount' data-index='{{index}}' value='{{item.groubaDiscountAmount}}' wx:if='{{editItem==index+"-groubaDiscountAmount"}}' focus='{{editItem==index+"-groubaDiscountAmount"}}'
+            placeholder="请输入" />
+          <view catchtap='catchtap' data-type='groubaDiscountAmount' data-index='{{index}}' wx:if='{{editItem!=index+"-groubaDiscountAmount"}}' class='{{item.groubaDiscountAmount?"":"antScale"}}'>{{item.groubaDiscountAmount?"现:"+item.groubaDiscountAmount:"折扣金额"}}</view>
+        </view>
+        <image wx:if='{{item.goodsImg}}' class='goodsImg' src='{{item.goodsImgView}}' catchtap='upImg2' data-index='{{index}}' mode='aspectFill'></image>
+        <view wx:if='{{!item.goodsImg}}' class='main-list-left-up antScale' catchtap='upImg2' data-index='{{index}}'>
+          <image src='../img/upImg2.png' data-index='{{index}}'></image>
+          <view data-index='{{index}}'>上传商品照片</view>
+        </view>
+        <view class='goodsName'>
+          <view catchtap='catchtap' data-type='goodsName' data-index='{{index}}' class='{{item.goodsName?"":"antScale"}}' wx:if='{{editItem!=index+"-goodsName"}}'>{{item.goodsName||'点此填写商品名称'}}</view>
+          <input maxlength='12' style='width:98%;box-sizing: border-box;' class='antEdit' bindblur='bindinput' data-type='goodsName' data-index='{{index}}' value='{{item.goodsName}}' wx:if='{{editItem==index+"-goodsName"}}' focus='{{editItem==index+"-goodsName"}}'
+          />
+        </view>
+      </view>
+      <!-- 活动商品-右侧 -->
+      <view class='goods-list-right'>
+        <picker bindchange="set_num" data-index='{{index}}' value="{{item.groubaSize}}" range="{{[6,8,9]}}">
+          <view class='main-list-right-groubaSize' value="{{item.groubaSize}}">
+            <image class='goods-list-right-icon' src='../img/team.png'></image>
+            <view class='main-list-num'>
+              {{[6,8,9][item.groubaSize]?[6,8,9][item.groubaSize]+'人团':'设置开团人数'}}
+            </view>
+          </view>
+        </picker>
+        <view class='main-list-endTime {{item.groubaActiveMinute?"":"antScale"}}' style='padding:6px 0;'>
+          <image class='goods-list-right-icon' src='../img/time-circle2.png' catchtap='catchtap' data-type='groubaActiveMinute' data-index='{{index}}'></image>
+          <view wx:if='{{editItem!=index+"-groubaActiveMinute"}}' catchtap='catchtap' data-type='groubaActiveMinute' data-index='{{index}}'>
+            {{item.groubaActiveMinute?(item.groubaActiveMinute?item.groubaActiveMinute+'分':'')+'后结束':'设置拼团时长'}}
+          </view>
+          <view wx:if='{{editItem==index+"-groubaActiveMinute"}}'>
+            <!-- <input maxlength='2' type='number' class='antEdit' style='width:28px;' bindblur='bindinput' data-type='endTimeH' data-index='{{index}}' value='{{item.endTimeH}}' />时 -->
+            <input maxlength='3' type='number' class='antEdit' style='width:28px;' bindblur='bindinput' data-type='groubaActiveMinute' data-index='{{index}}' value='{{item.groubaActiveMinute}}' focus='true' />分 后结束
+          </view>
+        </view>
+        <view class='main-list-laxin'>
+          <view maxlength='4' class='{{item.groubaMaxCount?"":"antScale"}}' catchtap='catchtap' data-type='groubaMaxCount' data-index='{{index}}' wx:if='{{editItem!=index+"-groubaMaxCount"}}'>{{item.groubaMaxCount?'至多开团数'+item.groubaMaxCount:'设置至多开团数'}}</view>
+          <view wx:if='{{editItem==index+"-groubaMaxCount"}}'>
+            至多开团数
+            <input type='number' class='antEdit' style='width:35px;' bindblur='bindinput' data-type='groubaMaxCount' data-index='{{index}}' value='{{item.groubaMaxCount}}' focus='{{editItem==index+"-groubaMaxCount"}}' />
+          </view>
+        </view>
+        <view class='main-list-laxin'>
+          拉新团
+          <switch checked='{{item.groubaIsnew}}' bindchange='switchChange' data-index='{{index}}' />
+        </view>
+      </view>
+    </view>
+
+  </view>
+
+  <!-- 店铺-商品信息 #预览页面# ############  -->
+  <include wx:if='{{!isEdit}}' src="../component/listShopGoods.wxml" />
+
+  <!-- 店铺-电话、地址信息 -->
+  <include src="../component/shopFoot.wxml" />
+</view>
+
+<!-- 右下角悬浮菜单 -->
+<view class='fixed'>
+  <view wx:if='{{isEdit}}' class='fixed-list' catchtap='save'>
+    <image src='../img/save.png'></image>
+    <view>保存</view>
+  </view>
+  <view class='fixed-list' catchtap='ch_edit'>
+    <image src='{{isEdit?"../img/eye.png":"../img/edit-square.png"}}'></image>
+    <view>{{isEdit?"预览":"编辑"}}</view>
+  </view>
+</view>
+
+<toast usToast='{{usToast}}'></toast>
