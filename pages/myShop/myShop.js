@@ -83,7 +83,7 @@ Page({
     let orderTrace = pageRes ? pageRes.orderTrace : null
     let orderLeader = pageRes ? pageRes.orderLeader : null
     let that = this
-
+    util.log("#myShop.onShow().userinfo:" + util.getCache(util.cacheKey.userinfo))
     //#加载指定商铺的基本信息+商品信息
     util.getGroubInfo(that, groubTrace, orderTrace, orderLeader)
   },
@@ -160,23 +160,25 @@ Page({
   onShareAppMessage(e) {
     let that = this
     let index = e.target.dataset.index
-    let tapGrouba = that.data.pageArray[index]
+    let pageArray = that.data.pageArray
+    let pageArray0 = pageArray[0]
+    let tapGrouba = pageArray[index]
     let titlePrefix = '开团立享优惠:'
     if (!tapGrouba) {
       titlePrefix = "参团立享优惠:"
       tapGrouba = that.data.shareGoods
     }
-    log("#分享活动商品:" + JSON.stringify(tapGrouba))
+    util.log("#分享活动商品:" + JSON.stringify(tapGrouba))
     /** 生成分享 ############################################ */
     return {
       title: titlePrefix + tapGrouba.groubaDiscountAmount + "元", // 转发后 所显示的title
       path: '/pages/index/index?groubTrace=' + tapGrouba.refGroubTrace + '&orderTrace=' + tapGrouba.shareOrder + '&orderLeader=' + tapGrouba.shareLeader, // 相对的路径
       // imageUrl:'http://127.0.0.1:9660/pinb-service/images/15a9bdccdfc851450bd9ab802c631475.jpg',
       success: (res) => {
-        log("#分享成功" + res.shareTickets[0])
+        util.log("#分享成功" + res.shareTickets[0])
       },
       fail: function(res) {
-        log("#分享失败" + res)
+        util.log("#分享失败" + res)
       }
     }
   }

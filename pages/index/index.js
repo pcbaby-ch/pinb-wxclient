@@ -191,7 +191,7 @@ Page({
       util.log("#命中缓存-授权过用户信息")
       if (groubTrace || orderTrace) {
         wx.navigateTo({
-          url: '/pages/index/index?groubTrace=' + groubTrace + '&orderTrace=' + orderTrace + '&orderLeader=' + orderLeader,
+          url: '/pages/myShop/myShop?groubTrace=' + groubTrace + '&orderTrace=' + orderTrace + '&orderLeader=' + orderLeader,
         })
         return
       }
