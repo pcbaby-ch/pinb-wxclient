@@ -302,7 +302,10 @@ Page({
         util.softTips(this, "商品" + i + 1 + ",折扣金额未填写")
         return false
       }
-
+      if (g.groubaDiscountAmount > g.goodsPrice) {
+        util.softTips(this, "商品" + i + 1 + ",折扣金额过大")
+        return false
+      }
       // }
     }
     util.softTips(this, "店铺信息,一个月最多更改6次", 3)
