@@ -122,10 +122,10 @@ Page({
       userinfo: util.getCache(util.cacheKey.userinfo),
     }, function success(data) {
       if (data.retCode != '10000') { //#提交失败
-        wx.removeStorageSync(util.cacheKey.isOpen)
+        wx.removeStorageSync('isOpenGroub')
         util.softTips(that, data.retMsg, 3)
       } else { //#提交成功
-        util.putCache(util.cacheKey.isOpen, null, true)
+        util.putCache('isOpenGroub', null, true)
         that.setData({
           isEdit: false,
         })

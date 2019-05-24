@@ -36,7 +36,7 @@
 
   <!-- 有头像布局 ######################################## -->
   <!-- 开团商品展示 -->
-  <view wx:if="{{item.userImgs}}" class='goods-list {{editIndex==index?"goods-list-error":""}}'>
+  <view wx:if="{{item.userImgs}}" class='goods-list'>
     <view class='goods-list-new'>{{([6,8,9][item.groubaSize])==item.ordersStatus.length?'成团':(item.groubaIsnew?'新':'')}}</view>
     <!-- 活动商品-左侧 -->
     <view class='goods-list-left'>

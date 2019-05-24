@@ -48,20 +48,6 @@ Page({
     util.log("#productList（变更后）:" + JSON.stringify(productList))
   },
 
-  //事件处理函数
-  catchtap(e) {
-    util.log("#事件捕捉:" + JSON.stringify(e))
-    var pageArray = this.data.pageArray
-    // this.arraySetTest(pageArray)
-
-    let Index = e.target.dataset.index;
-    this.setData({
-      editItem: Index + '-' + e.target.dataset.type,
-      editIndex: Index,
-    })
-  },
-
-
   onLoad: function(pageRes) {
     wx.showNavigationBarLoading()
     util.log("#页面传参:" + JSON.stringify(pageRes))
@@ -161,18 +147,22 @@ Page({
     let that = this
     let index = e.target.dataset.index
     let pageArray = that.data.pageArray
-    let pageArray0 = pageArray[0]
-    let tapGrouba = pageArray[index]
-    let titlePrefix = '开团立享优惠:'
+    let tapGrouba = that.data.shareGoods
     if (!tapGrouba) {
-      titlePrefix = "参团立享优惠:"
-      tapGrouba = that.data.shareGoods
+      tapGrouba = that.data.pageArray[index]
+      /** 将分享商品临时置顶 ############################## */
+      pageArray[index] = pageArray[0]
+      pageArray[0] = tapGrouba
+      that.setData({
+        pageArray,
+      })
     }
+    let titlePrefix = tapGrouba.shareOrder ? "参团立享优惠:" : "开团立享优惠:"
     util.log("#分享活动商品:" + JSON.stringify(tapGrouba))
     /** 生成分享 ############################################ */
     return {
       title: titlePrefix + tapGrouba.groubaDiscountAmount + "元", // 转发后 所显示的title
-      path: '/pages/index/index?groubTrace=' + tapGrouba.refGroubTrace + '&orderTrace=' + tapGrouba.shareOrder + '&orderLeader=' + tapGrouba.shareLeader, // 相对的路径
+      path: '/pages/index/index?groubTrace=' + tapGrouba.refGroubTrace + '&orderTrace=' + tapGrouba.shareOrder + '&orderLeader=' + tapGrouba.shareLeader + '&pageParamsClear=' + true, // 相对的路径
       // imageUrl:'http://127.0.0.1:9660/pinb-service/images/15a9bdccdfc851450bd9ab802c631475.jpg',
       success: (res) => {
         util.log("#分享成功" + res.shareTickets[0])
@@ -181,5 +171,5 @@ Page({
         util.log("#分享失败" + res)
       }
     }
-  }
+  },
 })

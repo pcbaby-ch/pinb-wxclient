@@ -22,13 +22,13 @@ Page({
     }
     util.log("#touchedElement:" + JSON.stringify(grouba))
     wx.navigateTo({
-      url: '/pages/myShop/myShop?groubTrace=' + grouba.refGroubTrace + '&groubaTrace=' + grouba.groubaTrace + '&orderTrace=' + '&isOpen=false'
+      url: '/pages/myShop/myShop?groubTrace=' + grouba.refGroubTrace + '&groubaTrace=' + grouba.groubaTrace + '&orderTrace=' + '&isOpenGroub=false'
     })
   },
 
   goMyShopEdit() {
     wx.navigateTo({
-      url: '/pages/myShopEdit/myShopEdit?isOpen=true',
+      url: '/pages/myShopEdit/myShopEdit?isOpenGroub=true',
     })
   },
 
@@ -179,7 +179,7 @@ Page({
   onShow: function() {
     let pageRes = util.getCache('toIndexParams')
     util.log("#页面传参onShow:" + JSON.stringify(pageRes))
-    // util.setCache(util.cacheKey.toPageParams, null)
+    
     util.log("#getRemainTime：" + util.getRemainTime('2019-05-22 21:36:53.0'))
     let groubTrace = pageRes ? pageRes.groubTrace : null
     let orderTrace = pageRes ? pageRes.orderTrace : null
@@ -193,6 +193,9 @@ Page({
         wx.navigateTo({
           url: '/pages/myShop/myShop?groubTrace=' + groubTrace + '&orderTrace=' + orderTrace + '&orderLeader=' + orderLeader,
         })
+        if (pageRes && pageRes.pageParamsClear) {
+          util.setCache('toIndexParams', null)
+        }
         return
       }
     } else {
@@ -209,7 +212,7 @@ Page({
       return
     }
     that.setData({
-      isOpen: util.getCache(util.cacheKey.userinfo, "isOpenGroub") == '1' ? true : false,
+      isOpenGroub: util.getCache(util.cacheKey.userinfo, "isOpenGroub") == '1' ? true : false,
       avatarUrl: userinfoCache.avatarUrl,
     })
 

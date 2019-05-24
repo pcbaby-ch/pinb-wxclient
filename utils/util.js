@@ -211,7 +211,7 @@ function fileUpload(resImgPath, that, callBack, resImage) {
 const cacheVersionsuffix = '20190518'
 /** 提取缓存or缓存对象属性值(同步) */
 function getCache(key_, prop) {
-  key_ = key_ + cacheVersionsuffix //解决客户端版本迭代，旧版本脏缓存问题
+  // key_ = key_ + cacheVersionsuffix //解决客户端版本迭代，旧版本脏缓存问题
   let cache = wx.getStorageSync(key_)
   if (prop && Object.prototype.toString.call(prop) === '[object String]') {
     if (Object.prototype.toString.call(cache) === '[object Object]') {
@@ -227,7 +227,7 @@ function getCache(key_, prop) {
 }
 /** 提取缓存or缓存对象属性值(异步) */
 function getCacheAsyn(key_, prop) {
-  key_ = key_ + cacheVersionsuffix //解决客户端版本迭代，旧版本脏缓存问题
+  // key_ = key_ + cacheVersionsuffix //解决客户端版本迭代，旧版本脏缓存问题
   let cache = wx.getStorageSync(key_)
   if (prop && Object.prototype.toString.call(prop) === '[object String]') {
     if (Object.prototype.toString.call(cache) === '[object Object]') {
@@ -242,13 +242,13 @@ function getCacheAsyn(key_, prop) {
 }
 /** 直接缓存，已有同key缓存直接覆盖 */
 function setCache(key_, value) {
-  key_ = key_ + cacheVersionsuffix //解决客户端版本迭代，旧版本脏缓存问题
+  // key_ = key_ + cacheVersionsuffix //解决客户端版本迭代，旧版本脏缓存问题
   wx.setStorageSync(key_, value);
   // log("#缓存完成,#key:" + key_ + ",#value:" + value)
 }
 
 function setCacheAsyn(key_, value) {
-  key_ = key_ + cacheVersionsuffix //解决客户端版本迭代，旧版本脏缓存问题
+  // key_ = key_ + cacheVersionsuffix //解决客户端版本迭代，旧版本脏缓存问题
   wx.setStorage(key_, value);
   // log("#缓存完成,#key:" + key_ + ",#value:" + value)
 }
@@ -459,58 +459,24 @@ function getCity(latitude, longitude, key) {
 //统一业务封装 ###########################################################
 /** 开团/参团/分享button */
 function onShareAppMessageA(that, e) {
-  log("#分享防止冒泡方法hack")
+  log("#分享防止冒泡方法hack,#e:" + JSON.stringify(e))
   let index = e.target.dataset.index
-  let pageArray = that.data.pageArray
-  let pageArray0 = pageArray[0]
-  let tapGrouba = pageArray[index]
-  if (!tapGrouba) {
-    tapGrouba = that.data.shareGoods
-    if (tapGrouba.isJoined) {
-      log("#已参团-纯分享")
+  let tapGrouba = index >= 0 ? that.data.pageArray[index] : that.data.shareGoods
+  log("#操作商品:" + JSON.stringify(tapGrouba))
+  if (tapGrouba.shareOrder) {
+    //已开团，只能参团
+    if (tapGrouba.isJoined == 'true') {
+      log("#已开团，纯分享")
     } else {
-      log("#参团下单,#商品:" + JSON.stringify(tapGrouba))
       orderJoin(that, tapGrouba.shareOrder, tapGrouba.shareLeader)
     }
   } else {
-    if (tapGrouba.isJoined) {
-      log("#已参团-纯分享")
-      pageArray[index] = pageArray0
-      pageArray[0] = tapGrouba
-      that.setData({
-        pageArray,
-      })
-    } else {
-      log("#开团下单")
-      orderOpen(that, tapGrouba)
-    }
+    //未开团
+    orderOpen(that, tapGrouba)
   }
   // log("#拼团活动商品:" + JSON.stringify(tapGrouba))
 }
 
-/** 分享功能 */
-function onShareAppMessage(that, e) {
-  let index = e.target.dataset.index
-  let tapGrouba = that.data.pageArray[index]
-  let titlePrefix = '开团立享优惠:'
-  if (!tapGrouba) {
-    titlePrefix = "参团立享优惠:"
-    tapGrouba = that.data.shareGoods
-  }
-  log("#分享活动商品:" + JSON.stringify(tapGrouba))
-  /** 生成分享 ############################################ */
-  return {
-    title: titlePrefix + tapGrouba.groubaDiscountAmount + "元", // 转发后 所显示的title
-    path: '/pages/index/index?groubTrace=' + tapGrouba.refGroubTrace + '&orderTrace=' + tapGrouba.shareOrder + '&orderLeader=' + tapGrouba.shareLeader, // 相对的路径
-    // imageUrl:'http://127.0.0.1:9660/pinb-service/images/15a9bdccdfc851450bd9ab802c631475.jpg',
-    success: (res) => {
-      log("#分享成功" + res.shareTickets[0])
-    },
-    fail: function(res) {
-      log("#分享失败" + res)
-    }
-  }
-}
 /** 开团服务请求 args{tapGrouba:开团商品信息}*/
 function orderOpen(that, tapGrouba) {
   reqPost(apiHost + "/groubaOrder/orderOpen", {
@@ -641,7 +607,6 @@ module.exports = {
   getCity: getCity,
 
   onShareAppMessageA: onShareAppMessageA,
-  onShareAppMessage: onShareAppMessage,
   orderOpen: orderOpen,
   orderJoin: orderJoin,
   getGroubInfo: getGroubInfo,

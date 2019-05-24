@@ -107,6 +107,9 @@ Page({
           })
         }
       }
+      that.setData({
+        isOpenGroub: util.getCache(util.cacheKey.userinfo, "isOpenGroub") == '1' ? true : false,
+      })
     })
   },
   /**
@@ -199,43 +202,27 @@ Page({
    * Called when user click on the top right corner to share
    */
   onShareAppMessage(e) {
-    let that = this;
+    let that = this
     let index = e.target.dataset.index
     let pageArray = that.data.pageArray
-    let pageArray0 = pageArray[0]
-    let tapGrouba = pageArray[index]
+    let tapGrouba = that.data.pageArray[index]
+    let titlePrefix = tapGrouba.shareOrder ? "参团立享优惠:" : "开团立享优惠:"
+    util.log("#分享活动商品:" + JSON.stringify(tapGrouba))
+    /** 将分享商品临时置顶 ############################## */
+    pageArray[index] = pageArray[0]
     pageArray[0] = tapGrouba
-    pageArray[index] = pageArray0
     that.setData({
       pageArray,
     })
-    util.log("#分享活动商品:" + JSON.stringify(tapGrouba))
     /** 生成分享 ############################################ */
     return {
-      title: '参团立省' + tapGrouba.groubaDiscountAmount + "元", // 转发后 所显示的title
-      path: '/pages/index/index?groubTrace=' + tapGrouba.refGroubTrace + '&orderTrace=' + tapGrouba.shareOrder + '&orderLeader=' + tapGrouba.shareLeader + '&isOpen=false', // 相对的路径
+      title: titlePrefix + tapGrouba.groubaDiscountAmount + "元", // 转发后 所显示的title
+      path: '/pages/index/index?groubTrace=' + tapGrouba.refGroubTrace + '&orderTrace=' + tapGrouba.shareOrder + '&orderLeader=' + tapGrouba.shareLeader + '&pageParamsClear=' + true, // 相对的路径
       // imageUrl:'http://127.0.0.1:9660/pinb-service/images/15a9bdccdfc851450bd9ab802c631475.jpg',
-      success: (res) => { // 成功后要做的事情
+      success: (res) => {
         util.log("#分享成功" + res.shareTickets[0])
-
-        wx.getShareInfo({
-          shareTicket: res.shareTickets[0],
-          success: (res) => {
-            that.setData({
-              isShow: true
-            })
-            util.log(that.setData.isShow)
-          },
-          fail: function(res) {
-            console.log(res)
-          },
-          complete: function(res) {
-            console.log(res)
-          }
-        })
       },
       fail: function(res) {
-        // 分享失败
         util.log("#分享失败" + res)
       }
     }

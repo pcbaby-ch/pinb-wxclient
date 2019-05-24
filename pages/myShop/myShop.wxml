@@ -3,6 +3,8 @@
 
 <view class='main'>
 
+  <!-- 分享商品# ############  -->
+  <include src="../component/shareGoods.wxml" />
   <!-- 店铺-商品信息 #预览页面# ############  -->
   <include src="../component/listShopGoods.wxml" />
 
