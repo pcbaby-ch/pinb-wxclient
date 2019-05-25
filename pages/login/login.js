@@ -32,8 +32,8 @@ Page({
 
           // 发送 res.code 到后台换取 openId, sessionKey, unionId
           util.reqPost(util.apiHost + "/user/wxLogin", {
-            "appid": "wx71de1973104f41cf",
-            "secret": "8dee514b29b84c7640b842e4e2d521aa",
+            "appid": util.appid,
+            "secret": util.secret,
             "jsCode": resLogin.code,
             "grantType": "authorization_code",
             'headImg': util.getCache(util.cacheKey.userinfo, "avatarUrl"),

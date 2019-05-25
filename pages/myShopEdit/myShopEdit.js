@@ -224,7 +224,7 @@ Page({
       sizeType: ['original'],
       sourceType: ['album', 'camera'],
       success(resImage) {
-        util.imageUpload(resImage, This, image => {
+        util.imageUpload(resImage, 'shopImg', This, image => {
           if (image) {
             groub.groubImgView = resImage.tempFilePaths[0]
             groub.groubImg = image
@@ -250,7 +250,7 @@ Page({
       sizeType: ['original', 'compressed'],
       sourceType: ['album', 'camera'],
       success(resImage) {
-        util.imageUpload(resImage, This, image => {
+        util.imageUpload(resImage, 'goodsImg', This, image => {
           if (image) {
             let pageArray = This.data.pageArray;
             pageArray[Index].goodsImgView = resImage.tempFilePaths[0]
@@ -302,8 +302,9 @@ Page({
         util.softTips(this, "商品" + i + 1 + ",折扣金额未填写")
         return false
       }
-      if (g.groubaDiscountAmount > g.goodsPrice) {
-        util.softTips(this, "商品" + i + 1 + ",折扣金额过大")
+      if (g.groubaDiscountAmount * 1 > g.goodsPrice * 1) {
+        util.softTips(this, "商品" + (i + 1) + ",折扣金额过大")
+        util.log("#groubaDiscountAmount:" + g.groubaDiscountAmount + "#goodsPrice:" + g.goodsPrice)
         return false
       }
       // }
@@ -319,12 +320,12 @@ Page({
       orderTrace: orderTrace,
     }, resp => {
       if (util.parseResp(that, resp)) {
-        resp.data.groubInfo.groubImgView = util.apiHost + "/images/" + resp.data.groubInfo.groubImg
+        resp.data.groubInfo.groubImgView = util.apiHost + "/images/shopImg/" + resp.data.groubInfo.groubImg
         let curLatitude = util.getCache(util.cacheKey.userinfo, 'latitude')
         let curLongitude = util.getCache(util.cacheKey.userinfo, 'longitude')
         for (var i in resp.data.goodsList) {
           let item = resp.data.goodsList[i]
-          resp.data.goodsList[i]['goodsImgView'] = util.apiHost + "/images/" + item.goodsImg
+          resp.data.goodsList[i]['goodsImgView'] = util.apiHost + "/images/goodsImg/" + item.goodsImg
           resp.data.goodsList[i]['distance'] = util.getDistance(curLatitude, curLongitude, item.latitude, item.longitude)
         }
         let pageArray = resp.data.goodsList
@@ -348,17 +349,36 @@ Page({
     })
   },
 
+  createShopQR(e) {
+    let that = this
+    let groub = that.data.groub
+    util.reqPost(util.apiHost + "/groupBar/getShopQR", {
+      "appid": util.appid,
+      "secret": util.secret,
+      groubTrace: groub.groubTrace,
+    }, resp => {
+      if (util.parseResp(that, resp)) {
+        util.log("#店铺二维码生成成功:" + resp)
+        groub.shopQR = resp.data
+        that.setData({
+          groub,
+        })
+      }
+    })
+  },
+
   onLoad: function(pageRes) {
     wx.showNavigationBarLoading()
     util.log("#页面传参:" + JSON.stringify(pageRes))
-    let isOpen = pageRes ? pageRes.isOpen : null
     let groubTrace = pageRes ? pageRes.groubTrace : null
     let orderTrace = pageRes ? pageRes.orderTrace : null
     let orderLeader = pageRes ? pageRes.orderLeader : null
     let that = this
-
+    if (util.getCache(util.cacheKey.userinfo, "isOpenGroub") == '1') {
+      util.softTips(this, "点击店铺图片，生成您的专属二维码", 6)
+    }
     that.setData({
-      isEdit: isOpen,
+      isEdit: util.getCache(util.cacheKey.userinfo, "isOpenGroub") == '1' ? false : true,
     })
     //#加载指定商铺的基本信息+商品信息
     that.getGroubInfo(that, groubTrace, orderTrace, orderLeader)
@@ -374,7 +394,7 @@ Page({
    * Lifecycle function--Called when page show
    */
   onShow: function() {
-    
+
 
   },
 

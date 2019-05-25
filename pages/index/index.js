@@ -16,13 +16,14 @@ Page({
   /** 页面跳转 ##################################*/
   goMyShop(res) {
     util.log("#res:" + JSON.stringify(res))
-    let grouba = this.data.pageArray[res.target.dataset.index]
-    if (!grouba) {
-      grouba = this.data.shareGoods
-    }
+    let index = res.target.dataset.index
+    let grouba = index ? this.data.pageArray[index] : null
     util.log("#touchedElement:" + JSON.stringify(grouba))
+
+    let url = grouba ? '/pages/myShop/myShop?groubTrace=' + grouba.refGroubTrace + '&groubaTrace=' + grouba.groubaTrace : '/pages/myShop/myShop'
+
     wx.navigateTo({
-      url: '/pages/myShop/myShop?groubTrace=' + grouba.refGroubTrace + '&groubaTrace=' + grouba.groubaTrace + '&orderTrace=' + '&isOpenGroub=false'
+      url: url
     })
   },
 
@@ -121,7 +122,7 @@ Page({
         let curLongitude = util.getCache(util.cacheKey.userinfo, 'longitude')
         for (var i in resp.rows) {
           let item = resp.rows[i]
-          resp.rows[i]['goodsImgView'] = util.apiHost + "/images/" + item.goodsImg
+          resp.rows[i]['goodsImgView'] = util.apiHost + "/images/goodsImg/" + item.goodsImg
           resp.rows[i]['distance'] = util.getDistance(curLatitude, curLongitude, item.latitude, item.longitude)
         }
         let pageArray = that.data.pageArray
@@ -179,7 +180,7 @@ Page({
   onShow: function() {
     let pageRes = util.getCache('toIndexParams')
     util.log("#页面传参onShow:" + JSON.stringify(pageRes))
-    
+
     util.log("#getRemainTime：" + util.getRemainTime('2019-05-22 21:36:53.0'))
     let groubTrace = pageRes ? pageRes.groubTrace : null
     let orderTrace = pageRes ? pageRes.orderTrace : null

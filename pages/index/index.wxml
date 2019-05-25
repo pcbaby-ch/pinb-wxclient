@@ -16,7 +16,7 @@
 <!-- 右下角悬浮菜单 -->
 <view class='fixed' wx:if="{{indexMode!='userLogin'}}">
   <view class='fixed-list' bindtap='goMyShopEdit'>
-    <image src='{{isOpenGroub?"../img/index.png":"../img/edit-square.png"}}'></image>
+    <image src='../img/index.png'></image>
     <view>{{isOpenGroub?"店铺":"入驻"}}</view>
   </view>
   <!-- <view class='fixed-list' catchtap='add'>

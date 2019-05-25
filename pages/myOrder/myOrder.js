@@ -73,7 +73,7 @@ Page({
     }, resp => {
       if (util.parseResp(that, resp) && resp.data.rows.length > 0) {
         for (var i in resp.data.rows) {
-          resp.data.rows[i]['goodsImgView'] = util.apiHost + "/images/" + resp.data.rows[i].goodsImg
+          resp.data.rows[i]['goodsImgView'] = util.apiHost + "/images/goodsImg/" + resp.data.rows[i].goodsImg
           resp.data.rows[i].userImgs = resp.data.rows[i].userImgs.split(",")
           resp.data.rows[i].ordersStatus = resp.data.rows[i].ordersStatus.split(",")
         }

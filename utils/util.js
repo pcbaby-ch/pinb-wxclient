@@ -131,7 +131,7 @@ function requestLoading(url, params, message, successCallback, failCallback) {
 /** 图片上传 (resImage是chooseImage组件的资源)
  * return {图片文件名称}}}
  */
-function imageUpload(resImage, that, callBack, compressRate) {
+function imageUpload(resImage, fileTypePath, that, callBack, compressRate) {
   log("#图片准备上传,#res" + JSON.stringify(resImage));
   //#01图片压缩
   if (resImage.tempFiles[0].size > 1024 * 1024 / 10) {
@@ -150,12 +150,12 @@ function imageUpload(resImage, that, callBack, compressRate) {
     })
   } else {
     log("#图片小于1M，不压缩，原图上传")
-    fileUpload(resImage.tempFiles[0].path, that, callBack)
+    fileUpload(resImage.tempFiles[0].path, fileTypePath, that, callBack)
   }
 
 }
 /** 计算文件md5并上传 */
-function fileUpload(resImgPath, that, callBack, resImage) {
+function fileUpload(resImgPath, fileTypePath, that, callBack, resImage) {
   let imageMd5 = "'图片md5缺省值'"
   wx.getFileSystemManager().readFile({
     filePath: resImgPath, //选择图片返回的相对路径
@@ -178,7 +178,8 @@ function fileUpload(resImgPath, that, callBack, resImage) {
         filePath: resImgPath,
         name: 'file',
         formData: {
-          fileMd5: imageMd5
+          fileMd5: imageMd5,
+          fileTypePath: fileTypePath
         },
         success(res) {
           let data
@@ -193,7 +194,7 @@ function fileUpload(resImgPath, that, callBack, resImage) {
             if (compressRate && compressRate >= 1) {
               compressRate = (compressRate / 2)
               log("#图片上传失败,开始重试,#compressRate:" + compressRate)
-              imageUpload(resImage, that, callBack, compressRate)
+              imageUpload(resImage, fileTypePath, that, callBack, compressRate)
             } else {
               log("#图片上传失败,重试超限，最终放弃" + "#resUpload:" + data)
               return
@@ -512,7 +513,7 @@ function orderJoin(that, orderTrace, orderLeader) {
   })
 }
 /** 获取店铺基本信息+商品信息+分享订单头像信息 */
-function getGroubInfo(that, groubTrace, orderTrace, orderLeader) {
+function getGroubShareOrder(that, groubTrace, orderTrace, orderLeader) {
   reqPost(apiHost + "/groupBar/selectOneShare", {
     groubTrace: groubTrace,
     orderTrace: orderTrace,
@@ -522,16 +523,16 @@ function getGroubInfo(that, groubTrace, orderTrace, orderLeader) {
     if (parseResp(that, resp)) {
       let curLatitude = getCache(cacheKey.userinfo, 'latitude')
       let curLongitude = getCache(cacheKey.userinfo, 'longitude')
-      resp.data.groubInfo.groubImgView = apiHost + "/images/" + resp.data.groubInfo.groubImg
+      resp.data.groubInfo.groubImgView = apiHost + "/images/shopImg/" + resp.data.groubInfo.groubImg
       if (resp.data.shareGoods) { //如果存在分享商品
-        resp.data.shareGoods.goodsImgView = apiHost + "/images/" + resp.data.shareGoods.goodsImg
+        resp.data.shareGoods.goodsImgView = apiHost + "/images/goodsImg/" + resp.data.shareGoods.goodsImg
         resp.data.shareGoods['distance'] = getDistance(curLatitude, curLongitude, resp.data.shareGoods.latitude, resp.data.shareGoods.longitude)
         resp.data.shareGoods.userImgs = resp.data.shareGoods.userImgs.split(",")
         resp.data.shareGoods.ordersStatus = resp.data.shareGoods.ordersStatus.split(",")
       }
       for (var i in resp.data.goodsList) {
         let item = resp.data.goodsList[i]
-        resp.data.goodsList[i]['goodsImgView'] = apiHost + "/images/" + item.goodsImg
+        resp.data.goodsList[i]['goodsImgView'] = apiHost + "/images/goodsImg/" + item.goodsImg
         resp.data.goodsList[i]['distance'] = getDistance(curLatitude, curLongitude, item.latitude, item.longitude)
         if (item.userImgs) { //如果存在订单头像信息
           resp.data.goodsList[i].userImgs = item.userImgs.split(",")
@@ -569,9 +570,11 @@ function countDown(that, pageArray) {
 
 
 //全局-常量、变量 ###########################################################
-const apiHost = "https://apitest.pinb.vip/pinb-service"
+const apiHost = "http://127.0.0.1:9660/pinb-service"
 //https://apitest.pinb.vip/pinb-service
 //http://127.0.0.1:9660/pinb-service
+const appid = 'wx71de1973104f41cf'
+const secret = '8dee514b29b84c7640b842e4e2d521aa'
 
 const cacheKey = {
   cacheTimeout: 'cacheTimeout',
@@ -609,10 +612,12 @@ module.exports = {
   onShareAppMessageA: onShareAppMessageA,
   orderOpen: orderOpen,
   orderJoin: orderJoin,
-  getGroubInfo: getGroubInfo,
+  getGroubShareOrder: getGroubShareOrder,
 
   /** api服务host地址 https://apitest.pinb.vip/pinb-service */
   apiHost: apiHost,
+  appid: appid,
+  secret: secret,
   /** 全局缓存key，防止缓存key冲突 */
   cacheKey: cacheKey,
 

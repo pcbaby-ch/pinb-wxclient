@@ -40,13 +40,7 @@ Page({
 
   },
 
-  arraySetTest(productList) {
-    util.log("#productList（变更前）:" + JSON.stringify(productList) + "#00:" + JSON.stringify(productList[0]));
-    productList[0]['goodsName'] = "goodsNameA";
-    productList[1]['goodsName'] = "goodsNameB";
-    //productList[5]['goodsName'] = "goodsNameC";
-    util.log("#productList（变更后）:" + JSON.stringify(productList))
-  },
+
 
   onLoad: function(pageRes) {
     wx.showNavigationBarLoading()
@@ -71,7 +65,7 @@ Page({
     let that = this
     util.log("#myShop.onShow().userinfo:" + util.getCache(util.cacheKey.userinfo))
     //#加载指定商铺的基本信息+商品信息
-    util.getGroubInfo(that, groubTrace, orderTrace, orderLeader)
+    util.getGroubShareOrder(that, groubTrace, orderTrace, orderLeader)
   },
 
   /**
@@ -126,17 +120,7 @@ Page({
       payContainerShow: false,
     })
   },
-  shareGrouba(e) {
-    let productList = this.data.productList
-    util.log("#商品活动分享:" + JSON.stringify(productList))
-    let index = e.target.dataset.index
-    let productList0 = productList[0]
-    productList[0] = productList[index]
-    productList[index] = productList0
-    this.setData({
-      productList,
-    })
-  },
+
   onShareAppMessageA(e) {
     util.onShareAppMessageA(this, e)
   },
