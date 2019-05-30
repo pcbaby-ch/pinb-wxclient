@@ -510,7 +510,7 @@ Page({
     })
   },
   onShareAppMessageA(e) {
-    util.onShareAppMessageA(this, e)
+    util.softTips(this,"当前预览页面，无法开团")
   },
   /**
    * Called when user click on the top right corner to share
