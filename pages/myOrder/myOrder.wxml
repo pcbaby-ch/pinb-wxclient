@@ -35,8 +35,10 @@
   <view class='pay'>
     <canvas class='canvas' canvas-id='canvas'></canvas>
     <view class='pay-type'>-- 扫码消费 --</view>
-    <image class='pay-close' src='../img/close-circle.png' bindtap='closePay'></image>
+    <image class='pay-close' src='../img/close-circle2.png' bindtap='closePay'></image>
   </view>
 </view>
 <!-- 遮罩层 -->
 <view class='shadeCover' style='display:{{shadeCoverShow||"none"}}'></view>
+<!-- 亲提示悬窗 -->
+<toast usToast='{{usToast}}'></toast>

@@ -106,3 +106,14 @@
 </view>
 
 <toast usToast='{{usToast}}'></toast>
+
+<!-- 店铺二维码 -->
+<view class='pay-container' style='display:{{payContainerShow||"none"}}'>
+  <view class='pay'>
+    <image class='canvas' src='{{groub.shopQR}}' mode='aspectFill' bindtouchstart='timestart' bindtouchend='timeend' bindtap='saveImg'></image>
+    <view class='pay-type'>-- 长按保存到相册 --</view>
+    <image class='pay-close' src='../img/close-circle2.png' bindtap='closePay'></image>
+  </view>
+</view>
+<!-- 遮罩层 -->
+<view class='shadeCover' style='display:{{payContainerShow||"none"}}'></view>

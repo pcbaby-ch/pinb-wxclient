@@ -348,8 +348,23 @@ Page({
 
     })
   },
+  /** 生长并展示店铺二维码 */
+  toQrCode: function(res) {
+    util.log("#res:" + JSON.stringify(res))
+    let order = this.data.pageArray[res.currentTarget.dataset.index]
+    util.log("#二维码信息:" + that.data.groub.groubTrace)
+    //#生成二维码
+    createShopQR()
+  },
 
-  createShopQR(e) {
+  closePay: function() {
+
+    this.setData({
+      payContainerShow: 'none',
+    })
+  },
+
+  createShopQR() {
     let that = this
     let groub = that.data.groub
     util.reqPost(util.apiHost + "/groupBar/getShopQR", {
@@ -359,12 +374,58 @@ Page({
     }, resp => {
       if (util.parseResp(that, resp)) {
         util.log("#店铺二维码生成成功:" + resp)
-        groub.shopQR = resp.data
+        groub.shopQR = util.apiHost + "/images/shopQR/" + resp.data.data
         that.setData({
           groub,
+          payContainerShow: 'true',
         })
       }
     })
+  },
+  /** 长按店铺二维码保存 */
+  //点击开始时的时间
+  timestart: function(e) {　　
+    var that = this;　　
+    that.setData({
+      timestart: e.timeStamp
+    });
+  },
+
+  //点击结束的时间
+  timeend: function(e) {　　
+    var that = this;　　
+    that.setData({
+      timeend: e.timeStamp
+    });
+  },
+
+  //保存图片
+  saveImg: function(e) {　　
+    var that = this;　　
+    var times = that.data.timeend - that.data.timestart;　　
+    if (times > 300) {　　　　
+      util.log("#长按");　　　　
+      wx.getSetting({　　　　　　
+        success: function(res) {　　　　　　　　
+          wx.authorize({
+            scope: 'scope.writePhotosAlbum',
+            success: function(res) {
+              util.log("#保存相册授权成功");
+              var imgUrl = that.data.groub.shopQR //图片地址
+              wx.downloadFile({ //下载文件资源到本地，客户端直接发起一个 HTTP GET 请求，返回文件的本地临时路径
+                url: imgUrl,
+                　success: function(res) {　　　　
+                  util.log('#下载成功后再保存到本地' + JSON.stringify(res));　
+                  wx.saveImageToPhotosAlbum({　　　　　　
+                    filePath: res.tempFilePath, //返回的临时文件路径，下载后的文件会存储到一个临时文件
+                  })　　
+                }
+              })　　　　　　　　　　
+            }　　　　　　　　
+          })　　　　　　
+        }　　　　
+      })　　
+    }
   },
 
   onLoad: function(pageRes) {
@@ -427,29 +488,6 @@ Page({
 
   },
 
-  toQrCode: function() {
-    //#生成二维码
-    var qrcode = new QRCode('canvas', {
-      // usingIn: this,
-      text: "orderNumber" + util.formatTime(new Date()),
-
-      colorDark: "#000000",
-      colorLight: "#ffffff",
-      correctLevel: QRCode.CorrectLevel.H,
-    });
-
-    qrcode.makeCode("orderNumber" + util.formatTime(new Date()))
-
-    this.setData({
-      payContainerShow: true,
-    })
-  },
-
-  closePay: function() {
-    this.setData({
-      payContainerShow: false,
-    })
-  },
   shareGrouba(e) {
     let productList = this.data.productList
     util.log("#商品活动分享:" + JSON.stringify(productList))

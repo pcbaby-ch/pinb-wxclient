@@ -1,7 +1,6 @@
 <!-- 订单展示 -->
 <view class='order-list' wx:for="{{pageArray}}" wx:for-item="item" wx:for-index="index" wx:key="orderTrace" data-index='{{index}}'>
-  <view wx:if="{{item.groubaIsnew}}" class='goods-list-new'>新</view>
-  <view wx:if="{{false}}" class='goods-list-done'>成团</view>
+  <view class='goods-list-new'>{{([6,8,9][item.groubaSize])==item.ordersStatus.length?'成团':(item.groubaIsnew?'新':'')}}</view>
   <!-- 订单-左侧 -->
   <view class='goods-list-left' data-index='{{index}}' catchtap='toQrCode'>
     <view class='goods-list-price' wx:if="{{isOpen}}">

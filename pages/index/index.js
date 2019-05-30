@@ -183,6 +183,8 @@ Page({
 
     util.log("#getRemainTime：" + util.getRemainTime('2019-05-22 21:36:53.0'))
     let groubTrace = pageRes ? pageRes.groubTrace : null
+    //扫描进入小程序的店铺trace
+    groubTrace = pageRes && pageRes.scene ? pageRes.scene : groubTrace
     let orderTrace = pageRes ? pageRes.orderTrace : null
     let orderLeader = pageRes ? pageRes.orderLeader : null
     let that = this

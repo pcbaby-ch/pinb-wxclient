@@ -37,6 +37,11 @@ Page({
     util.log("#res:" + JSON.stringify(res))
     let order = this.data.pageArray[res.currentTarget.dataset.index]
     util.log("#消费活动商品:" + JSON.stringify(order))
+    //#是否成团校验
+    if (([6, 8, 9][order.groubaSize]) > order.ordersStatus.length) {
+      util.softTips(this, "亲，未成团不能生成消费码")
+      return
+    }
     //#生成二维码
     var qrcode = new QRCode('canvas', {
       // usingIn: this,
