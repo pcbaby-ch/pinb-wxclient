@@ -10,7 +10,7 @@
     <!-- 活动商品-右侧 -->
     <view class='goods-list-right' data-index='{{index}}'>
       <!-- 商品名称-价格 -->
-      <view data-type='name' data-index='{{index}}' class='goodsName' style='padding-bottom:35rpx;' wx:if='{{editItem!=index+"-goodsName"}}'>{{item.goodsName||'??商品名称??'}}
+      <view data-type='name' data-index='{{index}}' class='goodsName' wx:if='{{editItem!=index+"-goodsName"}}'>{{item.goodsName||'??商品名称??'}}
         <text class='yuanjia'>￥{{item.goodsPrice||'??'}}</text>
       </view>
       <!-- 60分后结束 -->
@@ -50,7 +50,7 @@
     <!-- 活动商品-右侧 -->
     <view class='goods-list-right'>
       <!-- 6人团 -->
-      <view class='main-list-right-groubaSize' style='padding-bottom:10rpx'>
+      <view class='main-list-right-groubaSize'>
         <image class='goods-list-right-icon' src='../img/team.png'></image>
         <view style='padding-left:0rpx;;padding-right:16rpx;'>
           <view data-index='{{index}}' style='padding-left:0rpx;'>
@@ -65,7 +65,7 @@
       </view>
       <!-- 活动商品-用户头像 -->
       <view class='main-head-list' style='padding-bottom:10rpx;'>
-        <image class="{{item2==6?'slt':''}}" wx:for="{{item.ordersStatus}}" wx:for-item="item2" wx:for-index="index2" wx:key="{{index2}}" src='{{item.userImgs[index2]}}' mode='aspectFill'></image>
+        <image class="{{item2==8?'slt':''}}" wx:for="{{item.ordersStatus}}" wx:for-item="item2" wx:for-index="index2" wx:key="{{index2}}" src='{{item.userImgs[index2]}}' mode='aspectFill'></image>
       </view>
       <!-- 距离800m -->
       <view catchtap='getLocation' class='main-list-right-location'>

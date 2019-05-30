@@ -414,11 +414,15 @@ Page({
               var imgUrl = that.data.groub.shopQR //图片地址
               wx.downloadFile({ //下载文件资源到本地，客户端直接发起一个 HTTP GET 请求，返回文件的本地临时路径
                 url: imgUrl,
-                　success: function(res) {　　　　
+                　success: function(res) {　　　
                   util.log('#下载成功后再保存到本地' + JSON.stringify(res));　
                   wx.saveImageToPhotosAlbum({　　　　　　
                     filePath: res.tempFilePath, //返回的临时文件路径，下载后的文件会存储到一个临时文件
-                  })　　
+                  })　
+                  util.softTips(that, "二维码已保存到相册", 5)
+                  that.setData({
+                    payContainerShow: 'none',
+                  })
                 }
               })　　　　　　　　　　
             }　　　　　　　　
@@ -426,6 +430,12 @@ Page({
         }　　　　
       })　　
     }
+  },
+
+  callPhone() {
+    wx.makePhoneCall({
+      phoneNumber: this.data.groub.groubPhone,
+    })
   },
 
   onLoad: function(pageRes) {

@@ -190,7 +190,7 @@ Page({
     let that = this
     /** 根据首页加载模式加载数据 {userNear userShare userLogin} ############################### */
     let userinfoCache = util.getCache(util.cacheKey.userinfo)
-    if (userinfoCache && userinfoCache.nickName) {
+    if (userinfoCache && userinfoCache.nickName && userinfoCache.wxUnionid) {
       util.log("#命中缓存-授权过用户信息")
       if (groubTrace || orderTrace) {
         wx.navigateTo({

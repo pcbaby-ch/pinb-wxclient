@@ -19,7 +19,7 @@
     </view>
     <!-- 订单-用户头像 -->
     <view class='main-head-list'>
-      <image class="{{item2==6?'slt':''}}" wx:for="{{item.ordersStatus}}" wx:for-item="item2" wx:for-index="index2" wx:key="{{index2}}" src='{{item.userImgs[index2]}}' mode='aspectFill'></image>
+      <image class="{{item2==8?'slt':''}}" wx:for="{{item.ordersStatus}}" wx:for-item="item2" wx:for-index="index2" wx:key="{{index2}}" src='{{item.userImgs[index2]}}' mode='aspectFill'></image>
 
     </view>
     <!-- 参团立省？？元 -->

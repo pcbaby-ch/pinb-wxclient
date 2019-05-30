@@ -63,7 +63,7 @@
         <view class='main-list-endTime {{item.groubaActiveMinute?"":"antScale"}}' style='padding:6px 0;'>
           <image class='goods-list-right-icon' src='../img/time-circle2.png' catchtap='catchtap' data-type='groubaActiveMinute' data-index='{{index}}'></image>
           <view wx:if='{{editItem!=index+"-groubaActiveMinute"}}' catchtap='catchtap' data-type='groubaActiveMinute' data-index='{{index}}'>
-            {{item.groubaActiveMinute?(item.groubaActiveMinute?item.groubaActiveMinute+'分':'')+'后结束':'设置拼团时长'}}
+            {{item.groubaActiveMinute?(item.groubaActiveMinute?'拼团时长:'+item.groubaActiveMinute+'分钟':'')+'':'设置拼团时长'}}
           </view>
           <view wx:if='{{editItem==index+"-groubaActiveMinute"}}'>
             <!-- <input maxlength='2' type='number' class='antEdit' style='width:28px;' bindblur='bindinput' data-type='endTimeH' data-index='{{index}}' value='{{item.endTimeH}}' />时 -->
@@ -71,10 +71,10 @@
           </view>
         </view>
         <view class='main-list-laxin'>
-          <view maxlength='4' class='{{item.groubaMaxCount?"":"antScale"}}' catchtap='catchtap' data-type='groubaMaxCount' data-index='{{index}}' wx:if='{{editItem!=index+"-groubaMaxCount"}}'>{{item.groubaMaxCount?'至多开团数'+item.groubaMaxCount:'设置至多开团数'}}</view>
+          <view maxlength='4' class='{{item.groubaMaxCount?"":"antScale"}}' catchtap='catchtap' data-type='groubaMaxCount' data-index='{{index}}' wx:if='{{editItem!=index+"-groubaMaxCount"}}'>{{item.groubaMaxCount?'最多开团数'+item.groubaMaxCount:'设置最多开团数'}}</view>
           <view wx:if='{{editItem==index+"-groubaMaxCount"}}'>
-            至多开团数
-            <input type='number' class='antEdit' style='width:35px;' bindblur='bindinput' data-type='groubaMaxCount' data-index='{{index}}' value='{{item.groubaMaxCount}}' focus='{{editItem==index+"-groubaMaxCount"}}' />
+            最多开团数
+            <input type='number' class='antEdit' style='width:65px;' bindblur='bindinput' data-type='groubaMaxCount' data-index='{{index}}' value='{{item.groubaMaxCount}}' focus='{{editItem==index+"-groubaMaxCount"}}' />
           </view>
         </view>
         <view class='main-list-laxin'>

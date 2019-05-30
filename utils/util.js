@@ -112,12 +112,20 @@ function requestLoading(url, params, message, successCallback, failCallback) {
       } else {
         if (failCallback)
           failCallback()
+        else if (res.errMsg = "request:fail timeout")
+          heavyTips('服务繁忙', '亲，活动火爆，请稍后重试!')
+        else
+          heavyTips('网络异常', '亲，你的网络异常，请恢复后重试!')
       }
 
     },
     fail: function(res) {
       if (failCallback)
         failCallback()
+      else if (res.errMsg = "request:fail timeout")
+        heavyTips('服务繁忙', '亲，活动火爆，请稍后重试!')
+      else
+        heavyTips('网络异常', '亲，你的网络异常，请恢复后重试!')
     },
     complete: function(res) {
       log(">>>响应数据:" + JSON.stringify(res) + " #url:" + url)
@@ -582,7 +590,7 @@ function countDown(that, pageArray) {
 
 
 //全局-常量、变量 ###########################################################
-const apiHost = "https://apitest.pinb.vip/pinb-service"
+const apiHost = "http://127.0.0.1:9660/pinb-service"
 //https://apitest.pinb.vip/pinb-service
 //http://127.0.0.1:9660/pinb-service
 const appid = 'wx71de1973104f41cf'

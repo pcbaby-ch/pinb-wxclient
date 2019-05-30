@@ -16,13 +16,10 @@ Page({
       onlyFromCamera: true,
       success(res) {
         console.log("#扫码结果:" + JSON.stringify(res))
-        wx.setNavigationBarTitle({
-          title: res.result,
-        })
         //请求：消费处理服务接口
         util.reqPost(util.apiHost + "/groubaOrder/orderConsume", {
           orderTrace: res.result.split("|")[1],
-          refUserWxUnionid: util.getCache(util.cacheKey.userinfo, 'wxUnionid'),
+          refUserWxUnionid: res.result.split("|")[2],
           refGroubTrace: res.result.split("|")[0],
         }, resp => {
           if (util.parseResp(that, resp)) {
@@ -45,7 +42,7 @@ Page({
     //#生成二维码
     var qrcode = new QRCode('canvas', {
       // usingIn: this,
-      text: order.refGroubTrace + '|' + order.orderTrace,
+      text: order.refGroubTrace + '|' + order.orderTrace + '|' + order.refUserWxUnionid,
       colorDark: "#000000",
       colorLight: "#ffffff",
       correctLevel: QRCode.CorrectLevel.H,
@@ -125,7 +122,7 @@ Page({
     util.log("#页面传参:" + JSON.stringify(pageRes))
     let that = this
     let userinfoCache = util.getCache(util.cacheKey.userinfo)
-    if (userinfoCache && userinfoCache.nickName) {
+    if (userinfoCache && userinfoCache.nickName && userinfoCache.wxUnionid) {
       util.log("#命中缓存-授权过用户信息")
     } else {
       util.log("#无缓存-未授权过用户信息")
