@@ -9,10 +9,10 @@
       </view>
     </button>
 
-    <!-- <view class='head-img' bindtap='scanPayCode'>
+    <view class='head-img' bindtap='scanPayCode'>
       <image src='{{avatarUrl}}'></image>
-      <view>扫码</view>
-    </view> -->
+      <!-- <view>扫码</view> -->
+    </view>
   </view>
   <!-- 搜索栏 -->
   <!-- <view class='heat-line2 head-search'>
