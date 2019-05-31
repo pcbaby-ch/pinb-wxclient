@@ -143,6 +143,7 @@ Page({
     }
     let titlePrefix = tapGrouba.shareOrder ? "参团立享优惠:" : "开团立享优惠:"
     util.log("#分享活动商品:" + JSON.stringify(tapGrouba))
+    util.shareCount(that, tapGrouba)
     /** 生成分享 ############################################ */
     return {
       title: titlePrefix + tapGrouba.groubaDiscountAmount + "元", // 转发后 所显示的title

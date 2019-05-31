@@ -216,6 +216,7 @@ Page({
     that.setData({
       pageArray,
     })
+    util.shareCount(that,tapGrouba)
     /** 生成分享 ############################################ */
     return {
       title: titlePrefix + tapGrouba.groubaDiscountAmount + "元", // 转发后 所显示的title

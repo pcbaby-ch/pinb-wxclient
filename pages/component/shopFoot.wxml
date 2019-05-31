@@ -1,15 +1,15 @@
 <!-- <template name="shopFoot"> -->
 <view class='head-foot'>
-  <view class='head-foot' style='width:230rpx;margin-top:5rpx'>
+  <view class='{{groub.groubPhone?"head-foot":"head-foot antScale"}}' style='width:230rpx;margin-top:5rpx'>
     <image src='../img/phone.png'></image>
-    <view data-type='groub.groubPhone' data-index='' style='' wx:if='{{editItem!="-groub.groubPhone"}}' catchtap='{{isEdit?"catchtap":"callPhone"}}'>{{groub.groubPhone||'点我填写客服热线'}}</view>
+    <view data-type='groub.groubPhone' data-index='' wx:if='{{editItem!="-groub.groubPhone"}}' catchtap='{{isEdit?"catchtap":"callPhone"}}'>{{groub.groubPhone||'填写客服热线'}}</view>
     <input maxlength='11' type="number" class="antEdit" style='width:175rpx;' bindblur='{{isEdit?"bindinput":""}}' data-type='groubPhone' value='{{groub.groubPhone}}' wx:if='{{editItem=="-groub.groubPhone"}}' focus='{{editItem=="-groub.groubPhone"}}' />
   </view>
 
-  <button class='buttonBlock' bindtap='{{isEdit?"getLocation":""}}' style='margin:0;'>
+  <button class='{{groub.groubAddress?"buttonBlock":"buttonBlock antScale"}}' bindtap='{{isEdit?"getLocation":""}}' style='margin:0;'>
     <view class='head-foot {{groub.groubAddress?"":"antScale"}}'>
       <image src='../img/location.png'></image>
-      <view>{{groub.groubAddress||'点我选取店铺位置'}}</view>
+      <view>{{groub.groubAddress||'选取店铺位置'}}</view>
     </view>
   </button>
 </view>

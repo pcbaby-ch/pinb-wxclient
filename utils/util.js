@@ -497,6 +497,16 @@ function onShareAppMessageA(that, e) {
   }
   // log("#拼团活动商品:" + JSON.stringify(tapGrouba))
 }
+/** 纯分享计数 */
+function shareCount(that, tapGrouba) {
+  reqPost(apiHost + "/groubActivity/share", {
+    refGroubaTrace: tapGrouba.groubaTrace,
+  }, resp => {
+    if (parseResp(that, resp)) {
+      log("#分享成功:" + resp)
+    }
+  })
+}
 
 /** 开团服务请求 args{tapGrouba:开团商品信息}*/
 function orderOpen(that, tapGrouba) {
@@ -505,6 +515,7 @@ function orderOpen(that, tapGrouba) {
     refGroubaTrace: tapGrouba.groubaTrace,
     orderExpiredTime: tapGrouba.groubaActiveMinute,
     refUserWxUnionid: getCache(cacheKey.userinfo, "wxUnionid"),
+    refUserWxOpenid: getCache(cacheKey.userinfo, "wxOpenid"),
     refUserImg: getCache(cacheKey.userinfo, "avatarUrl"),
     goodsName: tapGrouba.goodsName,
     goodsImg: tapGrouba.goodsImg,
@@ -524,6 +535,7 @@ function orderJoin(that, orderTrace, orderLeader) {
     orderTrace: orderTrace,
     leader: orderLeader,
     refUserWxUnionid: getCache(cacheKey.userinfo, "wxUnionid"),
+    refUserWxOpenid: getCache(cacheKey.userinfo, "wxOpenid"),
     refUserImg: getCache(cacheKey.userinfo, "avatarUrl"),
   }, resp => {
     if (parseResp(that, resp)) {
@@ -630,6 +642,7 @@ module.exports = {
   getCity: getCity,
 
   onShareAppMessageA: onShareAppMessageA,
+  shareCount: shareCount,
   orderOpen: orderOpen,
   orderJoin: orderJoin,
   getGroubShareOrder: getGroubShareOrder,

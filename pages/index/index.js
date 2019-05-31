@@ -80,6 +80,7 @@ Page({
         util.putCache(util.cacheKey.userinfo, "address", res.name)
         util.putCache(util.cacheKey.userinfo, "latitude", res.latitude)
         util.putCache(util.cacheKey.userinfo, "longitude", res.longitude)
+        util.getCity(res.latitude, res.longitude, util.cacheKey.userinfo)
         util.log("#userinfo:" + JSON.stringify(util.getCache(util.cacheKey.userinfo)))
         that.setData({
           searchAddress: res.name,
