@@ -17,7 +17,7 @@ Page({
   goMyShop(res) {
     util.log("#res:" + JSON.stringify(res))
     let index = res.target.dataset.index
-    let grouba = index ? this.data.pageArray[index] : null
+    let grouba = index >= 0 ? this.data.pageArray[index] : null
     util.log("#touchedElement:" + JSON.stringify(grouba))
 
     let url = grouba ? '/pages/myShop/myShop?groubTrace=' + grouba.refGroubTrace + '&groubaTrace=' + grouba.groubaTrace : '/pages/myShop/myShop'
@@ -56,18 +56,50 @@ Page({
     let that = this
     wx.getSetting({
       success(res) {
-        if (!res.authSetting['scope.userLocation']) {
+        util.log("#地址选择success:" + JSON.stringify(res))
+        if (res.authSetting['scope.userLocation'] === true) {
+          util.log("#已经授权-直接获取地址")
+          that.chooseLoc()
+        } else {
+          util.log("#自动弹出模式授权");
           wx.authorize({
             scope: 'scope.userLocation',
             success() {
-              util.log("#自动弹出模式授权-成功");
               that.chooseLoc()
+            },
+            fail(res) {
+              util.log("自动弹出授权模式fail,#res:" + JSON.stringify(res))
+              wx.openSetting({
+                success: function(data) {
+                  if (data.authSetting["scope.userLocation"] === true) {
+                    wx.showToast({
+                      title: '授权成功',
+                      icon: 'success',
+                      duration: 1000
+                    })
+                    //授权成功之后，再调用chooseLocation选择地方
+                    that.chooseLoc()
+                  } else {
+                    wx.showToast({
+                      title: '授权失败',
+                      icon: 'success',
+                      duration: 1000
+                    })
+                  }
+                }
+              })
+            },
+            complete(res) {
+              util.log("自动弹出授权模式end,#res:" + JSON.stringify(res))
             }
           })
-        } else {
-          util.log("#已经授权-直接获取地址")
-          that.chooseLoc()
         }
+      },
+      fail(res) {
+        util.log("#地址选择fail:" + JSON.stringify(res))
+      },
+      complete(res) {
+        util.log("#地址选择complete:" + JSON.stringify(res))
       }
     })
   },
@@ -100,6 +132,96 @@ Page({
         })
       }
     })
+  },
+
+  //获取用户地理位置权限
+  getPermission: function(obj) {
+    let that = this
+    wx.chooseLocation({
+      success: function(res) {
+        util.log("#地址选择成功:" + JSON.stringify(res))
+        util.putCache(util.cacheKey.userinfo, "address", res.name)
+        util.putCache(util.cacheKey.userinfo, "latitude", res.latitude)
+        util.putCache(util.cacheKey.userinfo, "longitude", res.longitude)
+        util.getCity(res.latitude, res.longitude, util.cacheKey.userinfo)
+        util.log("#userinfo:" + JSON.stringify(util.getCache(util.cacheKey.userinfo)))
+        that.setData({
+          searchAddress: res.name,
+        })
+        util.putCache("page_getNearGrouba", "page", 1) //重置分页为起始页
+        that.setData({
+          pageArrayContainer: [],
+        })
+        that.onLoad()
+      },
+      fail: function() {
+        wx.getSetting({
+          success: function(res) {
+            var statu = res.authSetting;
+            if (!statu['scope.userLocation']) {
+              wx.showModal({
+                title: '是否授权当前位置',
+                content: '需要获取您的地理位置，请确认授权，否则地图功能将无法使用',
+                success: function(tip) {
+                  if (tip.confirm) {
+                    wx.openSetting({
+                      success: function(data) {
+                        if (data.authSetting["scope.userLocation"] === true) {
+                          wx.showToast({
+                            title: '授权成功',
+                            icon: 'success',
+                            duration: 1000
+                          })
+                          //授权成功之后，再调用chooseLocation选择地方
+                          wx.chooseLocation({
+                            success: function(res) {
+                              util.log("#地址选择成功:" + JSON.stringify(res))
+                              util.putCache(util.cacheKey.userinfo, "address", res.name)
+                              util.putCache(util.cacheKey.userinfo, "latitude", res.latitude)
+                              util.putCache(util.cacheKey.userinfo, "longitude", res.longitude)
+                              util.getCity(res.latitude, res.longitude, util.cacheKey.userinfo)
+                              util.log("#userinfo:" + JSON.stringify(util.getCache(util.cacheKey.userinfo)))
+                              that.setData({
+                                searchAddress: res.name,
+                              })
+                              util.putCache("page_getNearGrouba", "page", 1) //重置分页为起始页
+                              that.setData({
+                                pageArrayContainer: [],
+                              })
+                              that.onLoad()
+                            },
+                          })
+                        } else {
+                          wx.showToast({
+                            title: '授权失败',
+                            icon: 'success',
+                            duration: 1000
+                          })
+                        }
+                      }
+                    })
+                  }
+                }
+              })
+            }
+          },
+          fail: function(res) {
+            wx.showToast({
+              title: '调用授权窗口失败',
+              icon: 'success',
+              duration: 1000
+            })
+          }
+        })
+      }
+    })
+  },
+
+  async getUserLocation() {
+    let res = await wepy.getLocation();
+    this.longitude = res.longitude;
+    this.latitude = res.latitude;
+    this.$apply();
   },
 
 

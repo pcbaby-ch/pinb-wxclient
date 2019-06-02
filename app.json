@@ -1,8 +1,13 @@
 {
   "pages": [
-    "pages/index/index",
-    "pages/myOrder/myOrder"
+    "pages/myOrder/myOrder",
+    "pages/index/index"
   ],
+  "permission": {
+    "scope.userLocation": {
+      "desc": "你的位置信息将用于定位效果展示"
+    }
+  },
   "window": {
     "backgroundTextStyle": "dark",
     "navigationBarBackgroundColor": "#fff",
@@ -11,11 +16,6 @@
     "backgroundColor": "#fff",
     "enablePullDownRefresh": true
   },
-  "permission": {
-    "scope.userLocation": {
-      "desc": "你的位置,将用于找到你附近的拼团活动"
-    }
-  },
   "networkTimeout": {
     "request": 5000,
     "connectSocket": 5000,
@@ -23,21 +23,23 @@
     "downloadFile": 5000
   },
   "sitemapLocation": "sitemap.json",
-  "tabBar":{
-    "color":"#cdcdcd",
-    "selectedColor":"#09bb07",
-    "backgroundColor":"#fff",
-    "list":[{
-      "pagePath":"pages/index/index",
-      "text": "万物可团",
-      "iconPath":"pages/img/index.png",
-      "selectedIconPath":"pages/img/indexB.png"
-    },{
-      "pagePath": "pages/myOrder/myOrder",
-      "text": "我的订单",
-      "iconPath": "pages/img/order.png",
-      "selectedIconPath": "pages/img/orderB.png"
-    }]
+  "tabBar": {
+    "color": "#cdcdcd",
+    "selectedColor": "#09bb07",
+    "backgroundColor": "#fff",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "万物可团",
+        "iconPath": "pages/img/index.png",
+        "selectedIconPath": "pages/img/indexB.png"
+      },
+      {
+        "pagePath": "pages/myOrder/myOrder",
+        "text": "我的订单",
+        "iconPath": "pages/img/order.png",
+        "selectedIconPath": "pages/img/orderB.png"
+      }
+    ]
   }
-  
 }

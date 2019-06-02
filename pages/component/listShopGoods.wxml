@@ -1,4 +1,4 @@
-<view wx:for='{{pageArray}}' wx:for-item="item" wx:key="groubaTrace" wx:for-index="index">
+<view wx:for='{{pageArray}}' wx:for-item="item" wx:key="groubaTrace" catchtap='goGoodsDetail' wx:for-index="index">
   <!-- 无头像布局 ######################################## -->
   <view class='goods-list-active}}' wx:if="{{!item.userImgs}}">
     <!-- <view wx:if="{{item.groubaIsnew}}" class='goods-list-new'></view> -->
@@ -30,13 +30,15 @@
         <image class='goods-list-right-icon' src='../img/location.png'></image>
         <view>{{item.distance}}</view>
       </view>
-      <button open-type='' data-index='{{index}}' catchtap='onShareAppMessageA' hover-stop-propagation='true' class='buttonBlock main-list-share'>开团立省{{item.groubaDiscountAmount||'??'}}元</button>
+      <form bindsubmit="onShareAppMessageA" report-submit="{{true}}">
+        <button open-type="{{item.isJoined?'share':''}}" data-index='{{index}}' form-type='submit' hover-stop-propagation='true' class='buttonBlock main-list-share'>{{item.isJoined?'分享':('开团立省'+item.groubaDiscountAmount+'元')}}</button>
+      </form>
     </view>
   </view>
 
   <!-- 有头像布局 ######################################## -->
   <!-- 开团商品展示 -->
-  <view wx:if="{{item.userImgs}}" class='goods-list'>
+  <view wx:if="{{item.userImgs}}" class='goods-list' catchtap='goGoodsDetail'>
     <view class='goods-list-new'>{{([6,8,9][item.groubaSize])==item.ordersStatus.length?'成团':(item.groubaIsnew?'新':'')}}</view>
     <!-- 活动商品-左侧 -->
     <view class='goods-list-left'>
@@ -73,7 +75,9 @@
         <view>{{item.distance}}</view>
       </view>
       <!-- 参团立省？？元 -->
-      <button open-type="{{item.isJoined?'share':''}}" data-index='{{index}}' catchtap='onShareAppMessageA' hover-stop-propagation='true' class='buttonBlock main-list-share'>{{item.isJoined?'分享':('参团立省'+item.groubaDiscountAmount+'元')}}</button>
+      <form bindsubmit="onShareAppMessageA" report-submit="{{true}}">
+        <button open-type="{{item.isJoined?'share':''}}" data-index='{{index}}' form-type='submit' hover-stop-propagation='true' class='buttonBlock main-list-share'>{{item.isJoined?'分享':('参团立省'+item.groubaDiscountAmount+'元')}}</button>
+      </form>
     </view>
   </view>
 </view>

@@ -1,5 +1,5 @@
 <!-- 开团商品展示 -->
-<view wx:if='{{shareGoods}}' class='goods-list goods-list-error' catchtap='goMyShop2'>
+<view wx:if='{{shareGoods}}' class='goods-list goods-list-error' catchtap='goGoodsDetail'>
   <view class='goods-list-new'>{{([6,8,9][shareGoods.groubaSize])==shareGoods.ordersStatus.length?'成团':(shareGoods.groubaIsnew?'新':'')}}</view>
   <!-- 活动商品-左侧 -->
   <view class='goods-list-left'>
@@ -36,6 +36,8 @@
       <view>{{shareGoods.distance}}</view>
     </view>
     <!-- 参团立省？？元 -->
-    <button open-type="{{shareGoods.isJoined?'share':''}}" data-index='{{index}}' catchtap='onShareAppMessageA' hover-stop-propagation='true' class='buttonBlock main-list-share'>{{shareGoods.isJoined?'分享':('参团立省'+shareGoods.groubaDiscountAmount+'元')}}</button>
+    <form bindsubmit="onShareAppMessageA" report-submit="{{true}}">
+    <button open-type="{{shareGoods.isJoined?'share':''}}" data-index='{{index}}' form-type='submit' hover-stop-propagation='true' class='buttonBlock main-list-share'>{{shareGoods.isJoined?'分享':('参团立省'+shareGoods.groubaDiscountAmount+'元')}}</button>
+    </form>
   </view>
 </view>

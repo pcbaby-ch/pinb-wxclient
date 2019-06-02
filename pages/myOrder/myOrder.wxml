@@ -35,6 +35,9 @@
   <view class='pay'>
     <canvas class='canvas' canvas-id='canvas'></canvas>
     <view class='pay-type'>-- 扫码消费 --</view>
+    <!-- <image class='pay-close' src='../img/close-circle2.png' bindtap='closePay'></image> -->
+  </view>
+  <view class='pay-close-container'>
     <image class='pay-close' src='../img/close-circle2.png' bindtap='closePay'></image>
   </view>
 </view>

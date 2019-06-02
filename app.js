@@ -1,7 +1,9 @@
 //app.js
 var util = require("/utils/util.js");
+
 App({
     onLaunch: function() {
+
 
       /** 快速 测试区 */
       util.log("#getRemainTime：" + util.getRemainTime('2019/05/19 19:00:51.0'))

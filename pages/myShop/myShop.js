@@ -121,6 +121,10 @@ Page({
     })
   },
 
+  goGoodsDetail(){
+    util.softTips(this,"暂无商品详情页，敬请期待")
+  },
+
   onShareAppMessageA(e) {
     util.onShareAppMessageA(this, e)
   },
@@ -130,10 +134,25 @@ Page({
   onShareAppMessage(e) {
     let that = this
     let index = e.target.dataset.index
+
     let pageArray = that.data.pageArray
-    let tapGrouba = that.data.shareGoods
-    if (!tapGrouba) {
-      tapGrouba = that.data.pageArray[index]
+    let tapGrouba = that.data.pageArray[index]
+    if (that.data.shareGoods) {
+      util.log("#已经携带分享商品")
+      if (!tapGrouba) {
+        util.log("#分享：历史分享商品")
+        tapGrouba = that.data.shareGoods
+      } else {
+        util.log("#分享：未被分享商品,则替换当前分享商品和历史分享商品的位置")
+        pageArray[index] = that.data.shareGoods
+        that.setData({
+          shareGoods: tapGrouba,
+          pageArray,
+        })
+
+      }
+    } else {
+      util.log("#未携带分享商品")
       /** 将分享商品临时置顶 ############################## */
       pageArray[index] = pageArray[0]
       pageArray[0] = tapGrouba

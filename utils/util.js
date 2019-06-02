@@ -467,8 +467,8 @@ function getCity(latitude, longitude, key) {
       log("#省市解析成功:" + JSON.stringify(res))
       putCache(key, 'latitude', latitude)
       putCache(key, 'longitude', longitude)
-      putCache(key, 'province', res.result.ad_info.province)
-      putCache(key, 'city', res.result.ad_info.city)
+      putCache(key, 'province', res.result.address_component.province)
+      putCache(key, 'city', res.result.address_component.city)
     },
     fail: res => {
       log("#省市解析失败:" + JSON.stringify(res))
@@ -481,26 +481,27 @@ function getCity(latitude, longitude, key) {
 /** 开团/参团/分享button */
 function onShareAppMessageA(that, e) {
   log("#分享防止冒泡方法hack,#e:" + JSON.stringify(e))
-  let index = e.target.dataset.index
+  let index = e.detail.target.dataset.index
+  var formId = e.detail.formId
   let tapGrouba = index >= 0 ? that.data.pageArray[index] : that.data.shareGoods
   log("#操作商品:" + JSON.stringify(tapGrouba))
   if (tapGrouba.shareOrder) {
     //已开团，只能参团
-    if (tapGrouba.isJoined == 'true') {
+    if (tapGrouba.isJoined && tapGrouba.isJoined == true) {
       log("#已开团，纯分享")
     } else {
-      orderJoin(that, tapGrouba.shareOrder, tapGrouba.shareLeader)
+      orderJoin(that, tapGrouba.shareOrder, tapGrouba.shareLeader, formId)
     }
   } else {
     //未开团
-    orderOpen(that, tapGrouba)
+    orderOpen(that, tapGrouba, formId)
   }
   // log("#拼团活动商品:" + JSON.stringify(tapGrouba))
 }
 /** 纯分享计数 */
 function shareCount(that, tapGrouba) {
   reqPost(apiHost + "/groubActivity/share", {
-    refGroubaTrace: tapGrouba.groubaTrace,
+    groubaTrace: tapGrouba.refGroubaTrace,
   }, resp => {
     if (parseResp(that, resp)) {
       log("#分享成功:" + resp)
@@ -509,7 +510,7 @@ function shareCount(that, tapGrouba) {
 }
 
 /** 开团服务请求 args{tapGrouba:开团商品信息}*/
-function orderOpen(that, tapGrouba) {
+function orderOpen(that, tapGrouba, formId) {
   reqPost(apiHost + "/groubaOrder/orderOpen", {
     refGroubTrace: tapGrouba.refGroubTrace,
     refGroubaTrace: tapGrouba.groubaTrace,
@@ -522,6 +523,7 @@ function orderOpen(that, tapGrouba) {
     goodsPrice: tapGrouba.goodsPrice,
     groubaDiscountAmount: tapGrouba.groubaDiscountAmount,
     groubaIsnew: tapGrouba.groubaIsnew,
+    formId: formId,
   }, resp => {
     if (parseResp(that, resp)) {
       // softTips(this, "开团成功")
@@ -530,13 +532,14 @@ function orderOpen(that, tapGrouba) {
   })
 }
 /** 参团服务请求 args{orderTrace:原团订单号,refUserWxUnionid:原团团长}*/
-function orderJoin(that, orderTrace, orderLeader) {
+function orderJoin(that, orderTrace, orderLeader, formId) {
   reqPost(apiHost + "/groubaOrder/orderJoin", {
     orderTrace: orderTrace,
     leader: orderLeader,
     refUserWxUnionid: getCache(cacheKey.userinfo, "wxUnionid"),
     refUserWxOpenid: getCache(cacheKey.userinfo, "wxOpenid"),
     refUserImg: getCache(cacheKey.userinfo, "avatarUrl"),
+    formId: formId,
   }, resp => {
     if (parseResp(that, resp)) {
       // softTips(this, "参团成功")

@@ -23,7 +23,7 @@ Page({
           refGroubTrace: res.result.split("|")[0],
         }, resp => {
           if (util.parseResp(that, resp)) {
-
+            util.softTips(that,"扫码成功")
           }
         })
       }

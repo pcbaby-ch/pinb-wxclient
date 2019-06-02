@@ -2,26 +2,25 @@
 
 .pay-container {
   display: flex;
-  direction: column;
+  flex-direction: column;
   justify-content: center;
   z-index: 999;
   position: fixed;
   width: 100%;
   height: 100%;
   top: 0;
-  /* background-color: grey; */
 }
 
 .pay {
-  padding-top: 30rpx;
+  display: flex;
+  flex-direction: column;
+  padding-top: 20rpx;
   align-self: center;
-  height: 50%;
   width: 560rpx;
-  background-color: rgba(227, 224, 224, 1);
+  background-color: white;
   text-align: center;
-  border: 2rpx solid #bbbbbb;
-  border-radius: 20rpx;
-  opacity: 1;
+  border: 2rpx solid #bbb;
+  border-radius: 10rpx;
 }
 
 .pay canvas {
@@ -32,16 +31,23 @@
 }
 
 .pay-type {
-  padding-bottom: 80rpx;
+  padding-top: 18rpx;
+  padding-bottom: 6rpx;
   line-height: 40rpx;
   color: rgba(16, 16, 16, 1);
   font-size: 28rpx;
   text-align: center;
   font-family: PingFangSC-regular;
 }
-
+.pay-close-container {
+  display: flex;
+  flex-direction: column;
+  padding-top: 30rpx;
+  align-self: center;
+  width: 560rpx;
+}
 .pay-close {
+  align-self: center;
   width: 80rpx;
   height: 80rpx;
 }
-
