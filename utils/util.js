@@ -265,13 +265,27 @@ function getCacheAsyn(key_, prop) {
 /** 直接缓存，已有同key缓存直接覆盖 */
 function setCache(key_, value) {
   // key_ = key_ + cacheVersionsuffix //解决客户端版本迭代，旧版本脏缓存问题
-  wx.setStorageSync(key_, value);
+  if (value) {
+    wx.setStorageSync(key_, value);
+  } else {
+    wx.removeStorage({
+      key: key_,
+      success: function(res) {},
+    })
+  }
   // log("#缓存完成,#key:" + key_ + ",#value:" + value)
 }
 
 function setCacheAsyn(key_, value) {
   // key_ = key_ + cacheVersionsuffix //解决客户端版本迭代，旧版本脏缓存问题
-  wx.setStorage(key_, value);
+  if (value) {
+    wx.setStorage(key_, value);
+  } else {
+    wx.removeStorage({
+      key: key_,
+      success: function(res) {},
+    })
+  }
   // log("#缓存完成,#key:" + key_ + ",#value:" + value)
 }
 /**
@@ -459,7 +473,7 @@ function getDistance(lat1, lng1, lat2, lng2) {
   }
 }
 /** 获取经纬度所在省市 */
-function getCity(latitude, longitude, key) {
+function getCity(latitude, longitude, key, callBack4GetCity) {
   wxmap.reverseGeocoder({
     location: {
       latitude: latitude,
@@ -471,6 +485,7 @@ function getCity(latitude, longitude, key) {
       putCache(key, 'longitude', longitude)
       putCache(key, 'province', res.result.address_component.province)
       putCache(key, 'city', res.result.address_component.city)
+      callBack4GetCity()
     },
     fail: res => {
       log("#省市解析失败:" + JSON.stringify(res))
@@ -478,28 +493,35 @@ function getCity(latitude, longitude, key) {
   })
 }
 /** 获取地图位置 4 用户 */
-function chooseLoc4User(that) {
+function chooseLoc4User(that, callBack4GetCity) {
   wx.chooseLocation({
     success(res) {
       log("#地址选择成功:" + JSON.stringify(res))
       putCache(cacheKey.userinfo, "address", res.name)
       putCache(cacheKey.userinfo, "latitude", res.latitude)
       putCache(cacheKey.userinfo, "longitude", res.longitude)
-      getCity(res.latitude, res.longitude, cacheKey.userinfo)
+      getCity(res.latitude, res.longitude, cacheKey.userinfo, callBack4GetCity)
       log("#userinfo:" + JSON.stringify(getCache(cacheKey.userinfo)))
       that.setData({
         searchAddress: res.name,
       })
       putCache("page_getNearGrouba", "page", 1) //重置分页为起始页
     },
-    fail() {
+    fail(res) {
+      log("#地址选择失败:" + JSON.stringify(res))
+      if (res.errMsg == 'chooseLocation:fail cancel') {
+        //如果用户取消选择地址，则不弹出授权列表，
+        return
+      }
       wx.showModal({
-        title: '授权列表',
-        content: '请在授权列表，开启位置获取权限',
+        title: '需要授权',
+        content: '请开启位置权限后，重新选择地址',
         success(res) {
           if (res.confirm) {
             wx.openSetting({
-              success(data) {}
+              success(data) {
+                that.chooseLoc()
+              }
             })
           }
         }

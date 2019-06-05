@@ -54,7 +54,8 @@ Page({
 
   chooseLoc() {
     let that = this
-    util.chooseLoc4User(this)
+    util.chooseLoc4User(this, that.onLoad)
+
   },
 
   getNearGrouba(page_, rows_) {
@@ -118,7 +119,7 @@ Page({
   onLoad: function(pageRes) {
     wx.showNavigationBarLoading()
     util.log("#页面传参onLoad:" + JSON.stringify(pageRes))
-    util.putCache('toIndexParams', null, pageRes)
+    util.putCache('toIndexParams', null, pageRes) //清除店铺页面传参缓存
   },
 
   /**
@@ -134,10 +135,11 @@ Page({
   onShow: function() {
     let that = this
     let pageRes = util.getCache('toIndexParams')
+    util.setCache("gomyShopParams", null);
     util.log("#页面传参onShow:" + JSON.stringify(pageRes))
     let searchAddress = util.getCache(util.cacheKey.userinfo, "address")
     that.setData({
-      searchAddress,
+      searchAddress: searchAddress || null,
     })
     let groubTrace = pageRes ? pageRes.groubTrace : null
     //扫描进入小程序的店铺trace

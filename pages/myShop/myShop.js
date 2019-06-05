@@ -55,6 +55,7 @@ Page({
     wx.showNavigationBarLoading()
     util.log("#页面传参:" + JSON.stringify(pageRes))
     util.putCache('gomyShopParams', null, pageRes)
+    util.setCache("toIndexParams", null); //清除主页页面传参缓存
   },
   /**
    * Lifecycle function--Called when page is initially rendered
