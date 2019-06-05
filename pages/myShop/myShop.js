@@ -22,7 +22,7 @@ const defalutProduct = {
 Page({
   data: {
 
-    isEdit: true,
+    isEdit: false,
     //店铺-基础信息
     groub: {
       groubTrace: "",
@@ -40,7 +40,16 @@ Page({
 
   },
 
+  chooseLoc() {
+    let that = this
+    util.chooseLoc4User(this)
+  },
 
+  callPhone() {
+    wx.makePhoneCall({
+      phoneNumber: this.data.groub.groubPhone,
+    })
+  },
 
   onLoad: function(pageRes) {
     wx.showNavigationBarLoading()
@@ -63,7 +72,7 @@ Page({
     let orderTrace = pageRes ? pageRes.orderTrace : null
     let orderLeader = pageRes ? pageRes.orderLeader : null
     let that = this
-    util.log("#myShop.onShow().userinfo:" + util.getCache(util.cacheKey.userinfo))
+    util.log("#getRemainTimeTest：" + util.getRemainTime('2019/06/05 21:36:53.0'))
     //#加载指定商铺的基本信息+商品信息
     util.getGroubShareOrder(that, groubTrace, orderTrace, orderLeader)
   },
@@ -121,8 +130,8 @@ Page({
     })
   },
 
-  goGoodsDetail(){
-    util.softTips(this,"暂无商品详情页，敬请期待")
+  goGoodsDetail() {
+    util.softTips(this, "暂无商品详情页，敬请期待")
   },
 
   onShareAppMessageA(e) {
@@ -162,7 +171,7 @@ Page({
     }
     let titlePrefix = tapGrouba.shareOrder ? "参团立享优惠:" : "开团立享优惠:"
     util.log("#分享活动商品:" + JSON.stringify(tapGrouba))
-    util.shareCount(that, tapGrouba)
+    util.shareCount(that, tapGrouba.groubaTrace)
     /** 生成分享 ############################################ */
     return {
       title: titlePrefix + tapGrouba.groubaDiscountAmount + "元", // 转发后 所显示的title

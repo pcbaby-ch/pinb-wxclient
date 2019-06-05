@@ -162,7 +162,7 @@
   height: 200rpx;
   position: relative;
   margin-bottom: 10rpx;
-  box-shadow:0px 0px 2px 0px pink;
+  box-shadow: 0px 0px 2px 0px pink;
   border-radius: 2px;
   overflow: hidden;
 }
@@ -180,7 +180,7 @@
   height: 250rpx;
   position: relative;
   margin-bottom: 10rpx;
-  box-shadow:0px 0px 1px 0px grey;
+  box-shadow: 0px 0px 1px 0px grey;
   /* border: 1px 1px 1px 0px #888; */
   border-radius: 2px;
   overflow: hidden;
@@ -195,7 +195,7 @@
   height: 200rpx;
   position: relative;
   margin-bottom: 10rpx;
-  box-shadow:0px 0px 2px 0px pink;
+  box-shadow: 0px 0px 2px 0px pink;
   border-radius: 2px;
   overflow: hidden;
 }
@@ -503,4 +503,60 @@
   height: 100%;
   top: 0;
   background: rgba(0, 0, 0, 0.6);
+}
+
+/** 浮窗样式 ***********************************/
+
+.pay-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  z-index: 999;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+}
+
+.pay {
+  display: flex;
+  flex-direction: column;
+  padding-top: 20rpx;
+  align-self: center;
+  width: 560rpx;
+  background-color: white;
+  text-align: center;
+  border: 2rpx solid #bbb;
+  border-radius: 10rpx;
+}
+
+.pay-canvas {
+  align-self: center;
+  display: inline-block;
+  width: 500rpx;
+  height: 500rpx;
+}
+
+.pay-type {
+  padding-top: 18rpx;
+  padding-bottom: 6rpx;
+  line-height: 40rpx;
+  color: rgba(16, 16, 16, 1);
+  font-size: 28rpx;
+  text-align: center;
+  font-family: PingFangSC-regular;
+}
+
+.pay-close-container {
+  display: flex;
+  flex-direction: column;
+  padding-top: 30rpx;
+  align-self: center;
+  width: 560rpx;
+}
+
+.pay-close {
+  align-self: center;
+  width: 80rpx;
+  height: 80rpx;
 }

@@ -1,7 +1,10 @@
 {
   "pages": [
     "pages/myOrder/myOrder",
-    "pages/index/index"
+    "pages/index/index",
+    "pages/myShop/myShop",
+    "pages/myShopEdit/myShopEdit",
+    "pages/login/login"
   ],
   "permission": {
     "scope.userLocation": {

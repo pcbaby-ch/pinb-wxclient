@@ -33,7 +33,7 @@
 <!-- 消费二维码 -->
 <view class='pay-container' style='display:{{payContainerShow||"none"}}'>
   <view class='pay'>
-    <canvas class='canvas' canvas-id='canvas'></canvas>
+    <canvas class='pay-canvas' canvas-id='canvas'></canvas>
     <view class='pay-type'>-- 扫码消费 --</view>
     <!-- <image class='pay-close' src='../img/close-circle2.png' bindtap='closePay'></image> -->
   </view>

@@ -188,12 +188,10 @@ Page({
       }
     })
   },
-
   chooseLoc() {
     let that = this
     wx.chooseLocation({
       success(res) {
-        util.log("#地址选择成功:" + JSON.stringify(res))
         let groub = that.data.groub
         groub.groubAddress = res.address;
         groub.latitude = res.latitude;
@@ -207,7 +205,17 @@ Page({
         })
       },
       fail() {
-        util.softTips(that, "地址获取失败")
+        wx.showModal({
+          title: '授权列表',
+          content: '请在授权列表，开启位置获取权限',
+          success(res) {
+            if (res.confirm) {
+              wx.openSetting({
+                success(data) {}
+              })
+            }
+          }
+        })
       }
     })
   },
@@ -432,11 +440,6 @@ Page({
     }
   },
 
-  callPhone() {
-    wx.makePhoneCall({
-      phoneNumber: this.data.groub.groubPhone,
-    })
-  },
 
   onLoad: function(pageRes) {
     wx.showNavigationBarLoading()
@@ -510,7 +513,7 @@ Page({
     })
   },
   onShareAppMessageA(e) {
-    util.softTips(this,"当前预览页面，无法开团")
+    util.softTips(this, "当前预览页面，无法开团")
   },
   /**
    * Called when user click on the top right corner to share

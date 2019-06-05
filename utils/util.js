@@ -23,9 +23,10 @@ const formatNumber = n => {
 }
 /** 计算结束时间和当前时间的剩余时间差 return{？时？分？秒} */
 function getRemainTime(endTime_) {
+  endTime_ = (endTime_ + "").replace(/-/g, '/').replace('.0', '')
   let endTime = new Date(endTime_).getTime()
   let nowTime = new Date().getTime()
-  log("#endTime:" + endTime + "#nowTime:" + nowTime)
+  log("#endTime:" + endTime + "#nowTime:" + nowTime + "#endTime_:" + endTime_)
   let time = (endTime - nowTime) / 1000;
   if (nowTime - endTime >= 0) {
     return '00时00分00秒'
@@ -438,6 +439,7 @@ function getDistance(lat1, lng1, lat2, lng2) {
   lat2 = lat2 || 0;
   lng2 = lng2 || 0;
   if (lat1 == 0 || lng1 == 0 || lat2 == 0 || lng2 == 0) {
+    log("#lat1:" + lat1 + "lng1:" + lng1 + "lat2:" + lat2 + "lng2:" + lng2)
     return '请选位置'
   }
 
@@ -475,7 +477,36 @@ function getCity(latitude, longitude, key) {
     }
   })
 }
-
+/** 获取地图位置 4 用户 */
+function chooseLoc4User(that) {
+  wx.chooseLocation({
+    success(res) {
+      log("#地址选择成功:" + JSON.stringify(res))
+      putCache(cacheKey.userinfo, "address", res.name)
+      putCache(cacheKey.userinfo, "latitude", res.latitude)
+      putCache(cacheKey.userinfo, "longitude", res.longitude)
+      getCity(res.latitude, res.longitude, cacheKey.userinfo)
+      log("#userinfo:" + JSON.stringify(getCache(cacheKey.userinfo)))
+      that.setData({
+        searchAddress: res.name,
+      })
+      putCache("page_getNearGrouba", "page", 1) //重置分页为起始页
+    },
+    fail() {
+      wx.showModal({
+        title: '授权列表',
+        content: '请在授权列表，开启位置获取权限',
+        success(res) {
+          if (res.confirm) {
+            wx.openSetting({
+              success(data) {}
+            })
+          }
+        }
+      })
+    }
+  })
+}
 
 //统一业务封装 ###########################################################
 /** 开团/参团/分享button */
@@ -499,9 +530,9 @@ function onShareAppMessageA(that, e) {
   // log("#拼团活动商品:" + JSON.stringify(tapGrouba))
 }
 /** 纯分享计数 */
-function shareCount(that, tapGrouba) {
+function shareCount(that, groubaTrace) {
   reqPost(apiHost + "/groubActivity/share", {
-    groubaTrace: tapGrouba.refGroubaTrace,
+    groubaTrace: groubaTrace,
   }, resp => {
     if (parseResp(that, resp)) {
       log("#分享成功:" + resp)
@@ -643,6 +674,7 @@ module.exports = {
   softTips: softTips,
   heavyTips: heavyTips,
   getCity: getCity,
+  chooseLoc4User: chooseLoc4User,
 
   onShareAppMessageA: onShareAppMessageA,
   shareCount: shareCount,

@@ -6,7 +6,7 @@
     <input maxlength='11' type="number" class="antEdit" style='width:175rpx;' bindblur='{{isEdit?"bindinput":""}}' data-type='groubPhone' value='{{groub.groubPhone}}' wx:if='{{editItem=="-groub.groubPhone"}}' focus='{{editItem=="-groub.groubPhone"}}' />
   </view>
 
-  <button class='{{groub.groubAddress?"buttonBlock":"buttonBlock antScale"}}' bindtap='{{isEdit?"getLocation":""}}' style='margin:0;'>
+  <button class='{{groub.groubAddress?"buttonBlock":"buttonBlock antScale"}}' bindtap='{{isEdit?"chooseLoc":""}}' style='margin:0;'>
     <view class='head-foot {{groub.groubAddress?"":"antScale"}}'>
       <image src='../img/location.png'></image>
       <view>{{groub.groubAddress||'选取店铺位置'}}</view>
