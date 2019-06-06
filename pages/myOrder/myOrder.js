@@ -23,7 +23,7 @@ Page({
           refGroubTrace: res.result.split("|")[0],
         }, resp => {
           if (util.parseResp(that, resp)) {
-            util.softTips(that,"扫码成功")
+            util.softTips(that, "扫码成功")
           }
         })
       }
@@ -62,14 +62,29 @@ Page({
     })
   },
 
+  getMyOrdersToggle() {
+    let url = "selectMyOrder4user"
+    if (this.data.getMyOrderUrl != 'selectMyOrder4Shop') {
+      url = 'selectMyOrder4Shop'
+    }
+    this.setData({
+      getMyOrderUrl: url,
+    })
+    util.pageInitData(this, this.getMyOrders, 6)
+    // this.onLoad()
+  },
+
   getMyOrders(page_, rows_) {
     let that = this
     that.setData({
       isLodding: true,
     })
     wx.showNavigationBarLoading()
-    util.reqPost(util.apiHost + "/groubaOrder/selectMyOrder4user", {
-      refUserWxUnionid: util.getCache(util.cacheKey.userinfo, 'wxUnionid'),
+    let url = that.data.getMyOrderUrl
+    url = url ? util.apiHost + "/groubaOrder/" + url : util.apiHost + "/groubaOrder/selectMyOrder4user"
+    util.reqPost(url, {
+      refUserWxUnionid: util.getCache(util.cacheKey.userinfo, 'wxUnionid'), //普通用户userid
+      refGroubTrace: util.getCache(util.cacheKey.userinfo, 'groubTrace'), //店长店铺trace
       page: page_,
       rows: rows_,
     }, resp => {
@@ -119,7 +134,20 @@ Page({
    */
   onLoad: function(pageRes) {
     wx.showNavigationBarLoading()
-    util.log("#页面传参:" + JSON.stringify(pageRes))
+
+  },
+  /**
+   * 生命周期函数--监听页面初次渲染完成
+   */
+  onReady: function() {
+    wx.hideNavigationBarLoading();
+    wx.stopPullDownRefresh()
+  },
+
+  /**
+   * 生命周期函数--监听页面显示
+   */
+  onShow: function(pageRes) {
     let that = this
     let userinfoCache = util.getCache(util.cacheKey.userinfo)
     if (userinfoCache && userinfoCache.nickName && userinfoCache.wxUnionid) {
@@ -145,23 +173,6 @@ Page({
     })
     //#加载订单数据
     util.pageInitData(that, that.getMyOrders, 6);
-
-
-
-  },
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function() {
-    wx.hideNavigationBarLoading();
-    wx.stopPullDownRefresh()
-  },
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function(pageRes) {
-
   },
 
   /**

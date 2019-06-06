@@ -16,7 +16,10 @@
       <image src='../img/scan.png'></image>
       <view>扫码</view>
     </view>
-
+    <view class='fixed-list' bindtap='getMyOrdersToggle'>
+      <image src='../img/order.png'></image>
+      <view>{{getMyOrderUrl=='selectMyOrder4Shop'?'个人':'店铺'}}</view>
+    </view>
 
   </view>
 

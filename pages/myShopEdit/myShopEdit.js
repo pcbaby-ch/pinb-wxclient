@@ -126,6 +126,8 @@ Page({
         util.softTips(that, data.retMsg, 3)
       } else { //#提交成功
         util.putCache('isOpenGroub', null, true)
+        util.putCache(util.cacheKey.userinfo, "isOpenGroub", 1)
+        util.putCache(util.cacheKey.userinfo, "groubTrace", resp.data)
         that.setData({
           isEdit: false,
         })

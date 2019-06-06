@@ -1,10 +1,10 @@
-<view wx:for='{{pageArray}}' wx:for-item="item" wx:key="groubaTrace" catchtap='goGoodsDetail' wx:for-index="index">
+<view wx:for='{{pageArray}}' wx:for-item="item" wx:key="groubaTrace" wx:for-index="index">
   <!-- 无头像布局 ######################################## -->
   <view class='goods-list-active}}' wx:if="{{!item.userImgs}}">
     <!-- <view wx:if="{{item.groubaIsnew}}" class='goods-list-new'></view> -->
     <view class='goods-list-new'>{{([6,8,9][item.groubaSize])==item.ordersStatus.length?'成团':(item.groubaIsnew?'新':'')}}</view>
     <!-- 活动商品-左侧 -->
-    <view style='width:50%;position: relative;border-right: 2rpx solid #eee;' class='goods-list-left' data-index='{{index}}'>
+    <view style='width:50%;position: relative;border-right: 2rpx solid #eee;' class='goods-list-left' data-index='{{index}}' catchtap='goGoodsDetail'>
       <image class='goodsImg' style="height: 100%" src='{{item.goodsImgView}}' data-index='{{index}}' mode='aspectFill'></image>
     </view>
     <!-- 活动商品-右侧 -->
@@ -38,10 +38,10 @@
 
   <!-- 有头像布局 ######################################## -->
   <!-- 开团商品展示 -->
-  <view wx:if="{{item.userImgs}}" class='goods-list' catchtap='goGoodsDetail'>
+  <view wx:if="{{item.userImgs}}" class='goods-list'>
     <view class='goods-list-new'>{{([6,8,9][item.groubaSize])==item.ordersStatus.length?'成团':(item.groubaIsnew?'新':'')}}</view>
     <!-- 活动商品-左侧 -->
-    <view class='goods-list-left'>
+    <view class='goods-list-left' catchtap='goGoodsDetail'>
       <image class='goodsImg' src='{{item.goodsImgView}}' data-index='{{index}}' mode='aspectFill'></image>
       <view class='goodsName'>
         <view data-type='name' data-index='{{index}}' class='{{item.goodsName?"":""}}' wx:if='{{editItem!=index+"-goodsName"}}'>{{item.goodsName}}

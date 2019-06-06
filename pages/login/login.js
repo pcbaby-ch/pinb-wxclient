@@ -52,6 +52,7 @@ Page({
             util.putCache(util.cacheKey.userinfo, "wxUnionid", resp.data.wxUnionid)
             util.putCache(util.cacheKey.userinfo, "wxOpenid", resp.data.wxOpenid)
             util.putCache(util.cacheKey.userinfo, "isOpenGroub", resp.data.isOpenGroub)
+            util.putCache(util.cacheKey.userinfo, "groubTrace", resp.data.groubTrace)
             if (util.parseResp(this, resp)) {
               util.log("#登陆成功:" + JSON.stringify(util.getCache(util.cacheKey.userinfo)))
             } else {
