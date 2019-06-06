@@ -10,8 +10,9 @@ Page({
 
   },
 
-  scanPayCode: function() {
+  scanPayCode: function(res) {
     let that = this
+    var formId = res.detail.formId
     wx.scanCode({
       onlyFromCamera: true,
       success(res) {
@@ -21,6 +22,7 @@ Page({
           orderTrace: res.result.split("|")[1],
           refUserWxUnionid: res.result.split("|")[2],
           refGroubTrace: res.result.split("|")[0],
+          formId: formId,
         }, resp => {
           if (util.parseResp(that, resp)) {
             util.softTips(that, "扫码成功")
@@ -32,6 +34,7 @@ Page({
 
   toQrCode: function(res) {
     util.log("#res:" + JSON.stringify(res))
+    
     let order = this.data.pageArray[res.currentTarget.dataset.index]
     util.log("#消费活动商品:" + JSON.stringify(order))
     //#是否成团校验

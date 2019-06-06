@@ -11,7 +11,7 @@
 
   </view>
   <!-- 订单-右侧 -->
-  <view class='goods-list-right' data-index='{{index}}' catchtap='toQrCode'>
+  <view class='goods-list-right' data-index='{{index}}'>
     <!-- 60分后结束 -->
     <view class='main-list-endTime' style='padding-bottom:10rpx;'>
       <image class='goods-list-right-icon' src='../img/time-circle2.png' mode='aspectFill'></image>

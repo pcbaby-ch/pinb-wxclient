@@ -12,10 +12,14 @@
 
   <!-- 右下角悬浮菜单 -->
   <view class='fixed' wx:if="{{isOpenGroub}}">
-    <view class='fixed-list' bindtap='scanPayCode'>
-      <image src='../img/scan.png'></image>
-      <view>扫码</view>
-    </view>
+    <form bindsubmit="scanPayCode" report-submit="{{true}}">
+      <button class='fixed-list' form-type='submit'>
+        <!-- <view class='fixed-list' bindtap='scanPayCode'> -->
+        <image src='../img/scan.png'></image>
+        <view>扫码</view>
+        <!-- </view> -->
+      </button>
+    </form>
     <view class='fixed-list' bindtap='getMyOrdersToggle'>
       <image src='../img/order.png'></image>
       <view>{{getMyOrderUrl=='selectMyOrder4Shop'?'个人':'店铺'}}</view>
