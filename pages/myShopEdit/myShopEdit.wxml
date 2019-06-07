@@ -30,14 +30,14 @@
     <view wx:if='{{isEdit}}' class='goods-list {{isEdit?"opacityshow":""}} {{editIndex==index?"goods-list-error":""}}'>
       <!-- 活动商品-左侧 -->
       <view class='goods-list-left'>
-        <view class='goods-list-price'>
-          <input maxlength='4' type='number' class='antEdit' style='width:90rpx;' bindblur='bindinput' data-type='goodsPrice' data-index='{{index}}' value='{{item.goodsPrice}}' wx:if='{{editItem==index+"-goodsPrice"}}' focus='{{editItem==index+"-goodsPrice"}}'
+        <view class='goods-list-price' style="background-color: #fff;">
+          <input maxlength='6' type='number' class='antEdit' style='width:90rpx;' bindblur='bindinput' data-type='goodsPrice' data-index='{{index}}' value='{{item.goodsPrice}}' wx:if='{{editItem==index+"-goodsPrice"}}' focus='{{editItem==index+"-goodsPrice"}}'
             placeholder="请输入" />
           <view catchtap='catchtap' data-type='goodsPrice' data-index='{{index}}' wx:if='{{editItem!=index+"-goodsPrice"}}' class='{{item.goodsPrice?"":"antScale"}}'>{{item.goodsPrice?"原:"+item.goodsPrice:"配置原价"}}</view>
           <view> & </view>
           <input maxlength='4' type='number' class='antEdit' style='width:90rpx;' bindblur='bindinput' data-type='groubaDiscountAmount' data-index='{{index}}' value='{{item.groubaDiscountAmount}}' wx:if='{{editItem==index+"-groubaDiscountAmount"}}' focus='{{editItem==index+"-groubaDiscountAmount"}}'
             placeholder="请输入" />
-          <view catchtap='catchtap' data-type='groubaDiscountAmount' data-index='{{index}}' wx:if='{{editItem!=index+"-groubaDiscountAmount"}}' class='{{item.groubaDiscountAmount?"":"antScale"}}'>{{item.groubaDiscountAmount?"折扣:"+item.groubaDiscountAmount:"折扣金额"}}</view>
+          <view catchtap='catchtap' style="background-color: #fff;" data-type='groubaDiscountAmount' data-index='{{index}}' wx:if='{{editItem!=index+"-groubaDiscountAmount"}}' class='{{item.groubaDiscountAmount?"":"antScale"}}'>{{item.groubaDiscountAmount?"折扣:"+item.groubaDiscountAmount:"折扣金额"}}</view>
         </view>
         <image wx:if='{{item.goodsImg}}' class='goodsImg' src='{{item.goodsImgView}}' catchtap='upImg2' data-index='{{index}}' mode='aspectFill'></image>
         <view wx:if='{{!item.goodsImg}}' class='main-list-left-up antScale' catchtap='upImg2' data-index='{{index}}'>

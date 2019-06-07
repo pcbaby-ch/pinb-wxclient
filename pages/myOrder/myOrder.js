@@ -25,7 +25,7 @@ Page({
           formId: formId,
         }, resp => {
           if (util.parseResp(that, resp)) {
-            util.softTips(that, "扫码成功")
+            util.softTips(that, "扫码确认成功", 3)
           }
         })
       }
@@ -33,9 +33,11 @@ Page({
   },
 
   toQrCode: function(res) {
+    let that = this
     util.log("#res:" + JSON.stringify(res))
-    
-    let order = this.data.pageArray[res.currentTarget.dataset.index]
+    let index = res.detail.target.dataset.index
+    var formId = res.detail.formId
+    let order = this.data.pageArray[index]
     util.log("#消费活动商品:" + JSON.stringify(order))
     //#是否成团校验
     if (([6, 8, 9][order.groubaSize]) > order.ordersStatus.length) {
@@ -51,9 +53,20 @@ Page({
       correctLevel: QRCode.CorrectLevel.H,
     });
 
-    this.setData({
-      payContainerShow: true,
-      shadeCoverShow: true,
+
+    //请求：消费准备服务接口
+    util.reqPost(util.apiHost + "/groubaOrder/orderConsumePrepare", {
+      orderTrace: order.orderTrace,
+      refUserWxUnionid: order.refUserWxUnionid,
+      formId: formId,
+    }, resp => {
+      if (util.parseResp(that, resp)) {
+        util.log("#消费码生成完成")
+        that.setData({
+          payContainerShow: true,
+          shadeCoverShow: true,
+        })
+      }
     })
   },
 

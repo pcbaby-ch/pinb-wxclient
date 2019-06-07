@@ -508,6 +508,10 @@ function chooseLoc4User(that, callBack4GetCity) {
       putCache("page_getNearGrouba", "page", 1) //重置分页为起始页
     },
     fail(res) {
+      wx.showModal({
+        title: 'error',
+        content: "#地址选择失败:" + JSON.stringify(res),
+      })
       log("#地址选择失败:" + JSON.stringify(res))
       if (res.errMsg == 'chooseLocation:fail cancel') {
         //如果用户取消选择地址，则不弹出授权列表，

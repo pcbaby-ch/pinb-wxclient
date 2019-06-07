@@ -275,6 +275,12 @@ Page({
     })
   },
 
+  callPhone() {
+    wx.makePhoneCall({
+      phoneNumber: this.data.groub.groubPhone,
+    })
+  },
+
   checkParams(groub, goods) {
     // if (!groub.groubName) {
     //   util.softTips(this, "店铺名称未选择")
@@ -288,6 +294,10 @@ Page({
       util.softTips(this, "店铺地址未选择")
       return false
     }
+    if (!groub.province||!groub.city) {
+      util.softTips(this, "店铺地址，未解析完成，请稍后保存")
+      return false
+    }
     if (!groub.groubPhone) {
       util.softTips(this, "店铺电话未填写")
       return false
@@ -297,19 +307,19 @@ Page({
       util.log("#单个商品:" + g)
       // if (g.goodsImg) { //#选区商品图片的才校验，没选区的直接忽略废弃
       if (!g.goodsImgView) {
-        util.softTips(this, "商品" + i + 1 + ",图片未选取")
+        util.softTips(this, "商品" + (i + 1) + ",图片未选取")
         return false
       }
       if (!g.goodsName) {
-        util.softTips(this, "商品" + i + 1 + ",名称未填写")
+        util.softTips(this, "商品" + (i + 1) + ",名称未填写")
         return false
       }
       if (!g.goodsPrice) {
-        util.softTips(this, "商品" + i + 1 + ",原价未填写")
+        util.softTips(this, "商品" + (i + 1) + ",原价未填写")
         return false
       }
       if (!g.groubaDiscountAmount) {
-        util.softTips(this, "商品" + i + 1 + ",折扣金额未填写")
+        util.softTips(this, "商品" + (i + 1) + ",折扣金额未填写")
         return false
       }
       if (g.groubaDiscountAmount * 1 > g.goodsPrice * 1) {
