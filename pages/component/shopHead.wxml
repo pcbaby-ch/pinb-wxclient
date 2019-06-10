@@ -1,5 +1,5 @@
 <view class='top {{!isEdit?"opacityshow":""}}' catchtap='createShopQR'>
-  <view data-type='groub.groubName' data-index='' class='{{groub.groubName?"top-groubName":" top-groubName"}}' style='margin-top:-20rpx' wx:if='{{editItem!="-groub.groubName"}}'>{{groub.groubName||'??商铺名称??'}}</view>
+  <view data-type='groub.groubName' data-index='' class='{{groub.groubName?"top-groubName":" top-groubName"}}' style='margin-top:-20rpx' wx:if='{{editItem!="-groub.groubName"}}'>{{groub.groubName}}</view>
 
   <image src='{{groub.groubImgView}}' class='bgImg' mode='aspectFill'></image>
   <view class='top-tag'>

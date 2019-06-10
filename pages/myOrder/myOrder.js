@@ -122,6 +122,7 @@ Page({
         that.setData({
           pageArray,
           isLodding: false,
+          isShowBlank: false,
         })
         util.log("#我的订单-数据加载-完成")
       } else {
@@ -130,6 +131,7 @@ Page({
           that.setData({
             isLodding: false,
             isLoadEnd: true,
+            isShowBlank: false,
           })
         } else {
           util.softTips(that, "亲，你暂无订单", 3)
@@ -137,6 +139,7 @@ Page({
             pageArray: [],
             isLodding: false,
             isLoadEnd: true,
+            isShowBlank: true,
           })
         }
       }

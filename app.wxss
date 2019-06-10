@@ -519,6 +519,10 @@
   justify-content: center;
 }
 
+.blank-container image {
+  width: 100%;
+}
+
 /* 遮罩层 */
 
 .shadeCover {

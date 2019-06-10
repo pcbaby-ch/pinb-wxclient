@@ -61,7 +61,7 @@
           </view>
         </picker>
         <view class='main-list-endTime {{item.groubaActiveMinute?"":"antScale"}}' style='padding:6px 0;'>
-          <image class='goods-list-right-icon' src='../img/time-circle2.png' catchtap='catchtap' data-type='groubaActiveMinute' data-index='{{index}}'></image>
+          <image class='goods-list-right-icon' src='../img/time-circle_fac240.png' catchtap='catchtap' data-type='groubaActiveMinute' data-index='{{index}}'></image>
           <view wx:if='{{editItem!=index+"-groubaActiveMinute"}}' catchtap='catchtap' data-type='groubaActiveMinute' data-index='{{index}}'>
             {{item.groubaActiveMinute?(item.groubaActiveMinute?'拼团时长:'+item.groubaActiveMinute+'分钟':'')+'':'设置拼团时长'}}
           </view>

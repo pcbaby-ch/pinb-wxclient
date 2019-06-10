@@ -9,9 +9,11 @@
   <!-- 附近-活动商品 #预览页面# ##########################  -->
   <include src="../component/listNearGoods.wxml" />
 
-  <!-- 页脚（含加载动态提示） -->
-  <include src="../component/indexFoot.wxml" />
+  <!-- 分页加载提示 -->
+  <include src="../component/pageHelp.wxml" />
 </view>
+<!-- 空白页动画 -->
+<include src="../component/blank.wxml" />
 
 <!-- 右下角悬浮菜单 -->
 <view class='fixed' wx:if="{{indexMode!='userLogin'}}">

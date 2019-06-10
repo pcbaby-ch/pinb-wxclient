@@ -104,7 +104,7 @@ Page({
           that.setData({
             isLodding: false,
             isLoadEnd: true,
-            isShowBlank: true,
+            isShowBlank: false,
           })
         } else {
           util.softTips(that, "亲，附近暂无活动商品，请变更位置", 5)

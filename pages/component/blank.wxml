@@ -1,0 +1,3 @@
+<view class='blank-container' wx:if="{{isShowBlank}}">
+  <image src='../img/blank.gif' class='blank-img'></image>
+</view>
