@@ -3,8 +3,8 @@
   <view class='heat-line1'>
     <button bindtap='chooseLoc' class='buttonBlock'>
       <view class='head-location'>
-        <image src='../img/location3.png'></image>
-        <view class='locatoion-text'>{{searchAddress||'请选择位置'}}</view>
+        <image src='../img/location_a2d89f.png'></image>
+        <view class='locatoion-text' style='font:blod;'>{{searchAddress||'请选择位置'}}</view>
         <!-- <view class="locatoion-text" style='font-size:38rpx;'>▽</view> -->
       </view>
     </button>

@@ -18,19 +18,19 @@
       </view>
       <!-- 60分后结束 -->
       <view class='main-list-endTime {{item.endTimeH || item.endTimeM || editItem==index+"-endTime"?"":""}}' data-index='{{index}}'>
-        <image class='goods-list-right-icon' src='../img/time-circle2.png' data-type='endTime' data-index='{{index}}'></image>
+        <image class='goods-list-right-icon' src='../img/time-circle_fac240.png' data-type='endTime' data-index='{{index}}'></image>
         <view data-type='endTime' data-index='{{index}}'>
           {{item.groubaActiveMinute?item.groubaActiveMinute+'分 拼团时长':'??拼团时长??'}}
         </view>
       </view>
       <!-- 6人团 -->
       <view class='main-list-right-groubaSize' style='padding-bottom:0rpx;' data-index='{{index}}'>
-        <image class='goods-list-right-icon' src='../img/team.png'></image>
+        <image class='goods-list-right-icon' src='../img/team_a2d89f.png'></image>
         <view>{{[6,8,9][item.groubaSize]?[6,8,9][item.groubaSize]+'人团':'?人团'}}</view>
       </view>
       <!-- 距离800m -->
       <view catchtap='chooseLoc' class='main-list-right-location'>
-        <image class='goods-list-right-icon' src='../img/location.png'></image>
+        <image class='goods-list-right-icon' src='../img/location_ccf0c5.png'></image>
         <view>{{item.distance}}</view>
       </view>
       <button wx:if="{{indexMode=='userShare'}}" open-type='' data-index='{{index}}' catchtap='onShareAppMessageA' hover-stop-propagation='true' class='buttonBlock main-list-share'>开团立省{{item.groubaDiscountAmount||'??'}}元</button>

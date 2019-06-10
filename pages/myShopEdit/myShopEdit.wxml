@@ -30,7 +30,7 @@
     <view wx:if='{{isEdit}}' class='goods-list {{isEdit?"opacityshow":""}} {{editIndex==index?"goods-list-error":""}}'>
       <!-- 活动商品-左侧 -->
       <view class='goods-list-left'>
-        <view class='goods-list-price' style="background-color: #fff;">
+        <view class='goods-list-price'>
           <input maxlength='6' type='number' class='antEdit' style='width:90rpx;' bindblur='bindinput' data-type='goodsPrice' data-index='{{index}}' value='{{item.goodsPrice}}' wx:if='{{editItem==index+"-goodsPrice"}}' focus='{{editItem==index+"-goodsPrice"}}'
             placeholder="请输入" />
           <view catchtap='catchtap' data-type='goodsPrice' data-index='{{index}}' wx:if='{{editItem!=index+"-goodsPrice"}}' class='{{item.goodsPrice?"":"antScale"}}'>{{item.goodsPrice?"原:"+item.goodsPrice:"配置原价"}}</view>

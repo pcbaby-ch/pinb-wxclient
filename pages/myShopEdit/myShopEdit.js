@@ -127,7 +127,7 @@ Page({
       } else { //#提交成功
         util.putCache('isOpenGroub', null, true)
         util.putCache(util.cacheKey.userinfo, "isOpenGroub", 1)
-        util.putCache(util.cacheKey.userinfo, "groubTrace", resp.data)
+        util.putCache(util.cacheKey.userinfo, "groubTrace", data.data)
         that.setData({
           isEdit: false,
         })
@@ -198,15 +198,22 @@ Page({
         groub.groubAddress = res.address;
         groub.latitude = res.latitude;
         groub.longitude = res.longitude;
-        util.getCity(res.latitude, res.longitude, util.cacheKey.groubInfo)
-        groub.province = util.getCache(util.cacheKey.groubInfo, 'province')
-        groub.city = util.getCache(util.cacheKey.groubInfo, 'city')
-        util.log("#groub:" + JSON.stringify(groub))
-        that.setData({
-          groub,
+        util.getCity(res.latitude, res.longitude, util.cacheKey.groubInfo, function() {
+          util.log("#选择地址后，开始执行calbackFuction")
+          groub.province = util.getCache(util.cacheKey.groubInfo, 'province')
+          groub.city = util.getCache(util.cacheKey.groubInfo, 'city')
+          util.log("#groub:" + JSON.stringify(groub))
+          that.setData({
+            groub,
+          })
         })
       },
       fail() {
+        log("#地址选择失败:" + JSON.stringify(res))
+        if (res.errMsg == 'chooseLocation:fail cancel') {
+          //如果用户取消选择地址，则不弹出授权列表，
+          return
+        }
         wx.showModal({
           title: '授权列表',
           content: '请在授权列表，开启位置获取权限',
@@ -294,7 +301,7 @@ Page({
       util.softTips(this, "店铺地址未选择")
       return false
     }
-    if (!groub.province||!groub.city) {
+    if (!groub.province || !groub.city) {
       util.softTips(this, "店铺地址，未解析完成，请稍后保存")
       return false
     }
@@ -304,26 +311,27 @@ Page({
     }
     for (var i in goods) {
       let g = goods[i]
+      let index = i * 1 + 1
       util.log("#单个商品:" + g)
       // if (g.goodsImg) { //#选区商品图片的才校验，没选区的直接忽略废弃
       if (!g.goodsImgView) {
-        util.softTips(this, "商品" + (i + 1) + ",图片未选取")
+        util.softTips(this, "商品" + index + ",图片未选取")
         return false
       }
       if (!g.goodsName) {
-        util.softTips(this, "商品" + (i + 1) + ",名称未填写")
+        util.softTips(this, "商品" + index + ",名称未填写")
         return false
       }
       if (!g.goodsPrice) {
-        util.softTips(this, "商品" + (i + 1) + ",原价未填写")
+        util.softTips(this, "商品" + index + ",原价未填写")
         return false
       }
       if (!g.groubaDiscountAmount) {
-        util.softTips(this, "商品" + (i + 1) + ",折扣金额未填写")
+        util.softTips(this, "商品" + index + ",折扣金额未填写")
         return false
       }
       if (g.groubaDiscountAmount * 1 > g.goodsPrice * 1) {
-        util.softTips(this, "商品" + (i + 1) + ",折扣金额过大")
+        util.softTips(this, "商品" + index + ",折扣金额过大")
         util.log("#groubaDiscountAmount:" + g.groubaDiscountAmount + "#goodsPrice:" + g.goodsPrice)
         return false
       }

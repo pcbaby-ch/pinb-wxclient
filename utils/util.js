@@ -508,10 +508,6 @@ function chooseLoc4User(that, callBack4GetCity) {
       putCache("page_getNearGrouba", "page", 1) //重置分页为起始页
     },
     fail(res) {
-      wx.showModal({
-        title: 'error',
-        content: "#地址选择失败:" + JSON.stringify(res),
-      })
       log("#地址选择失败:" + JSON.stringify(res))
       if (res.errMsg == 'chooseLocation:fail cancel') {
         //如果用户取消选择地址，则不弹出授权列表，
@@ -619,6 +615,7 @@ function getGroubShareOrder(that, groubTrace, orderTrace, orderLeader) {
       if (resp.data.shareGoods) { //如果存在分享商品
         resp.data.shareGoods.goodsImgView = apiHost + "/images/goodsImg/" + resp.data.shareGoods.goodsImg
         resp.data.shareGoods['distance'] = getDistance(curLatitude, curLongitude, resp.data.shareGoods.latitude, resp.data.shareGoods.longitude)
+        resp.data.shareGoods['orderExpiredTimeRemain'] = getRemainTime(resp.data.shareGoods.orderExpiredTime)
         resp.data.shareGoods.userImgs = resp.data.shareGoods.userImgs.split(",")
         resp.data.shareGoods.ordersStatus = resp.data.shareGoods.ordersStatus.split(",")
       }
@@ -626,6 +623,7 @@ function getGroubShareOrder(that, groubTrace, orderTrace, orderLeader) {
         let item = resp.data.goodsList[i]
         resp.data.goodsList[i]['goodsImgView'] = apiHost + "/images/goodsImg/" + item.goodsImg
         resp.data.goodsList[i]['distance'] = getDistance(curLatitude, curLongitude, item.latitude, item.longitude)
+        resp.data.goodsList[i]['orderExpiredTimeRemain'] = getRemainTime(item.orderExpiredTime)
         if (item.userImgs) { //如果存在订单头像信息
           resp.data.goodsList[i].userImgs = item.userImgs.split(",")
           resp.data.goodsList[i].ordersStatus = item.ordersStatus.split(",")
@@ -636,7 +634,7 @@ function getGroubShareOrder(that, groubTrace, orderTrace, orderLeader) {
         pageArray: resp.data.goodsList,
         shareGoods: resp.data.shareGoods,
       })
-      countDown(that, resp.data.goodsList)
+      // countDown(that, resp.data.goodsList)
       log("#店铺or分享活动商品-数据加载-完成")
     } else {
       log("#店铺or分享活动商品-数据加载-失败")
@@ -653,8 +651,11 @@ function countDown(that, pageArray) {
       item.orderExpiredTimeRemain = getRemainTime(item.orderExpiredTime)
     }
   }
+  let shareGoods = that.data.shareGoods
+  shareGoods.orderExpiredTimeRemain = getRemainTime(item.orderExpiredTime)
   that.setData({
-    pageArray
+    pageArray,
+    shareGoods,
   })
   // setTimeout(countDown(that, pageArray), 1000)
 }

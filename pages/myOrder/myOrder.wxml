@@ -36,6 +36,10 @@
 <view class='page-foot-container' wx:if='{{isLoadEnd}}'>
   <view catchtap='catchtap'>---- 没有更多订单 ----</view>
 </view>
+<!-- 空白页动画 -->
+<view class='blank-container'>
+  <image src='../img/blank.gif' class='blank-img'></image>
+</view>
 
 <!-- 消费二维码 -->
 <view class='pay-container' style='display:{{payContainerShow||"none"}}'>

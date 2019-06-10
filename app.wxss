@@ -162,7 +162,7 @@
   height: 200rpx;
   position: relative;
   margin-bottom: 10rpx;
-  box-shadow: 0px 0px 2px 0px pink;
+  box-shadow: 0px 0px 2px 0px grey;
   border-radius: 2px;
   overflow: hidden;
 }
@@ -195,7 +195,7 @@
   height: 200rpx;
   position: relative;
   margin-bottom: 10rpx;
-  box-shadow: 0px 0px 2px 0px pink;
+  box-shadow: 0px 0px 2px 0px grey;
   border-radius: 2px;
   overflow: hidden;
 }
@@ -260,6 +260,8 @@
   top: 4rpx;
   font-size: 24rpx;
   line-height: 32rpx;
+  background-color: #fff;
+  border-radius: 10rpx;
   color: rgba(16, 16, 16, 1);
   z-index: 2;
 }
@@ -324,7 +326,7 @@
 
 .main-list-right-groubaSize view {
   padding-left: 6rpx;
-  color: #1296db;
+  color: #a2d89f;
   font-size: 28rpx;
   font-family: PingFangSC-regular;
   text-align: left;
@@ -352,7 +354,7 @@
   right: 5rpx;
   line-height: 55rpx;
   border-radius: 4rpx;
-  background-color: rgb(73, 167, 115);
+  background-color: rgba(139, 195, 74, 1);
   color: rgba(255, 255, 255, 1);
   font-size: 28rpx;
   align-items: center;
@@ -366,7 +368,7 @@
 
 .main-list-endTime view {
   padding-left: 6rpx;
-  color: #f4ea2a;
+  color: #fac240;
   font-size: 28rpx;
   font-family: PingFangSC-regular;
   text-align: left;
@@ -383,7 +385,7 @@
 
 .main-list-right-location view {
   padding-left: 3rpx;
-  color: #8a8a8a;
+  color: #ccf0c5;
   font-size: 28rpx;
   font-family: PingFangSC-regular;
   text-align: left;
@@ -402,6 +404,11 @@
   zoom: 0.6;
   vertical-align: middle;
   margin-left: 30rpx;
+}
+
+.head-foot-container {
+  display: flex;
+  position: block;
 }
 
 .head-foot {
@@ -505,6 +512,13 @@
   border-radius: 30rpx;
 }
 
+/* 空白页样式 */
+
+.blank-container {
+  display: flex;
+  justify-content: center;
+}
+
 /* 遮罩层 */
 
 .shadeCover {
@@ -536,7 +550,6 @@
   display: flex;
   flex-direction: column;
   padding-top: 40rpx;
-  
   align-self: center;
   width: 600rpx;
   height: 600rpx;

@@ -14,7 +14,7 @@
   <view class='goods-list-right'>
     <!-- 6人团 -->
     <view class='main-list-right-groubaSize'>
-      <image class='goods-list-right-icon' src='../img/team.png'></image>
+      <image class='goods-list-right-icon' src='../img/team_a2d89f.png'></image>
       <view style='padding-left:0rpx;;padding-right:16rpx;'>
         <view data-index='{{index}}' style='padding-left:0rpx;'>
           {{[6,8,9][shareGoods.groubaSize]?[6,8,9][shareGoods.groubaSize]+'':'?'}}
@@ -22,8 +22,8 @@
       </view>
       <!-- 60分后结束 -->
       <view class='main-list-endTime {{shareGoods.endTimeH || shareGoods.endTimeM || editItem==index+"-endTime"?"":""}}'>
-        <image class='goods-list-right-icon' src='../img/time-circle2.png' data-type='endTime' data-index='{{index}}'></image>
-        <view data-type='endTime' data-index='{{index}}'>{{shareGoods.groubaActiveMinute?(shareGoods.groubaActiveMinute?shareGoods.groubaActiveMinute+'分':'')+'后结束':''}}</view>
+        <image class='goods-list-right-icon' src='../img/time-circle_fac240.png' data-type='endTime' data-index='{{index}}'></image>
+        <view data-type='endTime' data-index='{{index}}'>{{shareGoods.orderExpiredTimeRemain}}</view>
       </view>
     </view>
     <!-- 活动商品-用户头像 -->
@@ -32,7 +32,7 @@
     </view>
     <!-- 距离800m -->
     <view catchtap='chooseLoc' class='main-list-right-location'>
-      <image class='goods-list-right-icon' src='../img/location.png'></image>
+      <image class='goods-list-right-icon' src='../img/location_ccf0c5.png'></image>
       <view>{{shareGoods.distance}}</view>
     </view>
     <!-- 参团立省？？元 -->

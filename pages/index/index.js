@@ -54,7 +54,10 @@ Page({
 
   chooseLoc() {
     let that = this
-    util.chooseLoc4User(this, that.onLoad)
+    util.chooseLoc4User(that, function() {
+      util.log("#选择地址后，开始执行calbackFuction")
+      that.onLoad
+    })
 
   },
 
@@ -92,6 +95,7 @@ Page({
         that.setData({
           pageArray,
           isLodding: false,
+          isShowBlank: false,
         })
         util.log("#附近活动订单-数据加载-完成")
       } else {
@@ -100,13 +104,15 @@ Page({
           that.setData({
             isLodding: false,
             isLoadEnd: true,
+            isShowBlank: true,
           })
         } else {
-          util.softTips(that, "亲，附近暂无活动商品，请变更位置", 6)
+          util.softTips(that, "亲，附近暂无活动商品，请变更位置", 5)
           that.setData({
             pageArray: [],
             isLodding: false,
             isLoadEnd: true,
+            isShowBlank: true,
           })
         }
       }

@@ -6,4 +6,8 @@
 <view class='page-foot-container' wx:if='{{isLoadEnd}}'>
   <view catchtap='catchtap'>---- 更多内容,敬请期待 ----</view>
 </view>
+<!-- 空白页动画 -->
+<view class='blank-container' wx:if="{{isShowBlank}}">
+  <image src='../img/blank.gif' class='blank-img'></image>
+</view>
 <!-- </template> -->
