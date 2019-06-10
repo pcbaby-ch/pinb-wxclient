@@ -1,4 +1,5 @@
 var md5 = require('md5.js')
+var base64 = require('base64.js')
 var QQMapWX = require('qqmap-wx-jssdk.min.js')
 var wxmap = new QQMapWX({
   key: 'R26BZ-U6AKX-ED54W-TYQ2N-RY5OO-HIB2S'
@@ -136,6 +137,19 @@ function requestLoading(url, params, message, successCallback, failCallback) {
       }
     },
   })
+}
+/** 针对不同host服务，采用不同的签名、加密机制，包装处理请求报文 */
+function reqBodyWrap(url, reqBody) {
+  if (url.indexOf("pinb.vip") >= 0) {
+    //pinb服务host，报文采用非对称加密
+    let base = base64.CusBASE64.encoder(reqBody)
+    log("#加密报文：" + base)
+  } else if (url.indexOf("api.weixin.qq.com") >= 0) {
+    //微信服务host，不包装处理
+  } else {
+    //未知服务host，不包装处理
+  }
+  return reqBody
 }
 let imgMaxSize = 1024 * 1024 /** #1000kb */
 /** 图片上传 (resImage是chooseImage组件的资源)
@@ -367,18 +381,7 @@ function log(logText) {
     console.log(logText + " >>" + formatTime(new Date()))
   }
 }
-/** 针对不同host服务，采用不同的签名、加密机制，包装处理请求报文 */
-function reqBodyWrap(url, reqBody) {
-  if (url.indexOf("api.pinb.vip") >= 0) {
-    //pinb服务host，报文采用非对称加密
 
-  } else if (url.indexOf("api.weixin.qq.com") >= 0) {
-    //微信服务host，不包装处理
-  } else {
-    //未知服务host，不包装处理
-  }
-  return reqBody
-}
 //其它-工具类 ##############################################################
 
 /** 微信异步方法，同步化封装 */
