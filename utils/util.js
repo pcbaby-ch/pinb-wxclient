@@ -74,7 +74,7 @@ function parseResp(that, resp) {
 }
 
 function requestLoading(url, params, message, successCallback, failCallback) {
-  //log(">>>请求参数(包装处理前):" + JSON.stringify(params) + " #url:" + url)
+  log(">>>请求参数(包装处理前):" + JSON.stringify(params) + " #url:" + url)
   wx.showNavigationBarLoading()
   if (!message || message != "") {
     // wx.showLoading({
@@ -140,16 +140,25 @@ function requestLoading(url, params, message, successCallback, failCallback) {
 }
 /** 针对不同host服务，采用不同的签名、加密机制，包装处理请求报文 */
 function reqBodyWrap(url, reqBody) {
-  if (url.indexOf("pinb.vip") >= 0) {
+  if (url.indexOf("pinb-service") >= 0) {
     //pinb服务host，报文采用非对称加密
-    let base = base64.CusBASE64.encoder(reqBody)
-    log("#加密报文：" + base)
+    reqBody = base64.encode(JSON.stringify(reqBody));
+    //特殊掩码处理
+    let saltCode = formatTime(new Date()).substring(5, 16).replace(' ', '').replace('/', '').replace(':', '')
+    log("#掩码：_" + saltCode + "_")
+    for (let i = 0; i < 8; i++) {
+      reqBody = addIndexChar(i * 2, reqBody, saltCode.charAt(i));
+    }
   } else if (url.indexOf("api.weixin.qq.com") >= 0) {
     //微信服务host，不包装处理
   } else {
     //未知服务host，不包装处理
   }
   return reqBody
+}
+
+function addIndexChar(index, str, c) {
+  return str.substring(0, index + 1) + c + str.substring(index + 1, str.length);
 }
 let imgMaxSize = 1024 * 1024 /** #1000kb */
 /** 图片上传 (resImage是chooseImage组件的资源)

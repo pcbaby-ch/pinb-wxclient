@@ -19,9 +19,9 @@ Page({
         console.log("#扫码结果:" + JSON.stringify(res))
         //请求：消费处理服务接口
         util.reqPost(util.apiHost + "/groubaOrder/orderConsume", {
-          orderTrace: res.result.split("|")[1],
-          refUserWxUnionid: res.result.split("|")[2],
-          refGroubTrace: res.result.split("|")[0],
+          orderTrace: res.result.split("|")[0],
+          refUserWxUnionid: res.result.split("|")[1],
+          refGroubTrace: util.getCache(util.cacheKey.userinfo, 'groubTrace'),
           formId: formId,
         }, resp => {
           if (util.parseResp(that, resp)) {
@@ -47,7 +47,7 @@ Page({
     //#生成二维码
     var qrcode = new QRCode('canvas', {
       // usingIn: this,
-      text: order.refGroubTrace + '|' + order.orderTrace + '|' + order.refUserWxUnionid,
+      text: order.orderTrace + '|' + order.refUserWxUnionid,
       colorDark: "#000000",
       colorLight: "#ffffff",
       correctLevel: QRCode.CorrectLevel.H,
