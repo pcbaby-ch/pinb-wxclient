@@ -481,6 +481,7 @@
 /* 分页滚动加载样式 */
 
 .page-foot-container {
+  color: grey;
   display: flex;
   justify-content: center;
   padding-top: 10rpx;
