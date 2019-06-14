@@ -9,7 +9,7 @@ const defalutProduct = {
   groubaTrace: '',
   refGroubTrace: '',
   refUserWxUnionid: '',
-  groubaSize: 0,
+  groubaSize: 3,
   groubaMaxCount: 68,
   goodsName: '',
   goodsImg: '',
@@ -376,7 +376,7 @@ Page({
 
     })
   },
-  /** 生长并展示店铺二维码 */
+  /** 生成并展示店铺二维码 */
   toQrCode: function(res) {
     util.log("#res:" + JSON.stringify(res))
     let order = this.data.pageArray[res.currentTarget.dataset.index]
@@ -407,6 +407,7 @@ Page({
           groub,
           payContainerShow: 'true',
         })
+        // that.sharePosteCanvas();
       }
     })
   },
@@ -428,38 +429,117 @@ Page({
   },
 
   //保存图片
-  saveImg: function(e) {　　
-    var that = this;　　
-    var times = that.data.timeend - that.data.timestart;　　
-    if (times > 300) {　　　　
-      util.log("#长按");　　　　
-      wx.getSetting({　　　　　　
-        success: function(res) {　　　　　　　　
-          wx.authorize({
-            scope: 'scope.writePhotosAlbum',
-            success: function(res) {
-              util.log("#保存相册授权成功");
-              var imgUrl = that.data.groub.shopQR //图片地址
-              wx.downloadFile({ //下载文件资源到本地，客户端直接发起一个 HTTP GET 请求，返回文件的本地临时路径
-                url: imgUrl,
-                　success: function(res) {　　　
-                  util.log('#下载成功后再保存到本地' + JSON.stringify(res));　
-                  wx.saveImageToPhotosAlbum({　　　　　　
-                    filePath: res.tempFilePath, //返回的临时文件路径，下载后的文件会存储到一个临时文件
-                  })　
-                  util.softTips(that, "二维码已保存到相册", 5)
-                  that.setData({
-                    payContainerShow: 'none',
+  saveImg: function(e) {
+    var that = this;
+    var times = that.data.timeend - that.data.timestart;
+    if (times > 300) {
+      util.log("#长按");
+      wx.getSetting({
+        success: function(res) {
+          util.log("#保存相册res:" + JSON.stringify(res))
+          if (res.authSetting["scope.writePhotosAlbum"] == false) {
+            util.log("#保存相册授权已被拒绝");
+            wx.showModal({
+              title: '需要授权',
+              content: '请开启相册权限后，重新保存海报',
+              success(res) {
+                if (res.confirm) {
+                  wx.openSetting({
+                    success(data) {
+                      that.saveImg()
+                    }
                   })
                 }
-              })　　　　　　　　　　
-            }　　　　　　　　
-          })　　　　　　
+              }
+            })
+          } else {
+            wx.authorize({
+              scope: 'scope.writePhotosAlbum',
+              success: function(res) {
+                util.log("#保存相册授权成功");
+                var imgUrl = that.data.groub.shopQR //图片地址
+                wx.downloadFile({ //下载文件资源到本地，
+                  url: imgUrl,
+                  　success: function(res) {
+                    util.log('#下载成功后再保存到本地' + JSON.stringify(res));　
+                    wx.saveImageToPhotosAlbum({
+                      filePath: res.tempFilePath, //返回的临时文件路径，
+                    })
+                    util.softTips(that, "二维码已保存到相册", 5)
+                    that.setData({
+                      payContainerShow: 'none',
+                    })
+                  },
+                })　　　　　　　　　　
+              }　　　　　　　　
+            })
+          }
         }　　　　
       })　　
     }
   },
 
+  sharePosteCanvas() {
+    var that = this;
+    that.setData({
+      showProgressPercent: true,
+      progressPercent: 40,
+    })
+    const ctx = wx.createCanvasContext('posterCanvas');
+    // ctx.setFillStyle('red');
+    // ctx.drawImage(that.data.groub.shopQR, 150, 40, 300, 300)
+    // ctx.setFontSize(10);
+    // ctx.setFillStyle('#000');
+    // ctx.setTextAlign('right'); 
+    // ctx.fillText("微信扫码或长按识别", 235, 150);
+    // util.log("#ctx:" + JSON.stringify(ctx))
+    // ctx.draw();
+    var width = "";
+    wx.createSelectorQuery().select('#posterCanvas').boundingClientRect(function(rect) {
+      util.log("#rect：" + JSON.stringify(rect))
+      var height = rect.height;
+      var right = rect.right;
+      width = rect.width;
+      var left = rect.left + 5;
+      ctx.setFillStyle('#fff');
+      ctx.fillRect(0, 0, rect.width, height);
+      let y1 = 0,
+        x1 = 0
+      let y2_1 = height * 0.3,
+        y2_1_x1 = 6
+      let y2_2 = height * 0.3 + 50,
+        y2_2_x1 = 6
+      let y2_3 = height * 0.3 + 100,
+        y2_3_x1 = 6
+      let y3 = height * 0.3 + 200,
+        y3_x1 = 6
+      let y4 = height * 0.3 + 250,
+        y4_x1 = 6
+      //#活动logo
+      ctx.drawImage(that.data.groub.groubImgView, x1, y1, width, y2_1 - 10)
+      //#商品1
+
+      //#商品2
+
+      //#商品3
+
+      //#店铺电话、地址
+
+      //活动文案、店铺二维码
+      // ctx.drawImage(that.data.groub.shopQR, 150, 40, 300, 300)
+      ctx.setFontSize(10);
+      ctx.setTextAlign('right');
+      ctx.fillText("微信扫码或长按识别", 235, 150);
+      util.log("#ctx:" + JSON.stringify(ctx))
+      ctx.draw();
+    }).exec()
+
+
+    that.setData({
+      showProgressPercent: false,
+      progressPercent: 100,
+    })
+  },
 
   onLoad: function(pageRes) {
     wx.showNavigationBarLoading()

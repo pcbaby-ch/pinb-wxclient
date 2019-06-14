@@ -1,9 +1,9 @@
 {
   "pages": [
     "pages/index/index",
+    "pages/myShopEdit/myShopEdit",
     "pages/myOrder/myOrder",
     "pages/myShop/myShop",
-    "pages/myShopEdit/myShopEdit",
     "pages/login/login"
   ],
   "permission": {

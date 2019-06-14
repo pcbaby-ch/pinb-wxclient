@@ -1,7 +1,7 @@
 <!-- 订单展示 -->
 <view class='order-list' wx:for="{{pageArray}}" wx:for-item="item" wx:for-index="index" wx:key="orderTrace" data-index='{{index}}'>
 
-  <view class='goods-list-new'>{{([6,8,9][item.groubaSize])==item.ordersStatus.length?'成团':(item.groubaIsnew?'新':'')}}</view>
+  <view class='goods-list-new'>{{([2,3,5,6,8,9][item.groubaSize])==item.ordersStatus.length?'成团':(item.groubaIsnew?'新':'')}}</view>
   <form class='goods-list-left' bindsubmit="toQrCode" report-submit="{{true}}">
     <button class='goods-list-left-button' data-index='{{index}}' form-type='submit' hover-stop-propagation='true'>
       <!-- 订单-左侧 -->

@@ -1,4 +1,5 @@
 <!-- 店铺-head信息 #编辑页面# ############ -->
+<progress percent="{{progressPercent}}" border-radius="30" stroke-width="2" active active-mode="backwards" wx:if="{{showProgressPercent}}" />
 <view wx:if='{{isEdit}}' class='top {{isEdit?"opacityshow":""}}' bindtap='upImg'>
   <view catchtap='catchtap' data-type='groub.groubName' data-index='' class='{{groub.groubName?"top-groubName":"antScale top-groubName"}}' style='margin-top:-20rpx' wx:if='{{editItem!="-groub.groubName"}}'>{{groub.groubName||'点此填写商铺名称'}}</view>
   <input maxlength='12' class="antEdit" style='width:98%;box-sizing: border-box;margin-top:5rpx' bindblur='bindinput' data-type='groubName' value='{{groub.groubName}}' wx:if='{{editItem=="-groub.groubName"}}' focus='{{editItem=="-groub.groubName"}}' />
@@ -52,11 +53,11 @@
       </view>
       <!-- 活动商品-右侧 -->
       <view class='goods-list-right'>
-        <picker bindchange="set_num" data-index='{{index}}' value="{{item.groubaSize}}" range="{{[6,8,9]}}">
+        <picker bindchange="set_num" data-index='{{index}}' value="{{item.groubaSize}}" range="{{[2,3,5,6,8,9]}}">
           <view class='main-list-right-groubaSize' value="{{item.groubaSize}}">
-            <image class='goods-list-right-icon' src='../img/team.png'></image>
+            <image class='goods-list-right-icon' src='../img/team_a2d89f.png'></image>
             <view class='main-list-num'>
-              {{[6,8,9][item.groubaSize]?[6,8,9][item.groubaSize]+'人团':'设置开团人数'}}
+              {{[2,3,5,6,8,9][item.groubaSize]?[2,3,5,6,8,9][item.groubaSize]+'人团':'设置开团人数'}}
             </view>
           </view>
         </picker>
@@ -112,6 +113,7 @@
   <view class='pay'>
     <image class='pay-canvas' src='{{groub.shopQR}}' mode='aspectFill' bindtouchstart='timestart' bindtouchend='timeend' bindtap='saveImg'></image>
     <view class='pay-type'>-- 长按保存到相册 --</view>
+    <!-- <canvas canvas-id="posterCanvas" style='width: 600rpx; height: 900rpx;' type="webgl" id="posterCanvas"></canvas> -->
   </view>
   <view class='pay-close-container'>
     <image class='pay-close' src='../img/close-circle2.png' bindtap='closePay'></image>

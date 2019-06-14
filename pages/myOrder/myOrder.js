@@ -40,7 +40,7 @@ Page({
     let order = this.data.pageArray[index]
     util.log("#消费活动商品:" + JSON.stringify(order))
     //#是否成团校验
-    if (([6, 8, 9][order.groubaSize]) > order.ordersStatus.length) {
+    if (([2,3,5,6, 8, 9][order.groubaSize]) > order.ordersStatus.length) {
       util.softTips(this, "亲，未成团不能生成消费码")
       return
     }

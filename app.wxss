@@ -126,6 +126,7 @@
   margin: 0 3rpx;
   font-size: 20rpx;
   color: #fff;
+  opacity: 0.6;
   line-height: 36rpx;
   padding-left: 6rpx;
   padding-right: 10rpx;
@@ -560,7 +561,7 @@
   height: 600rpx;
   background-color: white;
   text-align: center;
-  border: 2rpx solid #bbb;
+  box-shadow: 0px 0px 2px 0px grey;
   border-radius: 10rpx;
 }
 
@@ -586,7 +587,7 @@
 .pay-close-container {
   display: flex;
   flex-direction: column;
-  padding-top: 30rpx;
+  padding-top: 20rpx;
   align-self: center;
   width: 560rpx;
 }

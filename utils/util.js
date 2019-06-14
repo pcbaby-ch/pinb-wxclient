@@ -166,6 +166,10 @@ let imgMaxSize = 1024 * 1024 /** #1000kb */
  */
 function imageUpload(resImage, fileTypePath, that, callBack, compressRate) {
   log("#图片准备上传,#res" + JSON.stringify(resImage));
+  that.setData({
+    showProgressPercent: true,
+    progressPercent: 40,
+  })
   //#01图片压缩
   if (resImage.tempFiles[0].size > imgMaxSize) {
     compressRate = compressRate || 60
@@ -187,11 +191,19 @@ function imageUpload(resImage, fileTypePath, that, callBack, compressRate) {
                 log("#图片上传失败,开始重试,#compressRate:" + compressRate)
                 imageUpload(resImage, fileTypePath, that, callBack, compressRate)
               } else {
+                softTips(that, "图片容量过大，多次压缩上传失败")
+                that.setData({
+                  progressPercent: 100,
+                  showProgressPercent: false,
+                })
                 log("#图片上传失败,重试超限，#compressRate:" + compressRate)
                 return
               }
             } else {
               log("#图片压缩成小于1M，开始上传")
+              that.setData({
+                progressPercent: 60,
+              })
               fileUpload(resCompressImg.tempFilePath, fileTypePath, that, callBack)
             }
           }
@@ -199,6 +211,10 @@ function imageUpload(resImage, fileTypePath, that, callBack, compressRate) {
       },
       fail() {
         log("#图片压缩失败")
+        that.setData({
+          progressPercent: 100,
+          showProgressPercent: false,
+        })
       }
     })
   } else {
@@ -226,6 +242,9 @@ function fileUpload(resImgPath, fileTypePath, that, callBack, resImage) {
           }
         },
       })
+      that.setData({
+        progressPercent: 80,
+      })
       wx.uploadFile({
         url: apiHost + '/fileUpload',
         filePath: resImgPath,
@@ -242,8 +261,13 @@ function fileUpload(resImgPath, fileTypePath, that, callBack, resImage) {
             data = null
           }
           if (!data || data.retCode != '10000') {
+            softTips(that, "图片容量过大，多次压缩上传失败")
             log("#图片服务端上传失败" + JSON.stringify(data))
           } else {
+            that.setData({
+              progressPercent: 100,
+              showProgressPercent: false,
+            })
             log("#图片上传完成,#res" + JSON.stringify(data))
             callBack(data.data)
           }
