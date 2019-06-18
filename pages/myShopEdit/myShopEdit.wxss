@@ -1,6 +1,6 @@
 .pay{
-  /* height: 900rpx;
+  height: 900rpx;
   width: 600rpx;
-  padding-top: 0; */
+  padding-top: 0;
 }
 

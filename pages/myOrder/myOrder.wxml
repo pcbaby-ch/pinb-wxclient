@@ -28,10 +28,10 @@
   </view>
 
 </view>
-<!-- 分页加载提示 -->
-<include src="../component/pageHelp.wxml" />
 <!-- 空白页动画 -->
 <include src="../component/blank.wxml" />
+<!-- 分页加载提示 -->
+<include src="../component/pageHelp.wxml" />
 
 <!-- 消费二维码 -->
 <view class='pay-container' style='display:{{payContainerShow||"none"}}'>
