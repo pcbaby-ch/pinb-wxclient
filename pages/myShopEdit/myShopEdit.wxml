@@ -113,7 +113,7 @@
   <view class='pay'>
     <!-- <image class='pay-canvas' src='{{groub.shopQR}}' mode='aspectFill' bindtouchstart='timestart' bindtouchend='timeend' bindtap='saveImg'></image>
     <view class='pay-type'>-- 长按保存到相册 --</view> -->
-    <canvas canvas-id="posterCanvas" style='width: 600rpx; height: 900rpx;' type="webgl" id="posterCanvas"></canvas>
+    <canvas canvas-id="posterCanvas" style='width: 600rpx; height: 900rpx;' id="posterCanvas"></canvas>
   </view>
   <view class='pay-close-container'>
     <image class='pay-close' src='../img/close-circle2.png' bindtap='closePay'></image>

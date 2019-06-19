@@ -481,63 +481,51 @@ Page({
 
   sharePosteCanvas() {
     var that = this;
-    that.setData({
-      showProgressPercent: true,
-      progressPercent: 40,
-    })
+
     const ctx = wx.createCanvasContext('posterCanvas');
-    ctx.setFillStyle('red');
-    // ctx.setFontSize(10);
-    // ctx.setTextAlign('right'); 
-    // ctx.fillText("微信扫码或长按识别", 235, 150);
-    ctx.drawImage(that.data.groub.shopQR, 0, 0)
+    var width = "";
+    wx.createSelectorQuery().select('#posterCanvas').boundingClientRect(function(rect) {
+      util.log("#rect：" + JSON.stringify(rect))
+      var height = rect.height;
+      var right = rect.right;
+      width = rect.width;
+      var left = rect.left + 5;
+      ctx.setFillStyle('#fff');
+      ctx.fillRect(0, 0, rect.width, height);
+      let y1 = 0,
+        x1 = 0
+      let y2_1 = height * 0.3,
+        y2_1_x1 = 6
+      let y2_2 = height * 0.3 + 50,
+        y2_2_x1 = 6
+      let y2_3 = height * 0.3 + 100,
+        y2_3_x1 = 6
+      let y3 = height * 0.3 + 200,
+        y3_x1 = 6
+      let y4 = height * 0.3 + 250,
+        y4_x1 = 6
+      //#活动logo
+      // ctx.drawImage(that.data.groub.groubImgView, x1, y1, width, y2_1 - 10)
+      ctx.drawImage(that.data.groub.groubImgView, x1, y1, 200, y2_1 - 10, x1, y1, width, y2_1 - 10)
+      //   //#商品1
+
+      //   //#商品2
+
+      //   //#商品3
+
+      //   //#店铺电话、地址
+
+      //   //活动文案、店铺二维码
+      //   // ctx.drawImage(that.data.groub.shopQR, 150, 40, 300, 300)
+      //   ctx.setFontSize(10);
+      //   ctx.setTextAlign('right');
+      //   ctx.fillText("微信扫码或长按识别", 235, 150);
+      util.log("#ctx:" + JSON.stringify(ctx))
+      ctx.draw();
+    }).exec()
+
     util.log("#？ctx:" + JSON.stringify(ctx))
-    ctx.draw();
-    // var width = "";
-    // wx.createSelectorQuery().select('#posterCanvas').boundingClientRect(function(rect) {
-    //   util.log("#rect：" + JSON.stringify(rect))
-    //   var height = rect.height;
-    //   var right = rect.right;
-    //   width = rect.width;
-    //   var left = rect.left + 5;
-    //   ctx.setFillStyle('#fff');
-    //   ctx.fillRect(0, 0, rect.width, height);
-    //   let y1 = 0,
-    //     x1 = 0
-    //   let y2_1 = height * 0.3,
-    //     y2_1_x1 = 6
-    //   let y2_2 = height * 0.3 + 50,
-    //     y2_2_x1 = 6
-    //   let y2_3 = height * 0.3 + 100,
-    //     y2_3_x1 = 6
-    //   let y3 = height * 0.3 + 200,
-    //     y3_x1 = 6
-    //   let y4 = height * 0.3 + 250,
-    //     y4_x1 = 6
-    //   //#活动logo
-    //   ctx.drawImage(that.data.groub.groubImgView, x1, y1, width, y2_1 - 10)
-    //   //#商品1
 
-    //   //#商品2
-
-    //   //#商品3
-
-    //   //#店铺电话、地址
-
-    //   //活动文案、店铺二维码
-    //   // ctx.drawImage(that.data.groub.shopQR, 150, 40, 300, 300)
-    //   ctx.setFontSize(10);
-    //   ctx.setTextAlign('right');
-    //   ctx.fillText("微信扫码或长按识别", 235, 150);
-    //   util.log("#ctx:" + JSON.stringify(ctx))
-    //   ctx.draw();
-    // }).exec()
-
-
-    that.setData({
-      showProgressPercent: false,
-      progressPercent: 100,
-    })
   },
 
   onLoad: function(pageRes) {

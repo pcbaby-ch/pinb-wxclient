@@ -62,13 +62,15 @@
 
 .top {
   width: 100%;
-  height: 100%;
+  height: 300rpx;
+  overflow: hidden;
   position: relative;
   line-height: 34rpx;
   color: rgba(16, 16, 16, 1);
   font-size: 28rpx;
   text-align: center;
   font-family: Arial;
+  background-color: white;
 }
 
 .top .bgImg {
@@ -528,7 +530,7 @@
 }
 
 .blank-container image {
-  width: 100%;
+  width: 50%;
 }
 
 /* 遮罩层 */

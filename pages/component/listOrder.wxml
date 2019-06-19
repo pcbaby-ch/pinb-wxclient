@@ -10,7 +10,7 @@
         <text class='yuanjia'>￥{{item.goodsPrice}}</text>
         <text class='zhekou'>￥{{item.goodsPrice-item.groubaDiscountAmount}}</text>
       </view>
-      <image class='goods-list-left-goodsImg' mode='aspectFill' src='{{item.goodsImgView}}'></image>
+      <image class='goods-list-left-goodsImg' mode='widthFix' src='{{item.goodsImgView}}'></image>
 
       <!-- </view> -->
     </button>
