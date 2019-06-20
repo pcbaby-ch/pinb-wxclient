@@ -385,13 +385,6 @@ Page({
     createShopQR()
   },
 
-  closePay: function() {
-
-    this.setData({
-      payContainerShow: 'none',
-    })
-  },
-
   createShopQR() {
     let that = this
     let groub = that.data.groub
@@ -411,75 +404,61 @@ Page({
       }
     })
   },
-  /** 长按店铺二维码保存 */
-  //点击开始时的时间
-  timestart: function(e) {　　
-    var that = this;　　
-    that.setData({
-      timestart: e.timeStamp
-    });
-  },
 
-  //点击结束的时间
-  timeend: function(e) {　　
-    var that = this;　　
-    that.setData({
-      timeend: e.timeStamp
-    });
+  closeContainer() {
+    this.setData({
+      payContainerShow: 'none',
+    })
   },
 
   //保存图片
-  saveImg: function(e) {
+  saveQr() {
     var that = this;
-    var times = that.data.timeend - that.data.timestart;
-    if (times > 300) {
-      util.log("#长按");
-      wx.getSetting({
-        success: function(res) {
-          util.log("#保存相册res:" + JSON.stringify(res))
-          if (res.authSetting["scope.writePhotosAlbum"] == false) {
-            util.log("#保存相册授权已被拒绝");
-            wx.showModal({
-              title: '需要授权',
-              content: '请开启相册权限后，重新保存海报',
-              success(res) {
-                if (res.confirm) {
-                  wx.openSetting({
-                    success(data) {
-                      that.saveImg()
-                    }
-                  })
-                }
+    wx.getSetting({
+      success: function(res) {
+        util.log("#保存相册res:" + JSON.stringify(res))
+        if (res.authSetting["scope.writePhotosAlbum"] == false) {
+          util.log("#保存相册授权已被拒绝");
+          wx.showModal({
+            title: '需要授权',
+            content: '请开启相册权限后，重新保存海报',
+            success(res) {
+              if (res.confirm) {
+                wx.openSetting({
+                  success(data) {
+                    that.saveImg()
+                  }
+                })
               }
-            })
-          } else {
-            wx.authorize({
-              scope: 'scope.writePhotosAlbum',
-              success: function(res) {
-                util.log("#保存相册授权成功");
-                var imgUrl = that.data.groub.shopQR //图片地址
-                wx.downloadFile({ //下载文件资源到本地，
-                  url: imgUrl,
-                  　success: function(res) {
-                    util.log('#下载成功后再保存到本地' + JSON.stringify(res));　
-                    wx.saveImageToPhotosAlbum({
-                      filePath: res.tempFilePath, //返回的临时文件路径，
-                    })
-                    util.softTips(that, "二维码已保存到相册", 5)
-                    that.setData({
-                      payContainerShow: 'none',
-                    })
-                  },
-                })　　　　　　　　　　
-              }　　　　　　　　
-            })
-          }
-        }　　　　
-      })　　
-    }
+            }
+          })
+        } else {
+          wx.authorize({
+            scope: 'scope.writePhotosAlbum',
+            success: function(res) {
+              util.log("#保存相册授权成功");
+              var imgUrl = that.data.groub.shopQR //图片地址
+              wx.downloadFile({ //下载文件资源到本地，
+                url: imgUrl,
+                　success: function(res) {
+                  util.log('#下载成功后再保存到本地' + JSON.stringify(res));　
+                  wx.saveImageToPhotosAlbum({
+                    filePath: res.tempFilePath, //返回的临时文件路径，
+                  })
+                  util.softTips(that, "二维码已保存到相册", 5)
+                  that.setData({
+                    payContainerShow: 'none',
+                  })
+                },
+              })　　　　　　　　　　
+            }　　　　　　　　
+          })
+        }
+      }　　　　
+    })　　
   },
 
-  sharePosteCanvas() {
+  sharePosteCanvas(imageSrc) {
     var that = this;
 
     const ctx = wx.createCanvasContext('posterCanvas');
@@ -494,21 +473,24 @@ Page({
       ctx.fillRect(0, 0, rect.width, height);
       let y1 = 0,
         x1 = 0
-      let y2_1 = height * 0.3,
-        y2_1_x1 = 6
-      let y2_2 = height * 0.3 + 50,
-        y2_2_x1 = 6
-      let y2_3 = height * 0.3 + 100,
-        y2_3_x1 = 6
-      let y3 = height * 0.3 + 200,
-        y3_x1 = 6
-      let y4 = height * 0.3 + 250,
-        y4_x1 = 6
       //#活动logo
       // ctx.drawImage(that.data.groub.groubImgView, x1, y1, width, y2_1 - 10)
-      ctx.drawImage(that.data.groub.groubImgView, x1, y1, 200, y2_1 - 10, x1, y1, width, y2_1 - 10)
-      //   //#商品1
+      ctx.drawImage("../img/QR_head.png", 0, 0, 750, 180, 0, 0, width, height * 0.17)
+      //拼团活动火爆巨惠来袭
+      ctx.drawImage("../img/activity.jpg", 0, 0, 900, 900, 10, height * 0.16 , 60, 60)
+      ctx.setFontSize(12)
+      ctx.setFillStyle('#000');
+      ctx.setTextAlign("center")
+      ctx.fillText("拼团活动火爆巨惠来袭", width * 0.45, height * 0.20 + 20)
+      //商品主图
+      ctx.drawImage(imageSrc || that.data.pageArray[0].goodsImgView, 0, 0, 200, 200, 0, height * 0.3, width, height * 0.3 + 60)
 
+      //商品价格+二维码
+
+      ctx.drawImage(that.data.groub.shopQR, width * 0.6, height * 0.75, 90, 90, width * 0.8, height * 0.8)
+      ctx.setFontSize(12)
+      ctx.setFillStyle('grey');
+      ctx.fillText("微信扫码参与", width * 0.6 + 50, height * 0.75 + 100)
       //   //#商品2
 
       //   //#商品3
