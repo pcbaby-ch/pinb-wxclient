@@ -1,6 +1,7 @@
 {
   "usingComponents": {
     "toast": "../component/toast/toast"
-  }
+  },
+  "enablePullDownRefresh": false,
+  "disableScroll": true
 }
-

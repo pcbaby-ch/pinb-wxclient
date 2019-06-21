@@ -376,18 +376,14 @@ Page({
 
     })
   },
-  /** 生成并展示店铺二维码 */
-  toQrCode: function(res) {
-    util.log("#res:" + JSON.stringify(res))
-    let order = this.data.pageArray[res.currentTarget.dataset.index]
-    util.log("#二维码信息:" + that.data.groub.groubTrace)
-    //#生成二维码
-    createShopQR()
-  },
 
   createShopQR() {
     let that = this
     let groub = that.data.groub
+    that.setData({
+      showProgressPercent: true,
+      progressPercent: 40,
+    })
     util.reqPost(util.apiHost + "/groupBar/getShopQR", {
       "appid": util.appid,
       "secret": util.secret,
@@ -395,12 +391,40 @@ Page({
     }, resp => {
       if (util.parseResp(that, resp)) {
         util.log("#店铺二维码生成成功:" + resp)
+        that.setData({
+          progressPercent: 60,
+        })
         groub.shopQR = util.apiHost + "/images/shopQR/" + resp.data.data
         that.setData({
           groub,
           payContainerShow: 'true',
         })
-        that.sharePosteCanvas();
+        //获取网络图片本地路径
+        wx.getImageInfo({
+          src: that.data.groub.shopQR, //服务器返回的图片地址
+          success: function(res) {
+            that.data.groub.shopQR = res.path
+            that.setData({
+              progressPercent: 80,
+            })
+          }
+        })
+
+        wx.getImageInfo({
+          src: that.data.pageArray[0].goodsImgView, //服务器返回的图片地址
+          success: function(res) {
+            that.setData({
+              progressPercent: 100,
+            })
+            that.data.pageArray[0].goodsImgView = res.path
+            that.sharePosteCanvas();
+            that.setData({
+              showProgressPercent: false,
+            })
+          }
+        })
+
+
       }
     })
   },
@@ -438,10 +462,9 @@ Page({
             success: function(res) {
               util.log("#保存相册授权成功");
               var imgUrl = that.data.groub.shopQR //图片地址
-              wx.downloadFile({ //下载文件资源到本地，
-                url: imgUrl,
-                　success: function(res) {
-                  util.log('#下载成功后再保存到本地' + JSON.stringify(res));　
+              wx.canvasToTempFilePath({
+                canvasId: 'posterCanvas',
+                success: function(res) {
                   wx.saveImageToPhotosAlbum({
                     filePath: res.tempFilePath, //返回的临时文件路径，
                   })
@@ -449,8 +472,8 @@ Page({
                   that.setData({
                     payContainerShow: 'none',
                   })
-                },
-              })　　　　　　　　　　
+                }
+              })
             }　　　　　　　　
           })
         }
@@ -458,56 +481,60 @@ Page({
     })　　
   },
 
-  sharePosteCanvas(imageSrc) {
+  sharePosteCanvas(goods) {
     var that = this;
-
+    goods = goods ? goods : that.data.pageArray[0]
+    util.log("#准备生成商品海报:" + JSON.stringify(goods))
     const ctx = wx.createCanvasContext('posterCanvas');
     var width = "";
     wx.createSelectorQuery().select('#posterCanvas').boundingClientRect(function(rect) {
-      util.log("#rect：" + JSON.stringify(rect))
+      // util.log("#rect：" + JSON.stringify(rect))
       var height = rect.height;
       var right = rect.right;
       width = rect.width;
       var left = rect.left + 5;
       ctx.setFillStyle('#fff');
       ctx.fillRect(0, 0, rect.width, height);
-      let y1 = 0,
-        x1 = 0
       //#活动logo
-      // ctx.drawImage(that.data.groub.groubImgView, x1, y1, width, y2_1 - 10)
       ctx.drawImage("../img/QR_head.png", 0, 0, 750, 180, 0, 0, width, height * 0.17)
       //拼团活动火爆巨惠来袭
-      ctx.drawImage("../img/activity.jpg", 0, 0, 900, 900, 10, height * 0.16 , 60, 60)
-      ctx.setFontSize(12)
+      ctx.drawImage("../img/activity.jpg", 0, 0, 900, 900, 10, height * 0.16, 60, 60)
+      ctx.setFontSize(15)
       ctx.setFillStyle('#000');
       ctx.setTextAlign("center")
-      ctx.fillText("拼团活动火爆巨惠来袭", width * 0.45, height * 0.20 + 20)
+      ctx.fillText("活动火爆巨惠来袭", width * 0.45, height * 0.20 + 20)
       //商品主图
-      ctx.drawImage(imageSrc || that.data.pageArray[0].goodsImgView, 0, 0, 200, 200, 0, height * 0.3, width, height * 0.3 + 60)
+      ctx.drawImage(goods.goodsImgView, 0, 0, 200, 200, 0, height * 0.3, width, height * 0.3 + 60)
 
-      //商品价格+二维码
-
-      ctx.drawImage(that.data.groub.shopQR, width * 0.6, height * 0.75, 90, 90, width * 0.8, height * 0.8)
+      //商品名称、价格+二维码
+      let goodsName = that.data.pageArray[0].goodsName + "s"
+      goodsName = goodsName.length > 8 ? goodsName.substring(0, 8) + "..." : goodsName
+      //商品名称
+      ctx.setFontSize(19)
+      ctx.setFillStyle('#000');
+      ctx.setTextAlign("left")
+      ctx.fillText(goodsName, 10, height * 0.8 + 10)
+      //价格
+      ctx.setFillStyle('#000');
+      ctx.setFontSize(16)
+      ctx.fillText("￥", 10, height * 0.8 + 40)
+      ctx.setFontSize(22)
+      ctx.fillText(goods.goodsPrice - goods.groubaDiscountAmount, 10 + 15, height * 0.8 + 40)
+      //原价
+      ctx.setFillStyle('grey');
+      ctx.setFontSize(16)
+      ctx.fillText("原价:" + goods.goodsPrice, 10 + 60, height * 0.8 + 40)
+      //特惠tag
+      ctx.drawImage("../img/QR_flashSales.png", 10, height * 0.8 + 55, 139 * 0.5, 40 * 0.5, width * 0.8, height * 0.8)
+      //二维码
+      ctx.drawImage(that.data.groub.shopQR, width * 0.66, height * 0.75, 90, 90, width * 0.8, height * 0.8)
       ctx.setFontSize(12)
       ctx.setFillStyle('grey');
-      ctx.fillText("微信扫码参与", width * 0.6 + 50, height * 0.75 + 100)
-      //   //#商品2
+      ctx.fillText("微信扫码参与", width * 0.68, height * 0.75 + 100)
 
-      //   //#商品3
-
-      //   //#店铺电话、地址
-
-      //   //活动文案、店铺二维码
-      //   // ctx.drawImage(that.data.groub.shopQR, 150, 40, 300, 300)
-      //   ctx.setFontSize(10);
-      //   ctx.setTextAlign('right');
-      //   ctx.fillText("微信扫码或长按识别", 235, 150);
       util.log("#ctx:" + JSON.stringify(ctx))
       ctx.draw();
     }).exec()
-
-    util.log("#？ctx:" + JSON.stringify(ctx))
-
   },
 
   onLoad: function(pageRes) {
