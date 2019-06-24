@@ -382,7 +382,7 @@ Page({
     let groub = that.data.groub
     that.setData({
       showProgressPercent: true,
-      progressPercent: 40,
+      progressPercent: 60,
     })
     util.reqPost(util.apiHost + "/groupBar/getShopQR", {
       "appid": util.appid,
@@ -392,7 +392,7 @@ Page({
       if (util.parseResp(that, resp)) {
         util.log("#店铺二维码生成成功:" + resp)
         that.setData({
-          progressPercent: 60,
+          progressPercent: 80,
         })
         groub.shopQR = util.apiHost + "/images/shopQR/" + resp.data.data
         that.setData({
@@ -405,8 +405,9 @@ Page({
           success: function(res) {
             that.data.groub.shopQR = res.path
             that.setData({
-              progressPercent: 80,
+              progressPercent: 100,
             })
+            that.sharePosteCanvas();
           }
         })
 
@@ -505,7 +506,7 @@ Page({
       ctx.setFontSize(15)
       ctx.setFillStyle('#000');
       ctx.setTextAlign("center")
-      ctx.fillText("活动火爆巨惠来袭", width * 0.45, height * 0.20 + 20)
+      ctx.fillText("活动火爆巨惠来袭", width * 0.45, height * 0.20 + 20)//●○⊙⊙
       //商品主图，显示模式（）
       let heigth = (goods.goodsImgView_width * 60) / (135)
       util.log("#goodsImgView_width:" + goods.goodsImgView_width + "#goodsImgView_height:" + goods.goodsImgView_height + "#width:" + width + "#heigth:" + height * 0.45)
@@ -546,7 +547,7 @@ Page({
       ctx.drawImage(that.data.groub.shopQR, width * 0.66, height * 0.75, 90, 90, width * 0.8, height * 0.8)
       ctx.setFontSize(12)
       ctx.setFillStyle('grey');
-      ctx.fillText("微信扫码参与", width * 0.68, height * 0.75 + 100)
+      ctx.fillText("微信扫码参与", width * 0.69, height * 0.75 + 100)
 
       util.log("#ctx:" + JSON.stringify(ctx))
       ctx.draw();
