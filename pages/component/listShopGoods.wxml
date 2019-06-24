@@ -4,7 +4,7 @@
     <!-- <view wx:if="{{item.groubaIsnew}}" class='goods-list-new'></view> -->
     <view class='goods-list-new'>{{([2,3,5,6,8,9][item.groubaSize])==item.ordersStatus.length?'成团':(item.groubaIsnew?'新':'')}}</view>
     <!-- 活动商品-左侧 -->
-    <view style='width:50%;position: relative;border-right: 2rpx solid #eee;' class='goods-list-left' data-index='{{index}}' catchtap='goGoodsDetail'>
+    <view  class='goods-list-left' data-index='{{index}}' catchtap='goGoodsDetail'>
       <image class='goodsImg' style="height: 100%" src='{{item.goodsImgView}}' data-index='{{index}}' mode='widthFix'></image>
     </view>
     <!-- 活动商品-右侧 -->
