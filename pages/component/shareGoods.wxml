@@ -3,7 +3,9 @@
   <view class='goods-list-new'>{{([2,3,5,6,8,9][shareGoods.groubaSize])==shareGoods.ordersStatus.length?'成团':(shareGoods.groubaIsnew?'新':'')}}</view>
   <!-- 活动商品-左侧 -->
   <view class='goods-list-left' catchtap='goGoodsDetail'>
-    <image class='goodsImg' src='{{shareGoods.goodsImgView}}' data-index='{{index}}' mode='widthFix'></image>
+    <view class="goods-list-left-goodsImg">
+      <image class='goodsImg' src='{{shareGoods.goodsImgView}}' data-index='{{index}}' mode='widthFix'></image>
+    </view>
     <view class='goodsName'>
       <view data-type='name' data-index='{{index}}' class='{{shareGoods.goodsName?"":""}}' wx:if='{{editItem!=index+"-goodsName"}}'>{{shareGoods.goodsName}}
         <text class='yuanjia'>￥{{shareGoods.goodsPrice||'??'}}</text>

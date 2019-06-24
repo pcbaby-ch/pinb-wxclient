@@ -508,8 +508,13 @@ Page({
       ctx.fillText("活动火爆巨惠来袭", width * 0.45, height * 0.20 + 20)
       //商品主图，显示模式（）
       let heigth = (goods.goodsImgView_width * 60) / (135)
-      util.log("#goodsImgView_width:" + goods.goodsImgView_width + "#goodsImgView_height:" + goods.goodsImgView_height + "#heigth:" + heigth)
-      ctx.drawImage(goods.goodsImgView, 0, 0, goods.goodsImgView_width, heigth, 0, height * 0.3, width, height * 0.3 + 60)
+      util.log("#goodsImgView_width:" + goods.goodsImgView_width + "#goodsImgView_height:" + goods.goodsImgView_height + "#width:" + width + "#heigth:" + height * 0.45)
+      //图片容器宽高比：{width:height * 0.45}
+      ctx.drawImage(goods.goodsImgView, 0, height * 0.29, width, width * goods.goodsImgView_height / goods.goodsImgView_width)
+      //图片多余高度擦除掉
+      ctx.setFillStyle('#fff');
+      ctx.fillRect(0, height * 0.74, rect.width, height);
+
 
       //商品名称、价格+二维码
       let goodsName = that.data.pageArray[0].goodsName + "s"

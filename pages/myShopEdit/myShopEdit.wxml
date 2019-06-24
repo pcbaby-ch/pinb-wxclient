@@ -3,7 +3,7 @@
 <view wx:if='{{isEdit}}' class='top {{isEdit?"opacityshow":""}}' bindtap='upImg'>
   <view catchtap='catchtap' data-type='groub.groubName' data-index='' class='{{groub.groubName?"top-groubName":"antScale top-groubName"}}' style='margin-top:-20rpx' wx:if='{{editItem!="-groub.groubName"}}'>{{groub.groubName||'点此填写商铺名称'}}</view>
   <input maxlength='12' class="antEdit" style='width:98%;box-sizing: border-box;margin-top:5rpx' bindblur='bindinput' data-type='groubName' value='{{groub.groubName}}' wx:if='{{editItem=="-groub.groubName"}}' focus='{{editItem=="-groub.groubName"}}' />
-  <image wx:if='{{groub.groubImg}}' src='{{groub.groubImgView}}' class='bgImg' mode='aspectFill'></image>
+  <image wx:if='{{groub.groubImg}}' src='{{groub.groubImgView}}' class='bgImg' mode='widthFix'></image>
   <view wx:if='{{groub.groubImg}}' class='top-tag'>
     <view class='top-tag-i'>老用户开团</view>
     <view class='top-tag-i'>分享用户拼团</view>
@@ -40,7 +40,9 @@
             placeholder="请输入" />
           <view catchtap='catchtap' style="background-color: #fff;" data-type='groubaDiscountAmount' data-index='{{index}}' wx:if='{{editItem!=index+"-groubaDiscountAmount"}}' class='{{item.groubaDiscountAmount?"":"antScale"}}'>{{item.groubaDiscountAmount?"折扣:"+item.groubaDiscountAmount:"折扣金额"}}</view>
         </view>
-        <image wx:if='{{item.goodsImg}}' class='goodsImg' src='{{item.goodsImgView}}' catchtap='upImg2' data-index='{{index}}' mode='aspectFill'></image>
+        <view class="goods-list-left-goodsImg">
+          <image wx:if='{{item.goodsImg}}' class='goodsImg' src='{{item.goodsImgView}}' catchtap='upImg2' data-index='{{index}}' mode='widthFix'></image>
+        </view>
         <view wx:if='{{!item.goodsImg}}' class='main-list-left-up antScale' catchtap='upImg2' data-index='{{index}}'>
           <image src='../img/upImg2.png' data-index='{{index}}'></image>
           <view data-index='{{index}}'>上传商品照片</view>

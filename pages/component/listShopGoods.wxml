@@ -42,7 +42,9 @@
     <view class='goods-list-new'>{{([2,3,5,6,8,9][item.groubaSize])==item.ordersStatus.length?'成团':(item.groubaIsnew?'新':'')}}</view>
     <!-- 活动商品-左侧 -->
     <view class='goods-list-left' catchtap='goGoodsDetail'>
-      <image class='goodsImg' src='{{item.goodsImgView}}' data-index='{{index}}' mode='widthFix'></image>
+      <view class="goods-list-left-goodsImg">
+        <image class='goodsImg' src='{{item.goodsImgView}}' data-index='{{index}}' mode='widthFix'></image>
+      </view>
       <view class='goodsName'>
         <view data-type='name' data-index='{{index}}' class='{{item.goodsName?"":""}}' wx:if='{{editItem!=index+"-goodsName"}}'>{{item.goodsName}}
           <text class='yuanjia'>￥{{item.goodsPrice||'??'}}</text>
