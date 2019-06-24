@@ -413,10 +413,13 @@ Page({
         wx.getImageInfo({
           src: that.data.pageArray[0].goodsImgView, //服务器返回的图片地址
           success: function(res) {
+            util.log("#图片信息:" + JSON.stringify(res))
             that.setData({
               progressPercent: 100,
             })
             that.data.pageArray[0].goodsImgView = res.path
+            that.data.pageArray[0].goodsImgView_width = res.width
+            that.data.pageArray[0].goodsImgView_height = res.height
             that.sharePosteCanvas();
             that.setData({
               showProgressPercent: false,
@@ -488,7 +491,7 @@ Page({
     const ctx = wx.createCanvasContext('posterCanvas');
     var width = "";
     wx.createSelectorQuery().select('#posterCanvas').boundingClientRect(function(rect) {
-      // util.log("#rect：" + JSON.stringify(rect))
+      util.log("#rect：" + JSON.stringify(rect))
       var height = rect.height;
       var right = rect.right;
       width = rect.width;
@@ -503,8 +506,10 @@ Page({
       ctx.setFillStyle('#000');
       ctx.setTextAlign("center")
       ctx.fillText("活动火爆巨惠来袭", width * 0.45, height * 0.20 + 20)
-      //商品主图
-      ctx.drawImage(goods.goodsImgView, 0, 0, 200, 200, 0, height * 0.3, width, height * 0.3 + 60)
+      //商品主图，显示模式（）
+      let heigth = (goods.goodsImgView_width * 60) / (135)
+      util.log("#goodsImgView_width:" + goods.goodsImgView_width + "#goodsImgView_height:" + goods.goodsImgView_height + "#heigth:" + heigth)
+      ctx.drawImage(goods.goodsImgView, 0, 0, goods.goodsImgView_width, heigth, 0, height * 0.3, width, height * 0.3 + 60)
 
       //商品名称、价格+二维码
       let goodsName = that.data.pageArray[0].goodsName + "s"
@@ -519,11 +524,17 @@ Page({
       ctx.setFontSize(16)
       ctx.fillText("￥", 10, height * 0.8 + 40)
       ctx.setFontSize(22)
-      ctx.fillText(goods.goodsPrice - goods.groubaDiscountAmount, 10 + 15, height * 0.8 + 40)
+      let price = (goods.goodsPrice - goods.groubaDiscountAmount) + ""
+      let priceOriginal = goods.goodsPrice
+      ctx.fillText(price, 10 + 15, height * 0.8 + 40)
       //原价
       ctx.setFillStyle('grey');
       ctx.setFontSize(16)
-      ctx.fillText("原价:" + goods.goodsPrice, 10 + 60, height * 0.8 + 40)
+      ctx.fillText("原价:" + priceOriginal, 28 + price.length * 13, height * 0.8 + 40)
+      ctx.setLineWidth(1)
+      ctx.moveTo(28 + price.length * 13, height * 0.8 + 35)
+      ctx.lineTo((28 + price.length * 13) + (38) + priceOriginal.length * 9, height * 0.8 + 35)
+      ctx.stroke()
       //特惠tag
       ctx.drawImage("../img/QR_flashSales.png", 10, height * 0.8 + 55, 139 * 0.5, 40 * 0.5, width * 0.8, height * 0.8)
       //二维码
