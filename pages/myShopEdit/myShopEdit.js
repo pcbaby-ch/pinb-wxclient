@@ -502,11 +502,11 @@ Page({
       //#活动logo
       ctx.drawImage("../img/QR_head.png", 0, 0, 750, 180, 0, 0, width, height * 0.17)
       //拼团活动火爆巨惠来袭
-      ctx.drawImage("../img/activity.jpg", 0, 0, 900, 900, 10, height * 0.16, 60, 60)
+      ctx.drawImage("../img/activity.png", 0, 0, 900, 900, 10, height * 0.16, 60, 60)
       ctx.setFontSize(15)
       ctx.setFillStyle('#000');
       ctx.setTextAlign("center")
-      ctx.fillText("活动火爆巨惠来袭", width * 0.45, height * 0.20 + 20)//●○⊙⊙
+      ctx.fillText("活动火爆巨惠来袭", width * 0.5, height * 0.20 + 20)//●○⊙⊙
       //商品主图，显示模式（）
       let heigth = (goods.goodsImgView_width * 60) / (135)
       util.log("#goodsImgView_width:" + goods.goodsImgView_width + "#goodsImgView_height:" + goods.goodsImgView_height + "#width:" + width + "#heigth:" + height * 0.45)

@@ -40,8 +40,8 @@
             placeholder="请输入" />
           <view catchtap='catchtap' style="background-color: #fff;" data-type='groubaDiscountAmount' data-index='{{index}}' wx:if='{{editItem!=index+"-groubaDiscountAmount"}}' class='{{item.groubaDiscountAmount?"":"antScale"}}'>{{item.groubaDiscountAmount?"折扣:"+item.groubaDiscountAmount:"折扣金额"}}</view>
         </view>
-        <view class="goods-list-left-goodsImg">
-          <image wx:if='{{item.goodsImg}}' class='goodsImg' src='{{item.goodsImgView}}' catchtap='upImg2' data-index='{{index}}' mode='widthFix'></image>
+        <view class="goodsImg" wx:if='{{item.goodsImg}}'>
+          <image class='goodsImg' src='{{item.goodsImgView}}' catchtap='upImg2' data-index='{{index}}' mode='widthFix'></image>
         </view>
         <view wx:if='{{!item.goodsImg}}' class='main-list-left-up antScale' catchtap='upImg2' data-index='{{index}}'>
           <image src='../img/upImg2.png' data-index='{{index}}'></image>
