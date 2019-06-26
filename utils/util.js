@@ -100,6 +100,7 @@ function requestLoading(url, params, message, successCallback, failCallback) {
       // log("#网络连接情况:" + JSON.stringify(res))
       if (res.networkType == 'none') {
         heavyTips('网络异常', '亲，你的网络异常，请恢复后重试!')
+        return
       }
     },
   })
@@ -114,20 +115,26 @@ function requestLoading(url, params, message, successCallback, failCallback) {
       } else {
         if (failCallback)
           failCallback()
-        else if (res.errMsg = "request:fail timeout")
+        else if (res.errMsg = "request:fail timeout") {
           heavyTips('服务繁忙', '亲，活动火爆，请稍后重试!')
-        else
+          return
+        } else {
           heavyTips('网络异常', '亲，你的网络异常，请恢复后重试!')
+          return
+        }
       }
 
     },
     fail: function(res) {
       if (failCallback)
         failCallback()
-      else if (res.errMsg = "request:fail timeout")
+      else if (res.errMsg = "request:fail timeout") {
         heavyTips('服务繁忙', '亲，活动火爆，请稍后重试!')
-      else
+        return
+      } else {
         heavyTips('网络异常', '亲，你的网络异常，请恢复后重试!')
+        return
+      }
     },
     complete: function(res) {
       log(">>>响应数据:" + JSON.stringify(res) + " #url:" + url)
@@ -239,6 +246,7 @@ function fileUpload(resImgPath, fileTypePath, that, callBack, resImage) {
           // log("#网络连接情况:" + JSON.stringify(res))
           if (res.networkType == 'none') {
             heavyTips('网络异常', '亲，你的网络异常，请恢复后重试!')
+            return
           }
         },
       })
