@@ -50,8 +50,8 @@ App({
           success(res) {
             if (res.confirm) {
               // 新的版本已经下载好，调用 applyUpdate 应用新版本并重启
+              wx.clearStorage() //清除本地缓存
               updateManager.applyUpdate()
-              util.softTip(this, "亲，小程序自动更新成功")
             }
           }
         })

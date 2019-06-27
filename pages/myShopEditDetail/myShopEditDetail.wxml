@@ -1,0 +1,16 @@
+<!-- 图片集 -->
+<scroll-view class="goodsImgsArray-container" wx:for='{{goodsImgsArray}}' wx:for-item="item" wx:key="index" wx:for-index="index">
+  <image class='goodsImg' style="width: 100%" bindlongpress="deleteGoodsImg" src='{{item}}' data-index='{{index}}' mode='widthFix'></image>
+
+</scroll-view>
+<!-- 右下角悬浮菜单 -->
+<view class='fixed'>
+  <view class='fixed-list' catchtap='addGoodsImg'>
+    <image src='../img/plus-square.png'></image>
+    <view>添加</view>
+  </view>
+</view>
+
+
+<!-- 全局轻提示 -->
+<toast usToast='{{usToast}}'></toast>

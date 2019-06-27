@@ -326,13 +326,31 @@
 
 /** 商品list-右侧 *********************/
 
+.goods-list-right-container {
+  width: 80%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 6rpx 0 0 8rpx;
+  box-sizing: border-box;
+}
+
 .goods-list-right {
-  width: 50%;
+  /* width: 50%; */
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   padding: 6rpx 0 0 8rpx;
   box-sizing: border-box;
+}
+
+.goods-list-right-detail {
+  border-left: 1rpx solid #eee;
+  text-align: center;
+  padding-left: 12rpx;
+  writing-mode: vertical-rl;
+  color: grey;
+  font-size: 20px;
 }
 
 .main-list-right-groubaSize {

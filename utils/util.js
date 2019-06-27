@@ -203,6 +203,7 @@ function imageUpload(resImage, fileTypePath, that, callBack, compressRate) {
                   progressPercent: 100,
                   showProgressPercent: false,
                 })
+                wx.hideLoading()
                 log("#图片上传失败,重试超限，#compressRate:" + compressRate)
                 return
               }
@@ -218,6 +219,7 @@ function imageUpload(resImage, fileTypePath, that, callBack, compressRate) {
       },
       fail() {
         log("#图片压缩失败")
+        wx.hideLoading()
         that.setData({
           progressPercent: 100,
           showProgressPercent: false,
@@ -721,6 +723,8 @@ const cacheKey = {
   groubaTrace: 'groubaTrace',
   groubInfo: "groubInfo",
   goodsList: 'goodsList',
+
+  goodsImgsNameArray: "goodsImgsNameArray",
 }
 
 

@@ -484,7 +484,7 @@ Page({
       }　　　　
     })　　
   },
-
+  // #海报图绘制*********************************************
   sharePosteCanvas(goods) {
     var that = this;
     goods = goods ? goods : that.data.pageArray[0]
@@ -506,7 +506,7 @@ Page({
       ctx.setFontSize(15)
       ctx.setFillStyle('#000');
       ctx.setTextAlign("center")
-      ctx.fillText("活动火爆巨惠来袭", width * 0.5, height * 0.20 + 20)//●○⊙⊙
+      ctx.fillText("活动火爆巨惠来袭", width * 0.5, height * 0.20 + 20) //●○⊙⊙
       //商品主图，显示模式（）
       let heigth = (goods.goodsImgView_width * 60) / (135)
       util.log("#goodsImgView_width:" + goods.goodsImgView_width + "#goodsImgView_height:" + goods.goodsImgView_height + "#width:" + width + "#heigth:" + height * 0.45)
@@ -552,6 +552,14 @@ Page({
       util.log("#ctx:" + JSON.stringify(ctx))
       ctx.draw();
     }).exec()
+  },
+  //#跳转详情页
+  goShopEditDetail(res) {
+    util.log("#跳转详情页点击事件，#res:" + JSON.stringify(res))
+    let goodsIndex = res.currentTarget.dataset.index
+    wx.navigateTo({
+      url: '/pages/myShopEditDetail/myShopEditDetail?goodsIndex=' + goodsIndex,
+    })
   },
 
   onLoad: function(pageRes) {

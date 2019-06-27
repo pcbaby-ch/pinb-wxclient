@@ -54,7 +54,7 @@
         </view>
       </view>
       <!-- 活动商品-右侧 -->
-      <view class='goods-list-right'>
+      <view class='goods-list-right' style="width:40%">
         <picker bindchange="set_num" data-index='{{index}}' value="{{item.groubaSize}}" range="{{[2,3,5,6,8,9]}}">
           <view class='main-list-right-groubaSize' value="{{item.groubaSize}}">
             <image class='goods-list-right-icon' src='../img/team_a2d89f.png'></image>
@@ -85,6 +85,8 @@
           <switch checked='{{item.groubaIsnew}}' bindchange='switchChange' data-index='{{index}}' />
         </view>
       </view>
+      <!-- 详情页编辑 -->
+      <view class="goods-list-right-detail" catchtap="goShopEditDetail" data-index='{{index}}'>详情页编辑</view>
     </view>
 
   </view>
@@ -107,7 +109,7 @@
     <view>{{isEdit?"预览":"编辑"}}</view>
   </view>
 </view>
-
+<!-- 全局轻提示 -->
 <toast usToast='{{usToast}}'></toast>
 
 <!-- 店铺二维码 -->
