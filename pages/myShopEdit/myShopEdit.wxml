@@ -86,7 +86,7 @@
         </view>
       </view>
       <!-- 详情页编辑 -->
-      <view class="goods-list-right-detail" catchtap="goShopEditDetail" data-index='{{index}}'>详情页编辑</view>
+      <view class="goods-list-right-detail" catchtap="goGoodsDetailEdit" data-index='{{index}}'>详情页编辑</view>
     </view>
 
   </view>

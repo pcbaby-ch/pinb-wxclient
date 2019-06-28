@@ -1,4 +1,11 @@
 .goodsImgsArray-container{
   display: flex;
   flex-direction: column;
+  height: 100%;
+}
+
+.goodsImgsArray{
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
 }

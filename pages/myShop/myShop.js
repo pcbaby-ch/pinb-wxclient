@@ -50,6 +50,14 @@ Page({
       phoneNumber: this.data.groub.groubPhone,
     })
   },
+  //#跳转详情页
+  goGoodsDetail(res) {
+    util.log("#跳转详情页点击事件，#res:" + JSON.stringify(res))
+    let goodsIndex = res.currentTarget.dataset.index
+    wx.navigateTo({
+      url: '/pages/myShopEditDetail/myShopEditDetail?goodsIndex=' + goodsIndex + "&groubaTrace=" + this.data.pageArray[goodsIndex].groubaTrace + "&isEdit=" + false,
+    })
+  },
 
   onLoad: function(pageRes) {
     wx.showNavigationBarLoading()
@@ -129,10 +137,6 @@ Page({
     this.setData({
       payContainerShow: false,
     })
-  },
-
-  goGoodsDetail() {
-    util.softTips(this, "暂无商品详情页，敬请期待")
   },
 
   onShareAppMessageA(e) {

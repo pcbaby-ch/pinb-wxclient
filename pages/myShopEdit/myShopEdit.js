@@ -111,6 +111,11 @@ Page({
     //填写信息，缓存
     util.putCache(util.cacheKey.groubInfo, null, groub)
     util.setCache(util.cacheKey.goodsList, pageArray)
+    //置入商品详情信息
+    for (let i in pageArray) {
+      pageArray[i]["dGoodsImgs"] = util.getCache(util.cacheKey.goodsImgsNameArray + i)
+    }
+
     //#参数完整性校验
     if (!this.checkParams(groub, pageArray)) {
       return
@@ -554,11 +559,18 @@ Page({
     }).exec()
   },
   //#跳转详情页
-  goShopEditDetail(res) {
+  goGoodsDetail(res) {
     util.log("#跳转详情页点击事件，#res:" + JSON.stringify(res))
     let goodsIndex = res.currentTarget.dataset.index
     wx.navigateTo({
-      url: '/pages/myShopEditDetail/myShopEditDetail?goodsIndex=' + goodsIndex,
+      url: '/pages/myShopEditDetail/myShopEditDetail?goodsIndex=' + goodsIndex + "&groubaTrace=" + this.data.pageArray[goodsIndex].groubaTrace + "&isEdit=" + false,
+    })
+  },
+  goGoodsDetailEdit(res) {
+    util.log("#跳转详情页点击事件，#res:" + JSON.stringify(res))
+    let goodsIndex = res.currentTarget.dataset.index
+    wx.navigateTo({
+      url: '/pages/myShopEditDetail/myShopEditDetail?goodsIndex=' + goodsIndex + "&groubaTrace=" + this.data.pageArray[goodsIndex].groubaTrace + "&isEdit=" + true,
     })
   },
 
