@@ -562,6 +562,7 @@ Page({
   goGoodsDetail(res) {
     util.log("#跳转详情页点击事件，#res:" + JSON.stringify(res))
     let goodsIndex = res.currentTarget.dataset.index
+    util.setCache(util.cacheKey.goodsImgsNameArray + goodsIndex) //清除缓存取最新数据
     wx.navigateTo({
       url: '/pages/myShopEditDetail/myShopEditDetail?goodsIndex=' + goodsIndex + "&groubaTrace=" + this.data.pageArray[goodsIndex].groubaTrace + "&isEdit=" + false,
     })

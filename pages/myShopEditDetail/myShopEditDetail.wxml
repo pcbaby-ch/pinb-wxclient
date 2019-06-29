@@ -1,5 +1,7 @@
 <!-- 图片集 -->
 <view class="goodsImgsArray-container">
+  <!-- 空白页动画 -->
+  <include src="../component/blank.wxml" wx-if="{{isEdit!='true'}}"/>
   <scroll-view class="goodsImgsArray" scroll-y style="height:{{scrollHeight}}px;">
     <image class='goodsImg' wx:for='{{goodsImgsArray}}' wx:for-item="item" wx:key="index" wx:for-index="index" style="width: 100%;height:100%;" bindlongpress="{{isEdit&&isEdit=='true'?'deleteGoodsImg':''}}" src='{{item}}' data-index='{{index}}' mode='widthFix'></image>
   </scroll-view>
