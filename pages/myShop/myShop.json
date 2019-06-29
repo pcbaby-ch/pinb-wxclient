@@ -1,6 +1,6 @@
 {
   "usingComponents": {
     "toast": "../component/toast/toast"
-  }
+  },
+  "navigationBarTitleText": "店铺活动"
 }
-

@@ -1,17 +1,12 @@
 <!-- 图片集 -->
 <view class="goodsImgsArray-container">
   <scroll-view class="goodsImgsArray" scroll-y style="height:{{scrollHeight}}px;">
-    <image class='goodsImg' wx:for='{{goodsImgsArray}}' wx:for-item="item" wx:key="index" wx:for-index="index" style="width: 100%;height:100%;" bindlongpress="{{isEdit?'deleteGoodsImg':''}}" src='{{item}}' data-index='{{index}}' mode='widthFix'></image>
+    <image class='goodsImg' wx:for='{{goodsImgsArray}}' wx:for-item="item" wx:key="index" wx:for-index="index" style="width: 100%;height:100%;" bindlongpress="{{isEdit&&isEdit=='true'?'deleteGoodsImg':''}}" src='{{item}}' data-index='{{index}}' mode='widthFix'></image>
   </scroll-view>
 </view>
 
-<!-- 空白页动画 -->
-<include src="../component/blank.wxml" />
-<!-- 分页加载提示 -->
-<include src="../component/pageHelp.wxml" />
-
 <!-- 右下角悬浮菜单 -->
-<view class='fixed' wx-if="{{isEdit}}">
+<view class='fixed' wx-if="{{isEdit&&isEdit=='true'}}">
   <view class='fixed-list' catchtap='addGoodsImg'>
     <image src='../img/plus-square.png'></image>
     <view>添加</view>

@@ -40,18 +40,30 @@ Page({
     let order = this.data.pageArray[index]
     util.log("#消费活动商品:" + JSON.stringify(order))
     //#是否成团校验
-    if (([2,3,5,6, 8, 9][order.groubaSize]) > order.ordersStatus.length) {
+    if (([2, 3, 5, 6, 8, 9][order.groubaSize]) > order.ordersStatus.length) {
       util.softTips(this, "亲，未成团不能生成消费码")
       return
     }
-    //#生成二维码
-    var qrcode = new QRCode('canvas', {
-      // usingIn: this,
-      text: order.orderTrace + '|' + order.refUserWxUnionid,
-      colorDark: "#000000",
-      colorLight: "#ffffff",
-      correctLevel: QRCode.CorrectLevel.H,
-    });
+    const ctx = wx.createCanvasContext('paycanvas');
+    wx.getSystemInfo({
+      success: function(res) {
+        wx.get
+        var heightrate = res.screenHeight / 680
+        var widthrate = res.screenWidth / 680
+        util.log("#ctx:" + JSON.stringify(ctx) + "#res:" + JSON.stringify(res) + "#heightrate:" + heightrate + "#widthrate:" + widthrate+"#")
+        //#生成二维码
+        var qrcode = new QRCode('paycanvas', {
+          // usingIn: this,
+          text: order.orderTrace + '|' + order.refUserWxUnionid,
+          width: res.screenWidth*0.9,
+          height: res.screenWidth * 0.9,
+          colorDark: "#000000",
+          colorLight: "#ffffff",
+          correctLevel: QRCode.CorrectLevel.H,
+        })
+      },
+    })
+
 
 
     //请求：消费准备服务接口

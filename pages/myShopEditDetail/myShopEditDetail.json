@@ -2,6 +2,7 @@
   "usingComponents": {
     "toast": "../component/toast/toast"
   },
+  "navigationBarTitleText": "活动商品详情",
   "enablePullDownRefresh": false,
   "disableScroll": true
 }

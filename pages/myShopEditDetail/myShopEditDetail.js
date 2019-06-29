@@ -85,7 +85,7 @@ Page({
     let groubaTrace = pageRes.groubaTrace
     let isEdit = pageRes.isEdit
     if (isEdit && isEdit == 'true') {
-      util.softTips(that, "长按图片即删除", 6)
+      util.softTips(that, "长按图片，即删除", 6)
     }
     util.log("#商品详情页-传入参数:" + JSON.stringify(pageRes))
     //获取图片集：
@@ -105,13 +105,10 @@ Page({
           for (var i in goodsImgsNameArray) {
             goodsImgsArray[i] = util.apiHost + "/images/dgoodsImg/" + goodsImgsNameArray[i]
           }
-          let isShowBlank = goodsImgsNameArray && goodsImgsNameArray.length > 0 ? false : true
-          let isLoadEnd = isShowBlank
           that.setData({
             goodsImgsArray,
             goodsImgsNameArray,
-            isShowBlank,
-            isLoadEnd,
+            isShowBlank: goodsImgsNameArray && goodsImgsNameArray.length > 0 ? false : true,
           })
           util.putCache(util.cacheKey.goodsImgsNameArray + index, null, goodsImgsNameArray)
         }
@@ -127,6 +124,8 @@ Page({
     that.setData({
       goodsIndex: index,
       goodsImgsArray: goodsImgsArray || [],
+      goodsImgsNameArray,
+      isShowBlank: goodsImgsNameArray && goodsImgsNameArray.length > 0 ? false : true,
       isEdit,
     })
     //设置商品详情scrollHeight

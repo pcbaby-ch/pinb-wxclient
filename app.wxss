@@ -560,6 +560,7 @@
   justify-content: center;
   align-self: center;
   justify-self: center;
+  width: 100%;
 }
 
 .blank-container image {
@@ -582,7 +583,7 @@
 
 /** 浮窗样式 ***********************************/
 
-.pay-container {
+.shadow-container {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -596,10 +597,10 @@
 .pay {
   display: flex;
   flex-direction: column;
-  padding-top: 40rpx;
+  padding-top: 20rpx;
   align-self: center;
-  width: 600rpx;
-  height: 600rpx;
+  width: 700rpx;
+  height: 740rpx;
   background-color: white;
   text-align: center;
   box-shadow: 0px 0px 2px 0px grey;
@@ -607,19 +608,14 @@
 }
 
 .pay-canvas {
-  position: relative;
   align-self: center;
-  padding-bottom: 30rpx;
-  display: inline-block;
-  width: 500rpx;
-  height: 500rpx;
 }
 
 .pay-type {
   padding-top: 18rpx;
-  padding-bottom: 6rpx;
+  padding-bottom: 3rpx;
   line-height: 40rpx;
-  color: rgba(16, 16, 16, 1);
+  color: grey;
   font-size: 28rpx;
   text-align: center;
   font-family: PingFangSC-regular;

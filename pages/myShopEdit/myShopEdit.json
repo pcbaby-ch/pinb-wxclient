@@ -2,6 +2,7 @@
   "usingComponents": {
     "toast": "../component/toast/toast"
   },
+  "navigationBarTitleText": "店铺活动管理",
   "enablePullDownRefresh": false,
   "disableScroll": true
 }
