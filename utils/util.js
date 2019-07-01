@@ -587,7 +587,13 @@ function onShareAppMessageA(that, e) {
   if (tapGrouba.shareOrder) {
     //已开团，只能参团
     if (tapGrouba.isJoined && tapGrouba.isJoined == true) {
-      log("#已开团，纯分享")
+      if (([2, 3, 5, 6, 8, 9][tapGrouba.groubaSize]) == tapGrouba.ordersStatus.length) {
+        log("#已开团-满团，重新开团")
+        orderOpen(that, tapGrouba, formId)
+      } else {
+        log("#已开团-未满团，纯分享")
+
+      }
     } else {
       orderJoin(that, tapGrouba.shareOrder, tapGrouba.shareLeader, formId)
     }
