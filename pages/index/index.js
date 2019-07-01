@@ -186,11 +186,11 @@ Page({
     //#提示未初始选择当前位置
     if (userinfoCache.latitude) {
       //已经初始选过当前位置-加载附近的活动商品信息
-      util.pageInitData(that, that.getNearGrouba, 6)
+      util.pageInitData(that, that.getNearGrouba)
     } else {
       util.log("#未初始选过当前位置")
       // util.softTips(that, "未选择地址，推荐TOP100", 3)
-      util.pageInitData(that, that.getNearGrouba, 6)
+      util.pageInitData(that, that.getNearGrouba)
     }
 
   },
@@ -214,7 +214,7 @@ Page({
    */
   onPullDownRefresh: function() {
     // if (this.data.indexMode == 'userNear') {
-    //   util.pageInitData(this, this.getNearGrouba, 6)
+    //   util.pageInitData(this, this.getNearGrouba)
     // } else {
     //   wx.stopPullDownRefresh()
     // }

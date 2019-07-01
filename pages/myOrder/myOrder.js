@@ -98,7 +98,7 @@ Page({
     this.setData({
       getMyOrderUrl: url,
     })
-    util.pageInitData(this, this.getMyOrders, 6)
+    util.pageInitData(this, this.getMyOrders)
     // this.onLoad()
   },
 
@@ -203,7 +203,7 @@ Page({
       avatarUrl: userinfoCache.avatarUrl,
     })
     //#加载订单数据
-    util.pageInitData(that, that.getMyOrders, 6);
+    util.pageInitData(that, that.getMyOrders);
   },
 
   /**
@@ -224,7 +224,7 @@ Page({
    * 页面相关事件处理函数--监听用户下拉动作
    */
   onPullDownRefresh: function() {
-    util.pageInitData(this, this.getMyOrders, 6)
+    util.pageInitData(this, this.getMyOrders)
     wx.stopPullDownRefresh()
   },
 
