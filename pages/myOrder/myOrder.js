@@ -137,6 +137,7 @@ Page({
           isShowBlank: false,
         })
         util.log("#我的订单-数据加载-完成")
+        util.softTips(that, "点击订单图片，获取消费二维码", 6)
       } else {
         util.log("#我的订单-数据加载-失败")
         if (page_ > 1) {
