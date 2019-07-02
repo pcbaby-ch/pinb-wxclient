@@ -53,11 +53,7 @@ Page({
   },
 
   chooseLoc() {
-    let that = this
-    util.chooseLoc4User(that, function() {
-      util.log("#选择地址后，开始执行calbackFuction")
-      that.onLoad
-    })
+    util.chooseLoc4User(this)
 
   },
 

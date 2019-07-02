@@ -19,7 +19,7 @@
 <view class='fixed' wx:if="{{indexMode!='userLogin'}}">
   <view class='fixed-list' bindtap='goMyShopEdit'>
     <image src='../img/index.png'></image>
-    <view>{{isOpenGroub?"店铺":"入驻"}}</view>
+    <view style='{{isOpenGroub?"":""}}'>{{isOpenGroub?"店铺":"入驻"}}</view>
   </view>
   <!-- <view class='fixed-list' catchtap='add'>
       <image src='../img/plus-square.png'></image>

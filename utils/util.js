@@ -519,44 +519,54 @@ function getDistance(lat1, lng1, lat2, lng2) {
   }
 }
 /** 获取经纬度所在省市 */
-function getCity(latitude, longitude, key, callBack4GetCity) {
+function getCity(that, latitude, longitude, address) {
   wxmap.reverseGeocoder({
     location: {
       latitude: latitude,
       longitude: longitude
     },
     success: res => {
+      putCache(cacheKey.userinfo, "address", address)
+      putCache(cacheKey.userinfo, "latitude", latitude)
+      putCache(cacheKey.userinfo, "longitude", longitude)
       log("#省市解析成功:" + JSON.stringify(res))
-      putCache(key, 'latitude', latitude)
-      putCache(key, 'longitude', longitude)
-      putCache(key, 'province', res.result.address_component.province)
-      putCache(key, 'city', res.result.address_component.city)
-      callBack4GetCity()
+      putCache(cacheKey.userinfo, 'province', res.result.address_component.province)
+      putCache(cacheKey.userinfo, 'city', res.result.address_component.city)
+      log("#userinfo:" + JSON.stringify(getCache(cacheKey.userinfo)))
+      putCache("page_getNearGrouba", "page", 1) //重置分页为起始页
+      that.setData({
+        searchAddress: address,
+      })
+      that.onShow()
     },
     fail: res => {
       log("#省市解析失败:" + JSON.stringify(res))
+
     }
   })
 }
 /** 获取地图位置 4 用户 */
-function chooseLoc4User(that, callBack4GetCity) {
+function chooseLoc4User(that) {
   wx.chooseLocation({
     success(res) {
       log("#地址选择成功:" + JSON.stringify(res))
-      putCache(cacheKey.userinfo, "address", res.name)
-      putCache(cacheKey.userinfo, "latitude", res.latitude)
-      putCache(cacheKey.userinfo, "longitude", res.longitude)
-      getCity(res.latitude, res.longitude, cacheKey.userinfo, callBack4GetCity)
-      log("#userinfo:" + JSON.stringify(getCache(cacheKey.userinfo)))
-      that.setData({
-        searchAddress: res.name,
-      })
-      putCache("page_getNearGrouba", "page", 1) //重置分页为起始页
+      getCity(that, res.latitude, res.longitude, res.name)
+      // log("#userinfo:" + JSON.stringify(getCache(cacheKey.userinfo)))
+      // that.setData({
+      //   searchAddress: res.name,
+      // })
+      // putCache("page_getNearGrouba", "page", 1) //重置分页为起始页
     },
     fail(res) {
       log("#地址选择失败:" + JSON.stringify(res))
       if (res.errMsg == 'chooseLocation:fail cancel') {
-        //如果用户取消选择地址，则不弹出授权列表，
+        log("#如果用户取消选择地址，则不弹出授权列表")
+        that.setData({
+          searchAddress: '',
+        })
+        putCache(cacheKey.userinfo, "address", null)
+        putCache(cacheKey.userinfo, "latitude", null)
+        putCache(cacheKey.userinfo, "longitude", null)
         return
       }
       wx.showModal({
@@ -715,7 +725,7 @@ function countDown(that, pageArray) {
 
 
 //全局-常量、变量 ###########################################################
-const apiHost = "https://api.pinb.vip/pinb-service"
+const apiHost = "https://apitest.pinb.vip/pinb-service"
 //https://apitest.pinb.vip/pinb-service
 //http://127.0.0.1:9660/pinb-service
 const appid = 'wx71de1973104f41cf'
