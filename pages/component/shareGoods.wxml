@@ -33,7 +33,7 @@
       <image class="{{item2==8?'slt':''}}" wx:for="{{shareGoods.ordersStatus}}" wx:for-item="item2" wx:for-index="index2" wx:key="{{index2}}" src='{{shareGoods.userImgs[index2]}}' mode='aspectFill'></image>
     </view>
     <!-- 距离800m -->
-    <view catchtap='chooseLoc' class='main-list-right-location'>
+    <view class='main-list-right-location'>
       <image class='goods-list-right-icon' src='../img/location_ccf0c5.png'></image>
       <view>{{shareGoods.distance}}</view>
     </view>

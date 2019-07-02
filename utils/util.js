@@ -500,7 +500,7 @@ function getDistance(lat1, lng1, lat2, lng2) {
   lng2 = lng2 || 0;
   if (lat1 == 0 || lng1 == 0 || lat2 == 0 || lng2 == 0) {
     log("#lat1:" + lat1 + "lng1:" + lng1 + "lat2:" + lat2 + "lng2:" + lng2)
-    return '请选位置'
+    return '? km'
   }
 
   var rad1 = lat1 * Math.PI / 180.0;
@@ -519,25 +519,15 @@ function getDistance(lat1, lng1, lat2, lng2) {
   }
 }
 /** 获取经纬度所在省市 */
-function getCity(that, latitude, longitude, address) {
+function getCity(latitude, longitude, success) {
   wxmap.reverseGeocoder({
     location: {
       latitude: latitude,
       longitude: longitude
     },
     success: res => {
-      putCache(cacheKey.userinfo, "address", address)
-      putCache(cacheKey.userinfo, "latitude", latitude)
-      putCache(cacheKey.userinfo, "longitude", longitude)
-      log("#省市解析成功:" + JSON.stringify(res))
-      putCache(cacheKey.userinfo, 'province', res.result.address_component.province)
-      putCache(cacheKey.userinfo, 'city', res.result.address_component.city)
-      log("#userinfo:" + JSON.stringify(getCache(cacheKey.userinfo)))
-      putCache("page_getNearGrouba", "page", 1) //重置分页为起始页
-      that.setData({
-        searchAddress: address,
-      })
-      that.onShow()
+      success(res)
+
     },
     fail: res => {
       log("#省市解析失败:" + JSON.stringify(res))
@@ -550,7 +540,20 @@ function chooseLoc4User(that) {
   wx.chooseLocation({
     success(res) {
       log("#地址选择成功:" + JSON.stringify(res))
-      getCity(that, res.latitude, res.longitude, res.name)
+      putCache(cacheKey.userinfo, "address", res.name)
+      putCache(cacheKey.userinfo, "latitude", res.latitude)
+      putCache(cacheKey.userinfo, "longitude", res.longitude)
+      that.setData({
+        searchAddress: res.name,
+      })
+      getCity(res.latitude, res.longitude, function(cityRes) {
+        log("#省市解析成功，开始执行calbackFuction,#res:" + JSON.stringify(cityRes))
+        putCache(cacheKey.userinfo, 'province', cityRes.result.address_component.province)
+        putCache(cacheKey.userinfo, 'city', cityRes.result.address_component.city)
+        log("#userinfo:" + JSON.stringify(getCache(cacheKey.userinfo)))
+        putCache("page_getNearGrouba", "page", 1) //重置分页为起始页
+        that.onShow()
+      })
       // log("#userinfo:" + JSON.stringify(getCache(cacheKey.userinfo)))
       // that.setData({
       //   searchAddress: res.name,

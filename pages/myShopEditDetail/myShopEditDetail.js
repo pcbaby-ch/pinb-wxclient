@@ -47,6 +47,10 @@ Page({
             goodsImgsNameArray,
           })
           wx.hideLoading()
+          //删除图片方法引导提示：
+          if (goodsImgsNameArray && goodsImgsNameArray.length <= 1) {
+            util.softTips(that, "长按图片，即删除", 6)
+          }
         })
 
       }
@@ -84,13 +88,10 @@ Page({
     let index = pageRes.goodsIndex
     let groubaTrace = pageRes.groubaTrace
     let isEdit = pageRes.isEdit
-    if (isEdit && isEdit == 'true') {
-      util.softTips(that, "长按图片，即删除", 6)
-    }
     util.log("#商品详情页-传入参数:" + JSON.stringify(pageRes))
     //获取图片集：
     let goodsImgsNameArray = util.getCache(util.cacheKey.goodsImgsNameArray + index)
-    if (!goodsImgsNameArray) { //如果是首次详情查询跳转，则查库
+    if (!goodsImgsNameArray && groubaTrace) { //如果是首次详情查询跳转，则查库
       util.log("#详情图片集来源：首次从DB获取详情数据")
       util.reqPost(util.apiHost + "/groubActivity/selectOne", {
         groubaTrace: groubaTrace,
@@ -111,10 +112,14 @@ Page({
             isShowBlank: goodsImgsNameArray && goodsImgsNameArray.length > 0 ? false : true,
           })
           util.putCache(util.cacheKey.goodsImgsNameArray + index, null, goodsImgsNameArray)
+
         }
       }, function fail() {
 
       })
+    }
+    if (goodsImgsNameArray && goodsImgsNameArray.length >= 1) {
+      util.softTips(that, "长按图片，即删除", 6)
     }
     util.log("#详情图片集，#goodsImgsNameArray:" + JSON.stringify(goodsImgsNameArray))
     let goodsImgsArray = []
