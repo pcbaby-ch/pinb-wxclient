@@ -7,7 +7,7 @@
     />
   </view>
 
-  <button class='head-foot {{groub.groubAddress?"buttonBlock":"buttonBlock antScale"}}' bindtap='{{isEdit?"chooseLoc":""}}' style='margin:0;margin-top:3rpx;'>
+  <button class='head-foot {{groub.groubAddress?"buttonBlock":"buttonBlock antScale"}}' bindtap='{{isEdit?"chooseLoc":"openAddress"}}' bindlongtap='{{isEdit?"":"copyAddress"}}' style='margin:0;margin-top:3rpx;'>
     <!-- <view class='head-foot {{groub.groubAddress?"":"antScale"}}'> -->
     <image src='../img/location_grey.png' mode='aspectFill'></image>
     <view style="color:grey;">{{groub.groubAddress||'选取店铺位置'}}</view>

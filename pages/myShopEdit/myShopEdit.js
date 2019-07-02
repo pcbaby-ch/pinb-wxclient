@@ -136,6 +136,7 @@ Page({
         that.setData({
           isEdit: false,
         })
+        that.onLoad()
       }
     }, function fail() {
 
@@ -200,11 +201,11 @@ Page({
     wx.chooseLocation({
       success(res) {
         let groub = that.data.groub
-        groub.groubAddress = res.address;
+        groub.groubAddress = res.name;
         groub.latitude = res.latitude;
         groub.longitude = res.longitude;
         util.getCity(res.latitude, res.longitude, util.cacheKey.groubInfo, function() {
-          util.log("#选择地址后，开始执行calbackFuction")
+          util.log("#选择地址后，开始执行calbackFuction,#res:" + JSON.stringify(res))
           groub.province = util.getCache(util.cacheKey.groubInfo, 'province')
           groub.city = util.getCache(util.cacheKey.groubInfo, 'city')
           util.log("#groub:" + JSON.stringify(groub))
@@ -213,8 +214,8 @@ Page({
           })
         })
       },
-      fail() {
-        log("#地址选择失败:" + JSON.stringify(res))
+      fail(res) {
+        util.log("#地址选择失败:" + JSON.stringify(res))
         if (res.errMsg == 'chooseLocation:fail cancel') {
           //如果用户取消选择地址，则不弹出授权列表，
           return
@@ -292,7 +293,21 @@ Page({
       phoneNumber: this.data.groub.groubPhone,
     })
   },
-
+  //#长按复制地址 
+  copyAddress() {
+    wx.setClipboardData({
+      data: this.data.groub.groubAddress
+    })
+  },
+  //#使用原生地图显示位置
+  openAddress() {
+    util.log("#显示位置：" + this.data.groub.groubAddress + this.data.groub.latitude * 1)
+    wx.openLocation({
+      latitude: this.data.groub.latitude * 1,
+      longitude: this.data.groub.longitude * 1,
+      name: this.data.groub.groubAddress,
+    })
+  },
   checkParams(groub, goods) {
     // if (!groub.groubName) {
     //   util.softTips(this, "店铺名称未选择")

@@ -50,6 +50,21 @@ Page({
       phoneNumber: this.data.groub.groubPhone,
     })
   },
+  //#长按复制地址 
+  copyAddress() {
+    wx.setClipboardData({
+      data: this.data.groub.groubAddress
+    })
+  },
+  //#使用原生地图显示位置
+  openAddress() {
+    util.log("#显示位置：" + this.data.groub.groubAddress + this.data.groub.latitude * 1)
+    wx.openLocation({
+      latitude: this.data.groub.latitude * 1,
+      longitude: this.data.groub.longitude * 1,
+      name: this.data.groub.groubAddress,
+    })
+  },
   //#跳转详情页
   goGoodsDetail(res) {
     util.log("#跳转详情页点击事件，#res:" + JSON.stringify(res))

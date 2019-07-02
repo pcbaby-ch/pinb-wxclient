@@ -715,7 +715,7 @@ function countDown(that, pageArray) {
 
 
 //全局-常量、变量 ###########################################################
-const apiHost = "https://apitest.pinb.vip/pinb-service"
+const apiHost = "https://api.pinb.vip/pinb-service"
 //https://apitest.pinb.vip/pinb-service
 //http://127.0.0.1:9660/pinb-service
 const appid = 'wx71de1973104f41cf'
