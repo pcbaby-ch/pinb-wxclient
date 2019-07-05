@@ -469,9 +469,9 @@ function pageInitData(that, loadMethod, pageRows) {
   })
   let pageCacheKey = "page_" + methodName
   putCache(pageCacheKey, 'page', 1)
-  putCache(pageCacheKey, 'rows', pageRows || 10)
+  putCache(pageCacheKey, 'rows', pageRows || 20)
   log("#当前分页业务为:" + pageCacheKey + "#当前页:1")
-  loadMethod(1, pageRows || 10)
+  loadMethod(1, pageRows || 20)
 }
 
 /** 统一分页 -加载下一页数据 args{页面this,业务加载数据方法}*/
