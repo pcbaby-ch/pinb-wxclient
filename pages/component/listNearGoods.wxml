@@ -3,11 +3,11 @@
 <!-- <view wx:for='{{pageArrayContainer}}' wx:for-item="pageArray" wx:for-index="pageArrayIndex" wx:key="index"> -->
 <view wx:for='{{pageArray}}' wx:for-item="item" wx:key="groubaTrace" wx:for-index="index">
   <!-- 无头像布局 ######################################## -->
-  <view class='goods-list-active}}' wx:if="{{!item.userImgs}}" catchtap='goMyShop'>
+  <view class='goods-list-active}}' wx:if="{{!item.userImgs}}">
     <!-- <view wx:if="{{item.groubaIsnew}}" class='goods-list-new'></view> -->
     <view class='goods-list-new'>{{([2,3,5,6,8,9][item.groubaSize])==item.ordersStatus.length?'成团':(item.groubaIsnew?'新':'')}}</view>
     <!-- 活动商品-左侧 -->
-    <view class='goods-list-left'>
+    <view class='goods-list-left' catchtap='goMyShop'>
       <image class='goodsImg' style="height: 100%" src='{{item.goodsImgView}}' data-index='{{index}}' mode='widthFix'></image>
     </view>
     <!-- 活动商品-右侧 -->
@@ -29,11 +29,11 @@
         <view>{{[2,3,5,6,8,9][item.groubaSize]?[2,3,5,6,8,9][item.groubaSize]+'人团':'?人团'}}</view>
       </view>
       <!-- 距离800m -->
-      <view catchtap='chooseLoc' class='main-list-right-location'>
+      <view class='main-list-right-location'>
         <image class='goods-list-right-icon' src='../img/location_ccf0c5.png'></image>
         <view>{{item.distance}}</view>
       </view>
-      <button wx:if="{{indexMode=='userShare'}}" open-type='' data-index='{{index}}' catchtap='onShareAppMessageA' hover-stop-propagation='true' class='buttonBlock main-list-share'>开团立省{{item.groubaDiscountAmount||'??'}}元</button>
+      <button open-type='' data-index='{{index}}' catchtap='onShareAppMessageA' hover-stop-propagation='true' class='buttonBlock main-list-share'>开团立省{{item.groubaDiscountAmount||'??'}}元</button>
     </view>
   </view>
 </view>

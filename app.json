@@ -29,20 +29,20 @@
   "sitemapLocation": "sitemap.json",
   "tabBar": {
     "color": "#cdcdcd",
-    "selectedColor": "#09bb07",
+    "selectedColor": "#8BC34A",
     "backgroundColor": "#fff",
     "list": [
       {
         "pagePath": "pages/index/index",
         "text": "万物可团",
         "iconPath": "pages/img/index.png",
-        "selectedIconPath": "pages/img/indexB.png"
+        "selectedIconPath": "pages/img/shop_8BC34A.png"
       },
       {
         "pagePath": "pages/myOrder/myOrder",
         "text": "我的订单",
         "iconPath": "pages/img/order.png",
-        "selectedIconPath": "pages/img/orderB.png"
+        "selectedIconPath": "pages/img/detail_8BC34A.png"
       }
     ]
   }

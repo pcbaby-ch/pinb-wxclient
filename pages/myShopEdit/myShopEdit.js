@@ -204,10 +204,12 @@ Page({
         groub.groubAddress = res.name;
         groub.latitude = res.latitude;
         groub.longitude = res.longitude;
-        util.getCity(res.latitude, res.longitude, util.cacheKey.groubInfo, function() {
-          util.log("#选择地址后，开始执行calbackFuction,#res:" + JSON.stringify(res))
-          groub.province = util.getCache(util.cacheKey.groubInfo, 'province')
-          groub.city = util.getCache(util.cacheKey.groubInfo, 'city')
+        util.getCity(res.latitude, res.longitude, function(cityRes) {
+          util.log("#省市解析成功，开始执行calbackFuction,#res:" + JSON.stringify(cityRes))
+          groub.province = cityRes.result.address_component.province
+          groub.city = cityRes.result.address_component.city
+          util.setCache(util.cacheKey.groubInfo, "province", groub.province)
+          util.setCache(util.cacheKey.groubInfo, "city", groub.city)
           util.log("#groub:" + JSON.stringify(groub))
           that.setData({
             groub,
