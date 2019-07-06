@@ -86,43 +86,26 @@ Page({
     let that = this
     wx.showNavigationBarLoading()
     let index = pageRes.goodsIndex
-    let groubaTrace = pageRes.groubaTrace
+    let dGoodsImgs = pageRes.dGoodsImgs
+    dGoodsImgs = dGoodsImgs ? JSON.parse(dGoodsImgs) : dGoodsImgs
     let isEdit = pageRes.isEdit
     util.log("#商品详情页-传入参数:" + JSON.stringify(pageRes))
     //获取图片集：
-    let goodsImgsNameArray = util.getCache(util.cacheKey.goodsImgsNameArray + index)
-    if (!goodsImgsNameArray && groubaTrace) { //如果是首次详情查询跳转，则查库
-      util.log("#详情图片集来源：首次从DB获取详情数据")
-      util.reqPost(util.apiHost + "/groubActivity/selectOne", {
-        groubaTrace: groubaTrace,
-      }, function success(resp) {
-        if (resp.retCode != '10000') { //#失败
-          util.softTips(that, resp.retMsg, 3)
-          util.log("#商品详情查询失败,")
-        } else { //#成功
-          //显示图片
-          let goodsImgsArray = []
-          let goodsImgsNameArray = resp.data.dGoodsImgs ? JSON.parse(resp.data.dGoodsImgs) : []
-          for (var i in goodsImgsNameArray) {
-            goodsImgsArray[i] = util.apiHost + "/images/dgoodsImg/" + goodsImgsNameArray[i]
-          }
-          that.setData({
-            goodsImgsArray,
-            goodsImgsNameArray,
-            isShowBlank: goodsImgsNameArray && goodsImgsNameArray.length > 0 ? false : true,
-          })
-          util.putCache(util.cacheKey.goodsImgsNameArray + index, null, goodsImgsNameArray)
-
-        }
-      }, function fail() {
-
-      })
+    let cacheDGoodsImgs = util.getCache(util.cacheKey.goodsImgsNameArray + index)
+    let goodsImgsArray = []
+    let goodsImgsNameArray = []
+    if (isEdit == 'false') { //如果是首次详情查询跳转，则查库
+      util.log("#查看模式：" + JSON.stringify(dGoodsImgs))
+      goodsImgsNameArray = dGoodsImgs
+      util.putCache(util.cacheKey.goodsImgsNameArray + index, null, goodsImgsNameArray)
+    } else {
+      util.log("#编辑模式：" + JSON.stringify(cacheDGoodsImgs))
+      goodsImgsNameArray = cacheDGoodsImgs
     }
-    if (goodsImgsNameArray && goodsImgsNameArray.length >= 1) {
+    if (isEdit == 'true' && goodsImgsNameArray && goodsImgsNameArray.length >= 1) {
       util.softTips(that, "长按图片，即删除", 6)
     }
     util.log("#详情图片集，#goodsImgsNameArray:" + JSON.stringify(goodsImgsNameArray))
-    let goodsImgsArray = []
     for (var i in goodsImgsNameArray) {
       goodsImgsArray[i] = util.apiHost + "/images/dgoodsImg/" + goodsImgsNameArray[i]
     }

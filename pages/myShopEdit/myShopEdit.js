@@ -540,7 +540,7 @@ Page({
 
 
       //商品名称、价格+二维码
-      let goodsName = that.data.pageArray[0].goodsName + "s"
+      let goodsName = that.data.pageArray[0].goodsName + ""
       goodsName = goodsName.length > 8 ? goodsName.substring(0, 8) + "..." : goodsName
       //商品名称
       ctx.setFontSize(19)
@@ -581,14 +581,14 @@ Page({
     let goodsIndex = res.currentTarget.dataset.index
     util.setCache(util.cacheKey.goodsImgsNameArray + goodsIndex) //清除缓存取最新数据
     wx.navigateTo({
-      url: '/pages/myShopEditDetail/myShopEditDetail?goodsIndex=' + goodsIndex + "&groubaTrace=" + this.data.pageArray[goodsIndex].groubaTrace + "&isEdit=" + false,
+      url: '/pages/myShopEditDetail/myShopEditDetail?goodsIndex=' + goodsIndex + "&dGoodsImgs=" + this.data.pageArray[goodsIndex].dGoodsImgs + "&isEdit=" + false,
     })
   },
   goGoodsDetailEdit(res) {
     util.log("#跳转详情页点击事件，#res:" + JSON.stringify(res))
     let goodsIndex = res.currentTarget.dataset.index
     wx.navigateTo({
-      url: '/pages/myShopEditDetail/myShopEditDetail?goodsIndex=' + goodsIndex + "&groubaTrace=" + this.data.pageArray[goodsIndex].groubaTrace + "&isEdit=" + true,
+      url: '/pages/myShopEditDetail/myShopEditDetail?goodsIndex=' + goodsIndex + "&dGoodsImgs=" + this.data.pageArray[goodsIndex].dGoodsImgs + "&isEdit=" + true,
     })
   },
 
