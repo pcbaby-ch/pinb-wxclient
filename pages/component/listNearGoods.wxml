@@ -33,7 +33,7 @@
         <image class='goods-list-right-icon' src='../img/location_ccf0c5.png'></image>
         <view>{{item.distance}}</view>
       </view>
-      <button open-type='' data-index='{{index}}' catchtap='onShareAppMessageA' hover-stop-propagation='true' class='buttonBlock main-list-share'>开团立省{{item.groubaDiscountAmount||'??'}}元</button>
+      <button open-type='' data-index='{{index}}' catchtap='onShareAppMessageA' hover-stop-propagation='true' class='buttonBlock main-list-share'>立省{{item.groubaDiscountAmount||'??'}}元</button>
     </view>
   </view>
 </view>

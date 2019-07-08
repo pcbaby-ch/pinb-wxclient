@@ -87,9 +87,9 @@ Page({
     wx.showNavigationBarLoading()
     let index = pageRes.goodsIndex
     let dGoodsImgs = pageRes.dGoodsImgs
-    dGoodsImgs = dGoodsImgs ? JSON.parse(dGoodsImgs) : dGoodsImgs
-    let isEdit = pageRes.isEdit
     util.log("#商品详情页-传入参数:" + JSON.stringify(pageRes))
+    dGoodsImgs = dGoodsImgs && dGoodsImgs !='undefined' ? JSON.parse(dGoodsImgs) : []
+    let isEdit = pageRes.isEdit
     //获取图片集：
     let cacheDGoodsImgs = util.getCache(util.cacheKey.goodsImgsNameArray + index)
     let goodsImgsArray = []

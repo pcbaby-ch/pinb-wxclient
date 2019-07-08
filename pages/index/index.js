@@ -115,6 +115,10 @@ Page({
     })
   },
 
+  onShareAppMessageA(res){
+    this.goMyShop(res)
+  },
+
   /**
    * Lifecycle function--Called when page load
    */
