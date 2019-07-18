@@ -100,50 +100,52 @@ function requestLoading(url, params, message, successCallback, failCallback) {
       // log("#网络连接情况:" + JSON.stringify(res))
       if (res.networkType == 'none') {
         heavyTips('网络异常', '亲，你的网络异常，请恢复后重试!')
-        return
+        wx.hideNavigationBarLoading()
+      } else {
+        wx.request({
+          url: url,
+          data: params,
+          header: reqHeader,
+          method: reqMethod,
+          success: function(res) {
+            if (res.statusCode == 200) {
+              successCallback(res.data)
+            } else {
+              if (failCallback)
+                failCallback()
+              else if (res.errMsg = "request:fail timeout") {
+                heavyTips('服务繁忙', '亲，活动火爆，请稍后重试!')
+                wx.hideNavigationBarLoading()
+                return
+              } else {
+                heavyTips('网络异常', '亲，你的网络异常，请恢复后重试!')
+                wx.hideNavigationBarLoading()
+                return
+              }
+            }
+          },
+          fail: function(res) {
+            if (failCallback)
+              failCallback()
+            else if (res.errMsg = "request:fail timeout") {
+              heavyTips('服务繁忙', '亲，活动火爆，请稍后重试!')
+              wx.hideNavigationBarLoading()
+              return
+            } else {
+              heavyTips('网络异常', '亲，你的网络异常，请恢复后重试!')
+              wx.hideNavigationBarLoading()
+              return
+            }
+          },
+          complete: function(res) {
+            log(">>>响应数据:" + JSON.stringify(res) + " #url:" + url)
+            wx.hideNavigationBarLoading()
+          },
+        })
       }
     },
   })
-  wx.request({
-    url: url,
-    data: params,
-    header: reqHeader,
-    method: reqMethod,
-    success: function(res) {
-      if (res.statusCode == 200) {
-        successCallback(res.data)
-      } else {
-        if (failCallback)
-          failCallback()
-        else if (res.errMsg = "request:fail timeout") {
-          heavyTips('服务繁忙', '亲，活动火爆，请稍后重试!')
-          return
-        } else {
-          heavyTips('网络异常', '亲，你的网络异常，请恢复后重试!')
-          return
-        }
-      }
 
-    },
-    fail: function(res) {
-      if (failCallback)
-        failCallback()
-      else if (res.errMsg = "request:fail timeout") {
-        heavyTips('服务繁忙', '亲，活动火爆，请稍后重试!')
-        return
-      } else {
-        heavyTips('网络异常', '亲，你的网络异常，请恢复后重试!')
-        return
-      }
-    },
-    complete: function(res) {
-      log(">>>响应数据:" + JSON.stringify(res) + " #url:" + url)
-      wx.hideNavigationBarLoading()
-      if (message != "") {
-        wx.hideLoading()
-      }
-    },
-  })
 }
 /** 针对不同host服务，采用不同的签名、加密机制，包装处理请求报文 */
 function reqBodyWrap(url, reqBody) {

@@ -69,9 +69,12 @@ Page({
   goGoodsDetail(res) {
     util.log("#跳转详情页点击事件，#res:" + JSON.stringify(res))
     let goodsIndex = res.target.dataset.index
+    //店铺活动页，可能包含分享商品
+    let goods = this.data.shareGoods && goodsIndex == -1 ? this.data.shareGoods : this.data.pageArray[goodsIndex]
+    util.log("#详情商品goods：" + JSON.stringify(goods))
     util.setCache(util.cacheKey.goodsImgsNameArray + goodsIndex) //清除缓存取最新数据
     wx.navigateTo({
-      url: '/pages/myShopEditDetail/myShopEditDetail?goodsIndex=' + goodsIndex + "&dGoodsImgs=" + this.data.pageArray[goodsIndex].dGoodsImgs + "&isEdit=" + false,
+      url: '/pages/myShopEditDetail/myShopEditDetail?dGoodsImgs=' + goods.dGoodsImgs + "&isEdit=" + false,
     })
   },
 

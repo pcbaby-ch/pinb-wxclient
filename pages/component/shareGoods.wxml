@@ -4,10 +4,10 @@
   <!-- 活动商品-左侧 -->
   <view class='goods-list-left' catchtap='goGoodsDetail'>
     <view class="goods-list-left-goodsImgContainer">
-      <image class='goodsImg' src='{{shareGoods.goodsImgView}}' data-index='{{index}}' mode='widthFix'></image>
+      <image class='goodsImg' src='{{shareGoods.goodsImgView}}' data-index='-1' mode='widthFix'></image>
     </view>
     <view class='goodsName'>
-      <view data-type='name' data-index='{{index}}' class='{{shareGoods.goodsName?"":""}}' wx:if='{{editItem!=index+"-goodsName"}}'>{{shareGoods.goodsName}}
+      <view data-type='name' data-index='-1' class='{{shareGoods.goodsName?"":""}}' wx:if='{{editItem!=index+"-goodsName"}}'>{{shareGoods.goodsName}}
         <text class='yuanjia'>￥{{shareGoods.goodsPrice||'??'}}</text>
       </view>
     </view>
@@ -18,14 +18,14 @@
     <view class='main-list-right-groubaSize'>
       <image class='goods-list-right-icon' src='../img/team_a2d89f.png'></image>
       <view style='padding-left:0rpx;;padding-right:16rpx;'>
-        <view data-index='{{index}}' style='padding-left:0rpx;'>
+        <view data-index='-1' style='padding-left:0rpx;'>
           {{[2,3,5,6,8,9][shareGoods.groubaSize]?[2,3,5,6,8,9][shareGoods.groubaSize]+'':'?'}}
         </view>
       </view>
       <!-- 60分后结束 -->
       <view class='main-list-endTime {{shareGoods.endTimeH || shareGoods.endTimeM || editItem==index+"-endTime"?"":""}}'>
-        <image class='goods-list-right-icon' src='../img/time-circle_fac240.png' data-type='endTime' data-index='{{index}}'></image>
-        <view data-type='endTime' data-index='{{index}}'>{{shareGoods.orderExpiredTimeRemain}}</view>
+        <image class='goods-list-right-icon' src='../img/time-circle_fac240.png' data-type='endTime' data-index='-1'></image>
+        <view data-type='endTime' data-index='-1'>{{shareGoods.orderExpiredTimeRemain}}</view>
       </view>
     </view>
     <!-- 活动商品-用户头像 -->
@@ -39,7 +39,7 @@
     </view>
     <!-- 参团立省？？元 -->
     <form bindsubmit="onShareAppMessageA" report-submit="{{true}}">
-      <button open-type="{{shareGoods.isJoined?'share':''}}" data-index='{{index}}' form-type='submit' hover-stop-propagation='true' class='buttonBlock main-list-share'>{{shareGoods.isJoined?'分享':('参团立省'+shareGoods.groubaDiscountAmount+'元')}}</button>
-    </form>
+        <button open-type="{{shareGoods.isJoined&&([2,3,5,6,8,9][shareGoods.groubaSize])!=shareGoods.ordersStatus.length?'share':''}}" data-index='-1' form-type='submit' hover-stop-propagation='true' class='buttonBlock main-list-share'>{{([2,3,5,6,8,9][shareGoods.groubaSize])==shareGoods.ordersStatus.length?('开团立省'+shareGoods.groubaDiscountAmount+'元'):(shareGoods.isJoined?'分享':('参团立省'+shareGoods.groubaDiscountAmount+'元'))}}</button>
+      </form>
   </view>
 </view>

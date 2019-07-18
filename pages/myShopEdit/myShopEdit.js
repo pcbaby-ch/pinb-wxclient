@@ -357,6 +357,10 @@ Page({
         util.log("#groubaDiscountAmount:" + g.groubaDiscountAmount + "#goodsPrice:" + g.goodsPrice)
         return false
       }
+      if (!g.dGoodsImgs || g.dGoodsImgs.length <= 0) {
+        util.softTips(this, "商品" + index + ",详情未配置")
+        return false
+      }
       // }
     }
     util.softTips(this, "店铺信息,一个月最多更改6次", 3)

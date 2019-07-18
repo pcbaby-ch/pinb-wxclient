@@ -25,7 +25,9 @@ Page({
           formId: formId,
         }, resp => {
           if (util.parseResp(that, resp)) {
-            util.softTips(that, "扫码确认成功", 3)
+            util.softTips(that, resp.data.goodsName + "-扫码核销成功", 5)
+          } else {
+            util.heavyTips("核销异常", resp.retMsg)
           }
         })
       }
@@ -50,12 +52,12 @@ Page({
         wx.get
         var heightrate = res.screenHeight / 680
         var widthrate = res.screenWidth / 680
-        util.log("#ctx:" + JSON.stringify(ctx) + "#res:" + JSON.stringify(res) + "#heightrate:" + heightrate + "#widthrate:" + widthrate+"#")
+        util.log("#ctx:" + JSON.stringify(ctx) + "#res:" + JSON.stringify(res) + "#heightrate:" + heightrate + "#widthrate:" + widthrate + "#")
         //#生成二维码
         var qrcode = new QRCode('paycanvas', {
           // usingIn: this,
           text: order.orderTrace + '|' + order.refUserWxUnionid,
-          width: res.screenWidth*0.9,
+          width: res.screenWidth * 0.9,
           height: res.screenWidth * 0.9,
           colorDark: "#000000",
           colorLight: "#ffffff",
@@ -137,7 +139,7 @@ Page({
           isShowBlank: false,
         })
         util.log("#我的订单-数据加载-完成")
-        util.softTips(that, "点击订单图片，获取消费二维码", 6)
+        // util.softTips(that, "点击订单图片，获取消费二维码", 6)
       } else {
         util.log("#我的订单-数据加载-失败")
         if (page_ > 1) {
