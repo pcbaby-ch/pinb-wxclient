@@ -497,7 +497,7 @@
 
 .fixed-list {
   text-align: center;
-  margin: 8rpx 0;
+  margin: 16rpx 0;
   padding: 2rpx 13rpx;
   /* border: 1rpx solid #e6e6e6; */
   background: rgba(241, 241, 241, 0.6);
