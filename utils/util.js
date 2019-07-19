@@ -83,7 +83,7 @@ function requestLoading(url, params, message, successCallback, failCallback) {
   }
   //#包装处理请求报文{加签、非对称加密等处理}
   params = reqBodyWrap(url, params)
-  log(">>>请求参数(包装处理后):" + JSON.stringify(params) + " #url:" + url)
+  // log(">>>请求参数(包装处理后):" + JSON.stringify(params) + " #url:" + url)
   var reqMethod = "post";
   var reqHeader = {
     'Content-Type': 'application/json'
@@ -600,22 +600,24 @@ function onShareAppMessageA(that, e) {
   //#同时支持普通商品和已分享商品的拼团************************
   let tapGrouba = index >= 0 ? that.data.pageArray[index] : that.data.shareGoods
   log("#操作商品:" + JSON.stringify(tapGrouba))
-  if (tapGrouba.shareOrder) {
-    //已开团，只能参团
-    if (tapGrouba.isJoined && tapGrouba.isJoined == true) {
-      if (([2, 3, 5, 6, 8, 9][tapGrouba.groubaSize]) == tapGrouba.ordersStatus.length) {
-        log("#已开团-满团，重新开团")
-        orderOpen(that, tapGrouba, formId)
-      } else {
-        log("#已开团-未满团，纯分享")
+  if (tapGrouba && tapGrouba.isJoined == true) {
+    log("#已参团")
+    if (([2, 3, 5, 6, 8, 9][tapGrouba.groubaSize]) == tapGrouba.ordersStatus.length) {
+      log("#已参团-满团，重新开团")
+      orderOpen(that, tapGrouba, formId)
 
-      }
     } else {
-      orderJoin(that, tapGrouba.shareOrder, tapGrouba.shareLeader, formId)
+      log("#已参团-未满团，纯分享")
     }
   } else {
-    //未开团
-    orderOpen(that, tapGrouba, formId)
+    log("未参团")
+    if (tapGrouba.userImgs && tapGrouba.userImgs.length > 0) {
+      log("未参团-参团")
+      orderJoin(that, tapGrouba.shareOrder, tapGrouba.shareLeader, formId)
+    } else {
+      log("未参团-开团")
+      orderOpen(that, tapGrouba, formId)
+    }
   }
   // log("#拼团活动商品:" + JSON.stringify(tapGrouba))
 }
@@ -648,7 +650,7 @@ function orderOpen(that, tapGrouba, formId) {
   }, resp => {
     if (parseResp(that, resp)) {
       // softTips(this, "开团成功")
-      that.onShow()
+      getGroubShareOrder(that, tapGrouba.refGroubTrace, resp.data, getCache(cacheKey.userinfo, "wxUnionid"))
     }
   })
 }
@@ -703,7 +705,7 @@ function getGroubShareOrder(that, groubTrace, orderTrace, orderLeader) {
         shareGoods: resp.data.shareGoods,
       })
       // countDown(that, resp.data.goodsList)
-      
+
       log("#店铺or分享活动商品-数据加载-完成")
     } else {
       log("#店铺or分享活动商品-数据加载-失败")

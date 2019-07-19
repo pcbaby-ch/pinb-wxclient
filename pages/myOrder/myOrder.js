@@ -158,7 +158,7 @@ Page({
             isShowBlank: false,
           })
         } else {
-          util.softTips(that, "亲，你暂无订单", 3)
+          // util.softTips(that, "亲，你暂无订单", 3)
           that.setData({
             pageArray: [],
             isLodding: false,

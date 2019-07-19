@@ -78,7 +78,7 @@
       </view>
       <!-- 参团立省？？元 -->
       <form bindsubmit="onShareAppMessageA" report-submit="{{true}}">
-        <button open-type="{{item.isJoined?'share':''}}" data-index='{{index}}' form-type='submit' hover-stop-propagation='true' class='buttonBlock main-list-share'>{{([2,3,5,6,8,9][item.groubaSize])==item.ordersStatus.length?('开团立省'+item.groubaDiscountAmount+'元'):(item.isJoined?'分享':('参团立省'+item.groubaDiscountAmount+'元'))}}</button>
+        <button open-type="{{item.isJoined&&([2,3,5,6,8,9][item.groubaSize])!=item.ordersStatus.length?'share':''}}" data-index='{{index}}' form-type='submit' hover-stop-propagation='true' class='buttonBlock main-list-share'>{{([2,3,5,6,8,9][item.groubaSize])==item.ordersStatus.length?('开团立省'+item.groubaDiscountAmount+'元'):(item.isJoined?'分享':('参团立省'+item.groubaDiscountAmount+'元'))}}</button>
       </form>
     </view>
   </view>
