@@ -103,6 +103,28 @@ Page({
     util.log("#getRemainTimeTest：" + util.getRemainTime('2019/06/05 21:36:53.0'))
     //#加载指定商铺的基本信息+商品信息
     util.getGroubShareOrder(that, groubTrace, orderTrace, orderLeader)
+    setInterval(function() {
+      that.countDown(that)
+    }, 1000)
+  },
+  /** 倒计时 */
+  countDown(that) {
+    let pageArray = that.data.pageArray
+    for (let i in pageArray) {
+      let item = pageArray[i]
+      if (item.orderExpiredTime) {
+        item.orderExpiredTimeRemain = util.getRemainTime(item.orderExpiredTime)
+        // util.log("#countDown-item.orderExpiredTimeRemain:" + item.orderExpiredTimeRemain)
+      }
+    }
+    let shareGoods = that.data.shareGoods
+    if (shareGoods) {
+      shareGoods.orderExpiredTimeRemain = util.getRemainTime(shareGoods.orderExpiredTime)
+    }
+    that.setData({
+      pageArray,
+      shareGoods,
+    })
   },
 
   /**
@@ -167,9 +189,9 @@ Page({
   onShareAppMessage(e) {
     let that = this
     let index = e.target.dataset.index
-
     let pageArray = that.data.pageArray
-    let tapGrouba = that.data.pageArray[index]
+    //#同时支持普通商品和已分享商品的分享************************
+    let tapGrouba = index >= 0 ? that.data.pageArray[index] : that.data.shareGoods
     if (that.data.shareGoods) {
       util.log("#已经携带分享商品")
       if (!tapGrouba) {

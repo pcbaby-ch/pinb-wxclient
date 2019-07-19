@@ -92,6 +92,14 @@ Page({
     })
   },
 
+  ordersFilter(res) {
+    util.log("#ordersFilter参数：" + JSON.stringify(res))
+    this.setData({
+      orderStatus: res.currentTarget.dataset.orderstatus,
+    })
+    util.pageInitData(this, this.getMyOrders)
+  },
+
   getMyOrdersToggle() {
     let url = "selectMyOrder4user"
     if (this.data.getMyOrderUrl != 'selectMyOrder4Shop') {
@@ -115,8 +123,9 @@ Page({
     util.reqPost(url, {
       refUserWxUnionid: util.getCache(util.cacheKey.userinfo, 'wxUnionid'), //普通用户userid
       refGroubTrace: util.getCache(util.cacheKey.userinfo, 'groubTrace'), //店长店铺trace
-      page: page_,
+      orderStatus: that.data.orderStatus,
       rows: rows_,
+      page: page_,
     }, resp => {
       if (util.parseResp(that, resp) && resp.data.rows.length > 0) {
         for (var i in resp.data.rows) {

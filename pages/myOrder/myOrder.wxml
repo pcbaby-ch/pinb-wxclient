@@ -5,6 +5,14 @@
 <!-- 登陆页面# ##########################  -->
 <include src="../component/login.wxml" wx:if="{{pageMode=='userLogin'}}" />
 
+<!-- 订单状态过滤tab -->
+<view class="orderstatus-tab" wx:if="{{pageMode!='userLogin'}}">
+  <view class="ordertab {{!orderStatus?'ordertab-hover':''}}" catchtap='ordersFilter' data-orderstatus=''>所有订单</view>
+  <view class="ordertab {{orderStatus&&orderStatus==0?'ordertab-hover':''}}" catchtap='ordersFilter' data-orderstatus='0'>待成团</view>
+  <view class="ordertab {{orderStatus==3?'ordertab-hover':''}}" catchtap='ordersFilter' data-orderstatus='3'>待核销</view>
+  <view class="ordertab {{orderStatus==8?'ordertab-hover':''}}" catchtap='ordersFilter' data-orderstatus='8'>已核销</view>
+</view>
+
 <view class='main opacityshow' wx:if="{{pageMode!='userLogin'}}">
   <!-- 订单list -->
   <include src="../component/listOrder.wxml" />

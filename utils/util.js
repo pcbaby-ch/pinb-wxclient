@@ -27,7 +27,7 @@ function getRemainTime(endTime_) {
   endTime_ = (endTime_ + "").replace(/-/g, '/').replace('.0', '')
   let endTime = new Date(endTime_).getTime()
   let nowTime = new Date().getTime()
-  log("#endTime:" + endTime + "#nowTime:" + nowTime + "#endTime_:" + endTime_)
+  // log("#endTime:" + endTime + "#nowTime:" + nowTime + "#endTime_:" + endTime_)
   let time = (endTime - nowTime) / 1000;
   if (nowTime - endTime >= 0) {
     return '00时00分00秒'
@@ -597,6 +597,7 @@ function onShareAppMessageA(that, e) {
   log("#分享防止冒泡方法hack,#e:" + JSON.stringify(e))
   let index = e.detail.target.dataset.index
   var formId = e.detail.formId
+  //#同时支持普通商品和已分享商品的拼团************************
   let tapGrouba = index >= 0 ? that.data.pageArray[index] : that.data.shareGoods
   log("#操作商品:" + JSON.stringify(tapGrouba))
   if (tapGrouba.shareOrder) {
@@ -702,6 +703,7 @@ function getGroubShareOrder(that, groubTrace, orderTrace, orderLeader) {
         shareGoods: resp.data.shareGoods,
       })
       // countDown(that, resp.data.goodsList)
+      
       log("#店铺or分享活动商品-数据加载-完成")
     } else {
       log("#店铺or分享活动商品-数据加载-失败")
@@ -709,28 +711,11 @@ function getGroubShareOrder(that, groubTrace, orderTrace, orderLeader) {
   })
 }
 
-/** 倒计时 */
-function countDown(that, pageArray) {
-  for (let i in pageArray) {
-    let item = pageArray[i]
-    if (item.orderExpiredTime) {
-      log("#countDown-pageArray[i]:" + JSON.stringify(item))
-      item.orderExpiredTimeRemain = getRemainTime(item.orderExpiredTime)
-    }
-  }
-  let shareGoods = that.data.shareGoods
-  shareGoods.orderExpiredTimeRemain = getRemainTime(item.orderExpiredTime)
-  that.setData({
-    pageArray,
-    shareGoods,
-  })
-  // setTimeout(countDown(that, pageArray), 1000)
-}
 
 
 
 //全局-常量、变量 ###########################################################
-const apiHost = "https://apitest.pinb.vip/pinb-service"
+const apiHost = "http://127.0.0.1:9660/pinb-service"
 //https://apitest.pinb.vip/pinb-service
 //http://127.0.0.1:9660/pinb-service
 const appid = 'wx71de1973104f41cf'
