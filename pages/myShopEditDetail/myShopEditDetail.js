@@ -12,7 +12,6 @@ Page({
   // #添加图片*******************************
   addGoodsImg() {
     let that = this
-
     wx.chooseImage({
       count: 1,
       sizeType: ['original', 'compressed'],
@@ -21,36 +20,23 @@ Page({
         wx.showLoading({
           title: '上传中...',
         })
-
         //#后网络上传
         let index = that.data.goodsIndex
         util.log("#goodsIndex:" + index)
         util.imageUpload(resImage, 'dgoodsImg', that, image => {
           util.softTips(that, "图片上传完成")
-          let goodsImgsNameArray = that.data.goodsImgsNameArray || []
-          let goodsImgsNameArrayCache = util.getCache(util.cacheKey.goodsImgsNameArray + index) || []
-          if (goodsImgsNameArray.length <= 0) { //初次进入详情页,将缓存数据置入
-            goodsImgsNameArray = goodsImgsNameArrayCache
-            util.log("#初始置入缓存数据")
-          }
-          goodsImgsNameArray.push(image)
-          util.setCache(util.cacheKey.goodsImgsNameArray + index, goodsImgsNameArray)
-          util.log("#goodsImgsNameArray:" + JSON.stringify(goodsImgsNameArray))
-          util.log("#goodsImgsNameArrayCache:" + JSON.stringify(util.getCache(util.cacheKey.goodsImgsNameArray + index)))
+          let cacheDGoodsImgs = util.getCache(util.cacheKey.goodsImgsNameArray + index) || []
+          cacheDGoodsImgs.push(image)
+          util.setCache(util.cacheKey.goodsImgsNameArray + index, cacheDGoodsImgs)
+          util.log("#cacheDGoodsImgs:" + JSON.stringify(util.getCache(util.cacheKey.goodsImgsNameArray + index)))
           //显示图片
-          let goodsImgsArray = []
-          for (var i in goodsImgsNameArray) {
-            goodsImgsArray[i] = util.apiHost + "/images/dgoodsImg/" + goodsImgsNameArray[i]
-          }
-          that.setData({
-            goodsImgsArray,
-            goodsImgsNameArray,
-          })
+          that.showDgoodsImgs(that, cacheDGoodsImgs)
           wx.hideLoading()
-          //删除图片方法引导提示：
-          if (goodsImgsNameArray && goodsImgsNameArray.length <= 1) {
+          //编辑图片方法引导提示：
+          if (that.data.isEdit == 'true' && cacheDGoodsImgs.length > 0 && cacheDGoodsImgs.length <= 2) {
             util.softTips(that, "长按图片，即删除", 6)
           }
+         
         })
 
       }
@@ -61,22 +47,26 @@ Page({
     let that = this
     let goodsDetailIndex = res.currentTarget.dataset.index
     let index = this.data.goodsIndex
-    let goodsImgsNameArray = that.data.goodsImgsNameArray || []
-    util.log("#goodsDetailIndex:" + goodsDetailIndex + "#goodsIndex:" + index + "#goodsImgsNameArray:" + JSON.stringify(goodsImgsNameArray))
-
-    goodsImgsNameArray.splice(goodsDetailIndex, 1)
+    //获取图片集：
+    let cacheDGoodsImgs = util.getCache(util.cacheKey.goodsImgsNameArray + index) || []
+    util.log("#goodsDetailIndex:" + goodsDetailIndex + "#goodsIndex:" + index + "#cacheDGoodsImgs:" + JSON.stringify(cacheDGoodsImgs))
+    //删除图片
+    cacheDGoodsImgs.splice(goodsDetailIndex, 1)
     //#显示图片
+    that.showDgoodsImgs(that, cacheDGoodsImgs)
+    util.setCache(util.cacheKey.goodsImgsNameArray + index, cacheDGoodsImgs)
+    util.log("#删除详情图片后，#cacheDGoodsImgs:" + JSON.stringify(util.getCache(util.cacheKey.goodsImgsNameArray + index)))
+  },
+
+  showDgoodsImgs(that, cacheDGoodsImgs) {
     let goodsImgsArray = []
-    for (var i in goodsImgsNameArray) {
-      goodsImgsArray[i] = util.apiHost + "/images/dgoodsImg/" + goodsImgsNameArray[i]
+    for (var i in cacheDGoodsImgs) {
+      goodsImgsArray[i] = util.apiHost + "/images/dgoodsImg/" + cacheDGoodsImgs[i]
     }
-    this.setData({
+    that.setData({
       goodsImgsArray,
-      goodsImgsNameArray,
+      isShowBlank: cacheDGoodsImgs && cacheDGoodsImgs.length > 0 ? false : true,
     })
-    util.setCache(util.cacheKey.goodsImgsNameArray + index, null) //重置缓存
-    util.putCache(util.cacheKey.goodsImgsNameArray + index, null, goodsImgsNameArray)
-    util.log("#删除详情图片后，#goodsImgsNameArray:" + JSON.stringify(goodsImgsNameArray))
   },
 
   /**
@@ -86,36 +76,20 @@ Page({
     let that = this
     wx.showNavigationBarLoading()
     let index = pageRes.goodsIndex
-    let dGoodsImgs = pageRes.dGoodsImgs
-    util.log("#商品详情页-传入参数:" + JSON.stringify(pageRes))
-    dGoodsImgs = dGoodsImgs && dGoodsImgs !='undefined' ? JSON.parse(dGoodsImgs) : []
     let isEdit = pageRes.isEdit
     //获取图片集：
-    let cacheDGoodsImgs = util.getCache(util.cacheKey.goodsImgsNameArray + index)
-    let goodsImgsArray = []
-    let goodsImgsNameArray = []
-    if (isEdit == 'false') { //如果是首次详情查询跳转，则查库
-      util.log("#查看模式：" + JSON.stringify(dGoodsImgs))
-      goodsImgsNameArray = dGoodsImgs
-      util.putCache(util.cacheKey.goodsImgsNameArray + index, null, goodsImgsNameArray)
-    } else {
-      util.log("#编辑模式：" + JSON.stringify(cacheDGoodsImgs))
-      goodsImgsNameArray = cacheDGoodsImgs
-    }
-    if (isEdit == 'true' && goodsImgsNameArray && goodsImgsNameArray.length >= 1) {
-      util.softTips(that, "长按图片，即删除", 6)
-    }
-    util.log("#详情图片集，#goodsImgsNameArray:" + JSON.stringify(goodsImgsNameArray))
-    for (var i in goodsImgsNameArray) {
-      goodsImgsArray[i] = util.apiHost + "/images/dgoodsImg/" + goodsImgsNameArray[i]
-    }
-    that.setData({
+    let cacheDGoodsImgs = util.getCache(util.cacheKey.goodsImgsNameArray + index) || []
+    util.log("#详情图片集，#dGoodsImgs:" + JSON.stringify(cacheDGoodsImgs))
+
+    //#准备显示详情数据
+    that.showDgoodsImgs(that, cacheDGoodsImgs)
+    that.setData({ //第几个商品
       goodsIndex: index,
-      goodsImgsArray: goodsImgsArray || [],
-      goodsImgsNameArray,
-      isShowBlank: goodsImgsNameArray && goodsImgsNameArray.length > 0 ? false : true,
-      isEdit,
+      isEdit: isEdit,
     })
+    if (that.data.isEdit == 'true' && cacheDGoodsImgs.length <= 0) {
+      util.softTips(that, "点击右下角，添加图片", 6)
+    }
     //设置商品详情scrollHeight
     wx.getSystemInfo({
       success: function(res) {

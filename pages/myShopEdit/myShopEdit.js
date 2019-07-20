@@ -94,8 +94,8 @@ Page({
   },
   /** 右下角编辑 */
   ch_edit() {
-    let isEdit = this.data.isEdit
-    let pageArray = this.data.pageArray
+    let isEdit = this.data.isEdit || false
+    let pageArray = this.data.pageArray || []
     this.setData({
       isEdit: !isEdit,
       editItem: '',
@@ -107,6 +107,7 @@ Page({
     let groub = this.data.groub;
     util.log("#店铺信息" + JSON.stringify(groub))
     let pageArray = this.data.pageArray;
+    util.log("#pageArray:" + JSON.stringify(pageArray))
     // util.log("#商品信息" + JSON.stringify(pageArray))
     //填写信息，缓存
     util.putCache(util.cacheKey.groubInfo, null, groub)
@@ -361,13 +362,18 @@ Page({
         util.softTips(this, "商品" + index + ",详情未配置")
         return false
       }
+      if (JSON.stringify(g.dGoodsImgs).length > 500) {
+        util.softTips(this, "商品" + index + ",详情图片超限")
+        return false
+      }
       // }
     }
     util.softTips(this, "店铺信息,一个月最多更改6次", 3)
     return true
   },
 
-  getGroubInfo(that, groubTrace, orderTrace) {
+  getGroubInfo(groubTrace, orderTrace) {
+    let that = this
     util.reqPost(util.apiHost + "/groupBar/selectOne", {
       refUserWxUnionid: groubTrace ? null : util.getCache(util.cacheKey.userinfo, "wxUnionid"),
       groubTrace: groubTrace,
@@ -381,18 +387,21 @@ Page({
           let item = resp.data.goodsList[i]
           resp.data.goodsList[i]['goodsImgView'] = util.apiHost + "/images/goodsImg/" + item.goodsImg
           resp.data.goodsList[i]['distance'] = util.getDistance(curLatitude, curLongitude, item.latitude, item.longitude)
+          //#初始化商品详情数据缓存
+          let dGoodsImgs = resp.data.goodsList[i].dGoodsImgs
+          util.setCache(util.cacheKey.goodsImgsNameArray + i, dGoodsImgs ? JSON.parse(dGoodsImgs) : null)
         }
-        let pageArray = resp.data.goodsList
-        if (pageArray && pageArray.length > 0) {
-          for (let i = 0; i < 3 - pageArray.length; i++) {
-            pageArray.push(defalutProduct)
-          }
+        let pageArray = []
+        pageArray = resp.data.goodsList
+        if (pageArray.length != 3) {
+          pageArray = that.data.productList
         }
         that.setData({
           groub: resp.data.groubInfo,
           pageArray: pageArray,
         })
-        util.log("#店铺数据加载完成")
+        util.log("#店铺数据加载完成，#pageArray：" + JSON.stringify(pageArray))
+
       } else {
         util.log("#店铺数据加载失败")
         that.setData({
@@ -583,16 +592,16 @@ Page({
   goGoodsDetail(res) {
     util.log("#跳转详情页点击事件，#res:" + JSON.stringify(res))
     let goodsIndex = res.currentTarget.dataset.index
-    util.setCache(util.cacheKey.goodsImgsNameArray + goodsIndex) //清除缓存取最新数据
     wx.navigateTo({
-      url: '/pages/myShopEditDetail/myShopEditDetail?goodsIndex=' + goodsIndex + "&dGoodsImgs=" + this.data.pageArray[goodsIndex].dGoodsImgs + "&isEdit=" + false,
+      url: '/pages/myShopEditDetail/myShopEditDetail?goodsIndex=' + goodsIndex + "&isEdit=" + false,
     })
   },
+  //#跳转详情页
   goGoodsDetailEdit(res) {
     util.log("#跳转详情页点击事件，#res:" + JSON.stringify(res))
     let goodsIndex = res.currentTarget.dataset.index
     wx.navigateTo({
-      url: '/pages/myShopEditDetail/myShopEditDetail?goodsIndex=' + goodsIndex + "&dGoodsImgs=" + this.data.pageArray[goodsIndex].dGoodsImgs + "&isEdit=" + true,
+      url: '/pages/myShopEditDetail/myShopEditDetail?goodsIndex=' + goodsIndex + "&isEdit=" + true,
     })
   },
 
@@ -610,7 +619,7 @@ Page({
       isEdit: util.getCache(util.cacheKey.userinfo, "isOpenGroub") == '1' ? false : true,
     })
     //#加载指定商铺的基本信息+商品信息
-    that.getGroubInfo(that, groubTrace, orderTrace, orderLeader)
+    that.getGroubInfo(groubTrace, orderTrace, orderLeader)
   },
   /**
    * Lifecycle function--Called when page is initially rendered

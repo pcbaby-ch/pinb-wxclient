@@ -72,9 +72,8 @@ Page({
     //店铺活动页，可能包含分享商品
     let goods = this.data.shareGoods && goodsIndex == -1 ? this.data.shareGoods : this.data.pageArray[goodsIndex]
     util.log("#详情商品goods：" + JSON.stringify(goods))
-    util.setCache(util.cacheKey.goodsImgsNameArray + goodsIndex) //清除缓存取最新数据
     wx.navigateTo({
-      url: '/pages/myShopEditDetail/myShopEditDetail?dGoodsImgs=' + goods.dGoodsImgs + "&isEdit=" + false,
+      url: '/pages/myShopEditDetail/myShopEditDetail?goodsIndex=' + goodsIndex + "&isEdit=" + false,
     })
   },
 
@@ -103,28 +102,34 @@ Page({
     util.log("#getRemainTimeTest：" + util.getRemainTime('2019/06/05 21:36:53.0'))
     //#加载指定商铺的基本信息+商品信息
     util.getGroubShareOrder(that, groubTrace, orderTrace, orderLeader)
-    setInterval(function() {
+    let interval = setInterval(function() {
       that.countDown(that)
     }, 1000)
   },
   /** 倒计时 */
   countDown(that) {
-    let pageArray = that.data.pageArray
-    for (let i in pageArray) {
-      let item = pageArray[i]
-      if (item.orderExpiredTime) {
-        item.orderExpiredTimeRemain = util.getRemainTime(item.orderExpiredTime)
-        // util.log("#countDown-item.orderExpiredTimeRemain:" + item.orderExpiredTimeRemain)
-      }
-    }
+    //分享商品
     let shareGoods = that.data.shareGoods
     if (shareGoods) {
       shareGoods.orderExpiredTimeRemain = util.getRemainTime(shareGoods.orderExpiredTime)
+      that.setData({
+        shareGoods,
+      })
     }
-    that.setData({
-      pageArray,
-      shareGoods,
-    })
+    //普通商品
+    let pageArray = that.data.pageArray
+    if (pageArray) {
+      for (let i in pageArray) {
+        let item = pageArray[i]
+        if (item.orderExpiredTime) {
+          item.orderExpiredTimeRemain = util.getRemainTime(item.orderExpiredTime)
+          // util.log("#countDown-item.orderExpiredTimeRemain:" + item.orderExpiredTimeRemain)
+        }
+      }
+      that.setData({
+        pageArray,
+      })
+    }
   },
 
   /**

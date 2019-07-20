@@ -698,14 +698,15 @@ function getGroubShareOrder(that, groubTrace, orderTrace, orderLeader) {
           resp.data.goodsList[i].userImgs = item.userImgs.split(",")
           resp.data.goodsList[i].ordersStatus = item.ordersStatus.split(",")
         }
+        //#初始化商品详情数据缓存
+        let dGoodsImgs = item.dGoodsImgs
+        setCache(cacheKey.goodsImgsNameArray + i, dGoodsImgs ? JSON.parse(dGoodsImgs) : null)
       }
       that.setData({
         groub: resp.data.groubInfo,
         pageArray: resp.data.goodsList,
         shareGoods: resp.data.shareGoods,
       })
-      // countDown(that, resp.data.goodsList)
-
       log("#店铺or分享活动商品-数据加载-完成")
     } else {
       log("#店铺or分享活动商品-数据加载-失败")
